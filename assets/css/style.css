@@ -453,7 +453,7 @@ footer {
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center; /* Căn giữa biểu tượng và tiêu đề */
     font-size: 1.1rem;
 }
 
