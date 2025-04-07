@@ -445,6 +445,7 @@ footer {
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
 .skills-category h3 {
@@ -452,7 +453,7 @@ footer {
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
-    justify-content: center; /* Căn giữa biểu tượng và tiêu đề */
+    justify-content: center; 
     font-size: 1.1rem;
 }
 
