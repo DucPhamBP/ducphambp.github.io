@@ -43,6 +43,7 @@
   .main-container {
     display: flex;
     min-height: 100vh;
+    position: relative;
   }
   
   .sidebar {
@@ -52,21 +53,23 @@
     padding: 1rem;
     position: fixed;
     top: 70px;
-    height: 100%;
+    left: 0;
+    bottom: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    z-index: 1;
   }
   
   .main-content {
     flex: 1;
-    margin-left: 0;
+    padding-left: 300px;
   }
   
   .sidebar-content {
-    width: 80%;
+    width: 100%;
   }
   
   /* 📸 Profile */
@@ -135,6 +138,7 @@
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    pointer-events: auto; /* Đảm bảo có thể click */
     text-decoration: none;
   }
   
@@ -149,12 +153,15 @@
 
   /* 🧭 Navigation */
   #navbar {
+    max-width: 100vw;
+    max-height: 3rem;
+    left: 0;
     background: var(--clr-card-bg);
     padding: 0.5rem 2rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
   }
   
   #navbar ul {
@@ -168,7 +175,7 @@
   #navbar a {
     color: var(--clr-secondary);
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem 1rem;
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -181,8 +188,7 @@
   }
   
   #navbar a:hover {
-    color: var(--clr-primary);
-    background: rgba(52, 152, 219, 0.1);
+    color: var(--clr-accent);
   }
   
   /* 📄 Section Styling */
@@ -193,11 +199,9 @@
   
   .section-content {
     max-width: 900px;
-    margin-left: 400px;
   }
   
   .section-title {
-    margin-left: 400px;
     margin-bottom: 2rem;
     font-size: 2rem;
     color: var(--clr-primary);
@@ -332,7 +336,6 @@
   
   .skills-container {
     max-width: 900px;
-    margin-left: 400px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
@@ -368,10 +371,13 @@
   
   /* 📜 Footer */
   footer {
+    max-width: 100%;
+    margin-left: 0;
     text-align: center;
     padding: 0.5rem;
     background: var(--clr-secondary);
     color: #ffffffec;
+    z-index: 1000;
   }
   
   /* 📱 Responsive */
