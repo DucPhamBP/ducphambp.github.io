@@ -413,25 +413,57 @@ footer {
 }
 
 /* 📱 Mobile Optimized (<=768px) */
+/* 📱 Mobile Optimized (<=768px) */
 @media (max-width: 768px) {
-/* Reset các phần tử bị tràn */
-.card {
-  width: 100% !important;
-  margin: 0 0 1rem 0 !important;
-  padding: 1rem !important;
-}
+  /* Reset sidebar */
+  .sidebar {
+    position: static !important; /* Bỏ fixed positioning */
+    width: 100% !important;
+    padding: 1rem !important;
+    top: 0 !important;
+    margin-top: 3.5rem; /* Cân bằng với navbar height */
+    box-shadow: none;
+  }
 
-/* Điều chỉnh navbar */
-#navbar ul {
-  padding: 0 0.5rem;
-  gap: 0.5rem;
-  -webkit-overflow-scrolling: touch;
-}
+  /* Điều chỉnh profile image */
+  .profile-img {
+    width: 120px !important;
+    height: 120px !important;
+    margin-bottom: 1rem !important;
+  }
 
-#navbar a {
-  padding: 0.5rem;
-  font-size: 0.85rem;
-  white-space: nowrap;
+  /* Thu nhỏ font chữ */
+  .sidebar h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .sidebar h2 {
+    font-size: 1rem !important;
+  }
+
+  /* Căn chỉnh contact info */
+  .contact-item {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* Đảm bảo main content không bị overlap */
+  .main-content {
+    padding-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Fix hiển thị social icons */
+  .social-links {
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+  }
+
+  .social-links a {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 1.2rem !important;
+  }
 }
 
 /* Fix chữ bị tràn trong card */
