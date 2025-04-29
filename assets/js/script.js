@@ -41,3 +41,27 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.animation = `fadeIn 0.6s ease forwards ${index * 0.1 + 0.3}s`;
     });
 });
+// Toggle sidebar
+function toggleSidebar() {
+    const sidebar = document.getElementById('mainSidebar');
+    sidebar.classList.toggle('active');
+    document.querySelector('.sidebar-overlay').classList.toggle('active');
+  }
+  
+  document.querySelector('.sidebar-overlay').addEventListener('click', () => {
+    toggleSidebar();
+  });
+  
+  // Đóng sidebar khi click ra ngoài
+  document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('mainSidebar');
+    const toggleBtn = document.querySelector('.sidebar-toggle');
+    
+    if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+      sidebar.classList.remove('active');
+      document.body.classList.remove('no-scroll');
+    }
+  });
+  
+  // Ngăn scroll khi sidebar mở
+  document.body.classList.remove('no-scroll');
