@@ -1,0 +1,105 @@
+/* blog-post.css */
+
+/* Tạo không gian cho phần nội dung bài viết */
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Tiêu đề của bài viết */
+.blog-post-content h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Các đoạn văn trong bài viết */
+.blog-post-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+/* Chỉnh sửa các liên kết đọc thêm */
+.cv-link {
+  font-size: 1rem;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.cv-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Tạo hiệu ứng cho phần bài viết */
+.blog-post-content {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+/* blog-post.css */
+
+/* Loại bỏ sidebar và căn chỉnh nội dung giữa */
+.main-container {
+  display: flex;
+  justify-content: center;
+}
+
+.main-content {
+  width: 80%;
+  max-width: 1000px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+}
+
+/* Tiêu đề bài viết */
+.blog-post-content h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Các đoạn văn trong bài viết */
+.blog-post-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Liên kết "trở về" */
+.cv-link {
+  font-size: 1rem;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.cv-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Thiết kế cho phần nội dung của bài viết */
+.blog-post-content {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Điều chỉnh khoảng cách giữa các tiêu đề và nội dung */
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}

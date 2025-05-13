@@ -1,0 +1,121 @@
+/* Đảm bảo font giống với trang chính */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Palatino+Linotype&display=swap');
+
+body {
+  font-family: 'Palatino Linotype', 'Merriweather', 'Book Antiqua', Palatino, serif; /* Cập nhật font chữ cho body */
+  background-color: #fff;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Navbar - Đảm bảo đồng bộ với trang chính */
+.navbar {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Palatino Linotype', 'Merriweather', 'Book Antiqua', Palatino, serif; /* Đảm bảo font giống trang chính */
+}
+
+/* Navbar container */
+navbar-container {
+  max-width: 960px; 
+  margin: auto;
+  display: flex;
+  justify-content: space-between; /* Tạo khoảng cách đều giữa các mục */
+  align-items: center;
+}
+
+/* Navbar links */
+.navbar-left a,
+.navbar-right a {
+  font-size: 18px; /* Đồng bộ font-size với trang chính */
+  text-decoration: none;
+  color: black;
+  font-family: inherit;
+}
+
+/* Links on hover */
+.navbar-left a:hover,
+.navbar-right a:hover {
+  color: mediumvioletred;
+}
+
+/* Phần còn lại của blog1 không thay đổi */
+.content {
+  max-width: 760px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.date {
+  text-align: center;
+  color: #777;
+  font-size: 0.9em;
+  margin-bottom: 30px;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 30px 0;
+}
+
+h2 {
+  margin-top: 2em;
+}
+
+blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 15px;
+  margin: 20px 0;
+  font-style: italic;
+  color: #555;
+}
+.main-navbar {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: inherit;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-left a {
+  text-decoration: none;
+  color: black;
+  font-size: 18px;
+  font-family: inherit;
+}
+
+.navbar-right a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #444;
+  font-weight: 400;
+  font-family: inherit;
+}
+
+.navbar-right a:hover,
+.navbar-right a.active {
+  color: mediumvioletred;
+}
