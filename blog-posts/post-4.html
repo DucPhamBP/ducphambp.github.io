@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K-means Clustering</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style.css" />
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html"><strong>Homepage</strong></a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>K-means Clustering</h1>
+    <p class="date">Posted: 14/05/2025</p>
+    <p>
+      K-means clustering is a technique that defines prototypes in terms of centroids, which are the mean of a group of points.
+    </p>
+
+    <h2>Algorithm 1: Basic K-means Algorithm</h2>
+
+    <pre><code class="language-text">
+    1. Select K points as initial centroids.
+    2. Repeat:
+        a. Form K clusters by assigning each point to its closest centroid.
+        b. Recompute centroids of each cluster.
+    3. Until centroids do not change.
+</code></pre>
+
+
+    <p>
+      The distance measure used to assign a point to a cluster is typically the Euclidean or Manhattan distance for points in Euclidean space, and cosine distance for documents.
+    </p>
+
+    <h2>Sum of Squared Error (SSE)</h2>
+
+    <p>
+      As a way to measure the quality of a clustering, we use the sum of squared error (SSE):
+    </p>
+
+    <p>
+      \[
+      \text{SSE} = \sum_{j=1}^{K} \sum_{x_i \in C_j} d(c_j, x_i)^2
+      \]
+    </p>
+
+    <p>
+      Given a set of initial clusters, the objective of the algorithm is to find the clustering that minimizes the SSE. One way to reduce SSE is to increase \( K \), but a good clustering with a small \( K \) can have a lower SSE than a poor clustering with a big \( K \).
+    </p>
+
+    <h2>Proof of Convergence and Complexity</h2>
+
+    <p>
+      K-means always converges to a solution in a finite number of steps, although there’s no guarantee it will converge to the global optimal solution. Since most of the convergence happens in the early steps, the stopping condition is sometimes replaced with a "relaxed" version, e.g., repeat until only 1% of the points change clusters.
+    </p>
+
+    <h3>Proof</h3>
+
+    <p>
+      The following proof is based on the idea of K-means as an optimization problem that minimizes the SSE. Let \( C_i \) be the \( i \)-th cluster of size \( l_i \), \( x_j \) a generic point in \( C_i \), and \( c_i \) the mean of all the points in \( C_i \). Let \( c_k \) be the \( k \)-th centroid; assuming we’re in a one-dimensional case, we demonstrate that \( c_k \) minimizes the SSE by differentiating it and setting it equal to 0:
+    </p>
+
+    <p>
+      \[
+      \frac{\partial \text{SSE}}{\partial c_k} = \sum_{i=1}^{K} \sum_{j=1}^{l_i} \frac{\partial (c_i - x_j)^2}{\partial c_k} = \sum_{i=1}^{K} \sum_{j=1}^{l_i} 2(c_i - x_j) \frac{\partial (c_i - x_j)}{\partial c_k} = 0
+      \]
+    </p>
+
+    <p>
+      Since \( (c_i - x_j) \) is always 0 for \( i \ne k \), the equation becomes:
+    </p>
+
+    <p>
+      \[
+      \frac{\partial \text{SSE}}{\partial c_k} = \sum_{j=1}^{l_k} 2(c_k - x_j)(1 - 0) = \sum_{j=1}^{l_k} 2(c_k - x_j) = 0
+      \]
+    </p>
+
+    <p>
+      \[
+      \sum_{j=1}^{l_k} 2(c_k - x_j) = 0 \Rightarrow l_k c_k = \sum_{j=1}^{l_k} x_j \Rightarrow c_k = \frac{\sum_{j=1}^{l_k} x_j}{l_k}
+      \]
+    </p>
+
+    <p>
+      Therefore, \( c_k \) is always calculated as the centroid that minimizes the SSE. Since a (local) minimum exists, and each iteration decreases the global SSE, this minimum will be reached after a finite number of steps.
+    </p>
+
+    <p>
+      The space complexity for K-means is modest, since only the data points and the centroids are stored: \( O((m + K)n) \), where \( m \) is the number of points and \( n \) is the dimension of the input data. The time complexity is also modest: \( O(I \times K \times m \times n) \), where \( I \) is the number of iterations required for convergence (usually small).
+    </p>
+        <h2>Bisecting K-means</h2>
+    <p>
+      This algorithm is an extension of the traditional K-means algorithm: in order to obtain
+      K clusters, we create a cluster containing all the points in the dataset; this big cluster
+      is split into two, and then one of the resulting clusters is split again, and so on, until
+      the data is organized into exactly K clusters.
+    </p>
+    <p>
+      To choose the way this split is done at each iteration, we can consider the largest
+      cluster, or the one with the larger SSE, or use a mixed criterion. Different choices will
+      produce different clusterings. Also, since this algorithm may not produce a solution
+      that corresponds to a local SSE minimum, the output is often used as the starting
+      point for regular K-means.
+    </p>
+    
+    <h3>Algorithm 2: Bisecting K-means Algorithm</h3>
+    <pre><code class="language-text">
+    1. Initialize the list of clusters to contain the cluster of all the points.
+    2. Repeat:
+        a. Remove the cluster with higher SSE from the list.
+        b. For i = 1 to number of trials:
+            i. Bisect the cluster using 2-Means.
+        c. Select the pair of clusters with lowest SSE and add to the list.
+    3. Until the list contains exactly K clusters.
+    </code></pre>
+
+
+    <p>
+      Compared to regular K-means, this variant is much less susceptible to initialization
+      problems, since it performs several "trial" bisections (lines 4-6 in the pseudocode above)
+      before choosing the output with the lowest SSE. On the other side, it may be time
+      consuming, since it may split the data into singleton clusters, which are also pretty
+      much meaningless. By recording the sequence of clusterings produced by the algorithm,
+      we can use it to produce a hierarchical clustering.
+    </p>
+
+    <h2>X-means</h2>
+    <p>
+      X-means is another variant of K-means that exploits the Bayesian Information Criterion
+      (BIC) score as a splitting strategy.
+    </p>
+    <p>
+      The BIC score of a data collection is calculated as:
+    </p>
+    <p>
+      \[
+      \text{BIC}(M_j) = l_j(D) - \frac{p_j}{2} \log R,
+      \]
+    </p>
+    <p>
+      where \( l_j(D) \) is the log-likelihood of the dataset \( D \), and estimates how close
+      to the centroid are the points in each cluster. \( p_j \) is a function of the number
+      of independent parameters, \( R \) is the number of points in a cluster, and \( M \)
+      is the number of dimensions.
+    </p>
+    <p>
+      The Bayesian Information Criterion (BIC) measures the improvement of the cluster structure between a cluster and
+      its children (as in, the two new clusters that would be produced); if the BIC of the
+      parent is less than the BIC of the children, the bisection is accepted.
+    </p>
+
+    <h3>Algorithm 3: X-means Algorithm</h3>
+    <pre><code class="language-text">
+    1. For k in range [r₁, rₘₐₓ]:
+        a. Run K-means with current k.
+        b. Recursively split each cluster using Bisecting 2-Means.
+            Use local BIC to decide whether to keep the split.
+        c. Store configuration and global BIC.
+    2. Return the best model with respect to global BIC.
+    </code></pre>
+
+
+    <h2>Expectation Maximization</h2>
+    <p>
+      In order to understand the data, we assume that it can be described by a generative
+      process/model that fits the data. We assume that this model is a distribution from
+      which data points are sampled, but sometimes using only one distribution to describe
+      all the data is not enough, or we don’t know the distribution. We need a mixture
+      model that combines multiple distributions, each of which corresponds to a different
+      cluster in the data.
+    </p>
+    <p>
+      The algorithm that’s presented in this section can be seen as the “ancestor” of
+      K-means. This algorithm is called Expectation Maximization (EM) algorithm,
+      which calculates the probability that each point belongs to a certain distribution, and
+      then uses these probabilities to calculate a new estimate for the parameters that maximize
+      the data likelihood.
+    </p>
+
+    <h3>Algorithm 4: Expectation Maximization Algorithm</h3>
+    <pre><code class="language-text">
+    1. Initialize parameters Θ with random values.
+    2. Repeat:
+        a. E-Step: Estimate membership probabilities given Θ.
+        b. M-Step: Update Θ to maximize data likelihood.
+    3. Until convergence.
+    </code></pre>
+    <p>
+      The parallels between this algorithm and K-means are immediate: it starts with a
+      random configuration of parameters (randomly choosing the centroids), then it enters
+      a loop in which it first assigns each point to a distribution (assigning points to clusters
+      based on the distance) and recalculates the parameters that maximize the data
+      likelihood (recalculating the centroids as the ones that minimize SSE).
+    </p>
+
+    <h2>K-modes</h2>
+    <p>
+      K-modes is another clustering algorithm that’s similar to K-means, but can be used for
+      categorical attributes. The distance between two records is calculated as the number
+      of mismatches between their attributes:
+    </p>
+    <p>
+    \[
+    d(X, Y) = \sum_{i} \delta(x_i, y_i), \quad
+    \delta(x, y) =
+        \begin{cases}
+        0 & \text{if } x = y, \\
+        1 & \text{otherwise}.
+        \end{cases}
+    \]
+    </p>
+    <p>
+      Another big difference is that it uses the mode as the representative object of a
+      cluster instead of the mean, so it computes the frequency of each value of each attribute
+      and finally chooses the one with the highest frequency.
+    </p>
+
+
+  </main>
+
+</body>
+</html>
