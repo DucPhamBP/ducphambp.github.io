@@ -548,3 +548,17 @@ code, pre {
 .navbar-right a:hover {
   color: mediumvioletred;
 }
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.contact-item i,
+.contact-item img.zalo-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
