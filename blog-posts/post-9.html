@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hierarchical clustering</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style.css" />
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html"><strong>Homepage</strong></a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Hierarchical clustering</h1>
+    <p class="date">Posted: 13/07/2025</p>
+    <p>Hierarchical clustering techniques are an important category of clustering methods. They can be divided in:
+    </p>
+    <ul>
+    <li><strong>Agglomerative hierarchical clustering</strong>: start with the points as individual clusters, then merge the closest pair.</li>
+    <li><strong>Divisive hierarchical clustering</strong>: start with one big, all-inclusive cluster, then split it into smaller clusters until only individual points remain.</li>
+    </ul>
+    <p>The first group is most commonly used. A hierarchical clustering can be graphically displayed by using a dendrogram,
+      which is a tree-like graph that displays the order in which the clusters were merged (agglomerative) or split (divisive).</p>
+    <h3>Algorithm 1: Agglomerative hierarchical clustering algorithm.</h3>
+
+    <pre><code class="language-text">
+    1. Compute the proximity matrix.
+    2. <strong>repeat</strong>
+    3.    Merge the closest two points.
+    4.    Update the proximity matrix to reflect the proximity between the new cluster
+    and the original cluster.
+    5. <strong>until</strong> Only one cluster remains.
+    </code></pre>
+    <p>The key issue is defining proximity between clusters. Common measures include:</p>
+    <ul>
+    <li><strong>MIN or single link</strong>: defines the proximity between clusters as the distance of
+the closest two points that are in different clusters. It can handle non-elliptical
+shaped clusters, but it’s sensitive to noise and outliers;</li>
+    <li><strong>MAX or complete link or CLIQUE</strong>: defines the proximity between clusters
+as the maximum distance between two points that are in different clusters. It’s
+resistant to noise and outliers, but performs poorly for non globular clusters and
+tends to break them apart when too large;</li>
+    <li><strong>Group average</strong>:defines the proximity as the average distances of all possible
+pairs of points from different clusters. The trade-off between MIN and MAX, is
+not too affected by noise and outliers, but still tends to be biased towards globular
+clusters;</li>
+    <li><strong>Distance between centroids;</strong></li>
+    <li><strong>Measure guided by an objective function</strong>: an example is Ward’s method,
+which measures the proximity between two clusters in terms of increase of SSE as
+a result of merging those clusters. Also influenced very little by noise and outliers,
+but biased towards globular clusters.</li>
+    </ul>
+    <p>This clustering algorithm does not assume a particular number of clusters, since the
+“<i>desired</i>” number can be obtained by simply cutting the dendrogram at the appropriate
+height.</p>
+<p><a href="../blog.html">← Back to Blog List</a></p>
+  </main>
+
+</body>
+</html>

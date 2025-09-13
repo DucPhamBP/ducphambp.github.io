@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bayes's Theorem</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style.css" />
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html"><strong>Homepage</strong></a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Bayes's Theorem</h1>
+    <p class="date">Posted: 13/9/2025</p>
+    <h2>Bayes's Theorem</h2>
+    <p>
+    Bayes' Theorem provides a powerful framework for updating our beliefs based on new evidence, making it invaluable across various fields, including medicine, decision-making, and machine learning. 
+    Here's a distilled summary of the key points:    </p>
+    <p><strong>Bayes' Theorem in Medicine</strong></p>
+        <ul>
+        <li><strong>Test Accuracy vs. Disease Prevalence</strong>: A common misunderstanding in medical testing is confusing the probability of testing positive when sick (sensitivity) with the probability of being sick if testing positive (predictive value). Bayes' Theorem corrects this by accounting for the disease's prevalence in the population, the test's sensitivity, and its false positive rate.</li>
+        <li><strong>Real-World Example</strong>: a point that is not a core point, but is inside the neighborhood of one.For a disease with a 2% prevalence, a test with 80% sensitivity, and a 10% false positive rate, the actual probability of having the disease if testing positive is significantly lower than the test's sensitivity might suggest—around 14%, not 80%.</li>
+        </ul>
+    <p><strong>Dynamic Pricing and Markdowns</strong></p>
+    <ul>
+    <li><strong>Segmentation through Pricing</strong>: Dynamic pricing strategies, including markdowns, exploit customer segments with different willingness to pay. By adjusting prices over time, sellers can maximize revenue across these segments.</li>
+    <li><strong>Two-Period Model</strong>: Initial higher prices target customers willing to pay more, while subsequent markdowns capture additional segments, enhancing total revenue beyond single-period pricing strategies.</li>
+    <li><strong>Challenges and Assumptions</strong>: Implementing dynamic pricing effectively requires overcoming challenges like anticipating markdowns (cannibalization), recognizing customer behavior variations, and managing demand uncertainty.</li>
+    </ul>
+    <p><strong>Bayes' Theorem Applied</strong></p>
+    <ul>
+    <li><strong>Updating Beliefs</strong>: Bayes' Theorem allows us to update the probability of a hypothesis (posterior) based on prior belief (prior) and new evidence (likelihood), normalized by the evidence's overall probability (marginal).</li>
+    <li><strong>Thompson Sampling in Machine Learning</strong>: This methodology uses Bayes' Theorem for decision-making in uncertain environments, like multi-armed bandit problems. By sampling from posterior distributions of each option's success rate, Thompson Sampling balances exploration of new options with exploitation of known ones.</li>
+    </ul>
+    <h2>Bayes' Theorem Formula</h2>
+    <p>The Bayes' Theorem formula is a way to update the probability of a hypothesis 𝐻 based on new evidence 𝐸. It is given by:</p>
+    <p>
+      \[P(H|E) = \frac{P(E|H) \cdot P(H)}{P(E)}\]
+    </p>
+    <p>Where:</p>
+    <ul>
+      <li>P(H|E) is the posterior probability of H given evidence E.</li>
+      <li>P(E|H) is the likelihood of observing E given H is true.</li>
+      <li>P(H) is the prior probability of H before observing E.</li>
+      <li>P(E) is the marginal likelihood of E, the probability of observing E under all possible hypotheses.</li>
+    </ul>
+    <h2>Thompson Sampling for Decision Making</h2>
+    <p>In the context of Thompson Sampling, where the goal is to choose an action (e.g., arm of a bandit) based on the updated belief of its success rate, the Bayes' theorem is applied to update the success probability distributions. While specific formulas will depend on the problem setup (e.g., Beta distribution for success rates), the general principle of updating beliefs remains consistent with Bayes' Theorem.</p>
+    <p>These formulas and principles provide the mathematical underpinning for rational decision-making in the presence of uncertainty, whether diagnosing a patient, setting prices, or selecting actions in a learning algorithm.</p>
+<p><a href="../blog.html">← Back to Blog List</a></p>
+  </main>
+
+</body>
+</html>
