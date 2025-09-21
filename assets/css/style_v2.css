@@ -56,7 +56,6 @@ code, pre {
   top: 70px;
   left: 0;
   bottom: 0;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -560,5 +559,111 @@ code, pre {
   width: 20px;
   height: 20px;
   display: inline-block;
+}
+.post-links {
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+}
+
+.post-links a {
+  font-size: 0.9rem;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.post-links a:hover {
+  text-decoration: underline;
+}
+.post-thumb {
+  width: 80px;        /* chiều rộng cố định */
+  height: 80px;       /* chiều cao cố định */
+  object-fit: cover;  /* cắt ảnh để vừa khung, không méo */
+  border-radius: 10px; /* bo góc nhẹ cho đẹp */
+  flex-shrink: 0;     /* không co lại */
+}
+
+.pub-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.pub-thumb {
+  width: 120px;           /* ảnh nhỏ, vừa phải */
+  float: left;            /* nổi bên trái */
+  margin-right: 10px;     /* khoảng cách với text */
+  border-radius: 5px;     /* bo góc nhẹ */
+}
+
+
+.pub-info {
+  overflow: hidden;       /* tránh text tràn khi float */
+}
+
+
+.pub-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.pub-authors {
+  font-size: 0.95rem;
+  margin: 3px 0;
+  color: #444;
+}
+
+.pub-venue {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.pub-links a {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 3px 8px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #000;
+}
+
+.pub-links a:hover {
+  background: #f0f0f0;
+}
+
+.pub-abstract {
+  text-align: justify;    /* căn đều 2 bên */
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+@media (max-width: 600px) {
+  .pub-container {
+    flex-direction: column; /* xếp ảnh lên trên, text xuống dưới */
+    align-items: center;    /* căn giữa ảnh */
+  }
+
+  .pub-thumb {
+    width: 100%;           /* ảnh rộng toàn khung */
+    height: auto;          /* giữ tỉ lệ */
+    margin-bottom: 1rem;
+  }
+
+  .pub-info {
+    width: 100%;
+  }
+}
+.pub-title a {
+  color: inherit;          /* giữ nguyên màu của h3 */
+  font-weight: inherit;    /* giữ nguyên độ đậm của h3 */
+  text-decoration: none;   /* bỏ gạch chân mặc định */
+}
+
+.pub-title a:hover {
+  text-decoration: underline; /* hover mới gạch chân */
 }
 
