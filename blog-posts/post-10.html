@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K-Nearest Neighbors</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script>
+  window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}};
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>K-Nearest Neighbors</h1>
+    <p class="date">Posted: 24/09/2025</p>
+    <p class="alignment">A K-NN learner is a type of instance based/lazy classifier. This learner represents
+    each instance in the training set as a point in a n-dimensional space. The data is simply
+    stored as is, and for each new instance provided as input, its class/value is estimated
+    by looking at the label of the k points closest to it.</p>
+    <p class="alignment">If it’s a classification task, the output will correspond to the majority vote. If there’s two classes, the output is calculated as:</p>
+    \[ h(x) = \begin{cases} 1 & \text{if } \text{avg}_k(x) > 0.5 \\
+    0 & \text{otherwise} \end{cases}\]
+    <p class="alignment">
+  Or, in the case of multiple classes:
+</p>
+\[h(x) = \arg \max_v \sum_{x_i \in N_k(x)} 1_{v, y_i}, 
+\quad 1_{v, y_i} = \begin{cases} 1 & \text{if } v = y_i \\ 0 & \text{otherwise} \end{cases}\]
+<p class="alignment">
+  If it’s a regression task, it will be calculated as the mean of the labels:
+</p>
+\[h(x) = \text{avg}_k(x) = \frac{\sum_{x_i \in N_k(x)} y_i}{k}\]
+<p class="alignment"> K-NN is not a model in the traditional sense; it does not produce a hypothesis
+  that can be used on any new input, and instead constructs a new hypothesis ad hoc
+  for each input.</p>
+
+<p class="alignment"> A key aspect to consider when using K-NN is setting the appropriate value of <i>k</i>.
+  If <i>k</i> is too big, for example <i>k</i> close to <i>l</i> (the number of training instances),
+  then it will perform poorly, since each input, including training points, will always
+  correspond to the same output (majority vote among all points / mean of all labels),
+  thus leading to underfitting.</p>
+
+<p class="alignment"> If <i>k</i> is instead too small, for example <i>k = 1</i>, then we will have overfitting,
+  where each training point is classified correctly, but we will have high generalization
+  error for unseen data, since the output will be estimated by looking at the single closest
+  point to it.As a general practice, <i>k</i> is set to $ \sqrt{l} $, although the method is not infallible.</p>
+<p class="alignment">A variant of K-NN uses weighted voting, where weights are calculated as the inverse
+  of the distance between the input and the neighbor so that closer points will influence
+  the result much more than distant ones. </p>
+<p class="alignment">The hypothesis for classification becomes:</p>
+\[h(x) = \arg \max_v \sum_{x_i \in N_k(x)} \frac{1_{v, y_i}}{d(x, x_i)^2}\]
+<p class="alignment">
+  While the hypothesis for regression becomes:
+</p>\[h(x) = \frac{1}{k}\sum_{x_i \in N_k(x)} \frac{y_i}{d(x, x_i)^2}\]
+<p class="alignment"> The main issue of K-NN is that it’s susceptible to the curse of dimensionality:
+  as the number of dimensions in the data increases, the density of the points decreases,
+  therefore estimation of new inputs will be less and less accurate as it won’t be as local anymore.
+  K-NN is also sensitive to scaling, since it deals with distances. </p>
+<p class="alignment"> The main advantages of K-NN are that it’s very simple to implement, and can
+  be easily “retrained” by adding or removing instances. It can also create decision
+  boundaries of any shape.</p>
+<p class="alignment"> The main disadvantages are (other than the ones explained above) that since it’s a lazy learner,
+  it needs all the data to be available to make an estimation, so it’s very demanding in terms of
+  space needed, as well as computational time, since estimating an output has a complexity of
+  $O(l n)$ (where $l$ is the number of instances and $n$ is the number of dimensions). 
+  It also does not handle missing values. </p>
+    <p><a href="../blog.html">← Back to Blog List</a></p>
+  </main>
+</body>
+</html>

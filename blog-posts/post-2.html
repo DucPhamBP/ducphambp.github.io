@@ -7,6 +7,22 @@
   <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
   <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
     <script>
@@ -61,7 +77,132 @@
       <li class="alignment"><strong>Shared-property (or Conceptual clusters):</strong> A cluster is defined as a set of objects that share a generic property. This is a more general definition encompassing all others.</li>
       <li class="alignment"><strong>Objective function:</strong> Clusters are found to minimize or maximize an objective function.</li>
     </ul>
+    <h2> Cluster Validation</h2>
+    <p class="alignment"> Once we used an algorithm to produce a clustering of the data, we need some way to evaluate the ”<i>goodness”</i> of it. Some aspects of cluster validation are:</p>
+    <ul>
+      <li class="alignment"> Determining the clustering tendency of a dataset, as in, distinguishing wether there’s an actual structure in the data</li>
+      <li class="alignment"> Comparing the results of algorithms to externally known ones</li>
+      <li class="alignment"> Evaluating how well the results fit the data even in the absence of external data</li>
+      <li class="alignment"> Comparing two or more results to determine which is better</li>
+      <li class="alignment"> Determining the ideal number of clusters</li>
+    </ul>
+    <p class="alignment"></p>Note that all except for one don’t need external information, so they can be performed unsupervised, and the last one can be performed both supervised and unsupervised.</p>
+    <p class="alignment">The evaluation measures (or indices) used to judge different aspects of cluster validity can be classified into three types:</p>
+    <ul>
+      <li class="alignment"> <strong>Unsupervised/internal indices:</strong> measure the goodness of the clustering without respect to external information. An example is the SSE. This group is also
+        often divided into two subgroups, one containing measures of cluster cohesion,
+        one containing measures of cluster separation. The first group measures how
+        closely related the objects in a cluster are to each other, the second measures how
+        separated a cluster is from the others.</li>
+      <li class="alignment"> <strong>Supervised/external indices:</strong> measure the goodness of the clustering by checking
+        how much it matches some external structure. An example is entropy, which
+        measures how well cluster labels match externally provided class labels.</li>
+      <li class="alignment"> <strong>Relative::</strong> compare different clusterings or clusters, so they produce a relative
+        evaluation. They are not an actual separate group of measures, but a different
+        way of using them. Two clusters can be evaluated with respect to one another by
+        using SSE or entropy, for example.</li>
+    </ul>
+    <p>In this section, we mainly focus on the internal measurement</p>
+    <h3>Internal measurement</h3>
+    <h4>Cohesion and separation</h4>
+    <p class="alignment"></p>>Many internal measures are based on the notions of cohesion and separation. These measures are also called proximity graph-based. Cluster cohesion is the sum of the
+      weights of all the links within a cluster, while separation is the sum of the weights
+      between nodes in the cluster and the nodes outside of the cluster.</p>
+    <p>Cohesion can be calculated as:</p>
+    \[
+      \text{SSE} = \text{WSS} = \sum_{i=1}^{K} \sum_{x \in C_i} (x - m_i)^2
+    \]
+    <p>while separation can be calculated as:</p>
+    \[
+    \text{BSS} = \sum_i |C_i| \, (m - m_i)^2
+    \]
+    <p>The validity of the clustering is calculated as:</p>
+    \[
+    \text{Validity} = \sum_{i=1}^{K} w_i \, \text{Validity}(C_i)
+    \]
+    <p class="alignment"></p>>where the validity() function can be cohesion, separation, or a combination of the two.
+    The weights will vary depending on the measure used; sometimes they will all be equal
+    to 1 or K, other measures may set them in different, more complex, ways.</p>
+  <h4>Similarity Matrix</h4>
+    <p class="alignment"></p>This is a method that allows us to graphically assess the quality of a clustering. If we
+    order a similarity matrix by cluster labels and plot it, in theory, if we have well separated
+    clusters, the result will be a block-diagonal matrix. If not, the patterns displayed can
+    still reveal relationships between clusters.</p>
+  <h4>Correlation</h4>
+    <p class="alignment"></p>If we have the distance/similarity matrix of a dataset, and the cluster labels produces
+    by our cluster analysis, we can evaluate the goodness of the clustering by looking at
+    the correlation between the matrix and an ideal version of it produced by looking at
+    the cluster labels.</p>
+    <p>More specifically, an ideal cluster is one whose points all have a similarity of 1 to
+    all the other points in the same cluster, and a correlation of 0 to all the points in other
+    clusters. If we sort the rows and columns of the similarity matrix so that all objects 
+    belonging to the same cluster are close together, the ideal cluster similarity matrix will
+    have a block diagonal structure. This means that the similarity is non-zero in the blocks
+    of the similarity matrix whose entries represent intra-cluster similarity, and 0 elsewhere.
+    The ideal cluster similarity matrix is then constructed by creating a matrix with one
+    row and one column per data point, and associating 1 to an entry if the corresponding
+    pair of points are grouped in the same cluster, 0 otherwise.</p>
+    <p class="alignment"></p>If the two matrices have high correlation, it means that points belonging to the
+    same cluster are close, while low correlation indicates the opposite.</p>
+    <p class="alignment">
+  The correlation is calculated only among 
+    </p>
+    \[
+    \frac{n(n-1)}{2}
+    \]
+    <p class="alignment">
+      entries, since both matrices are symmetric.
+    </p>
+    <h4>Silhouette Coefficient</h4>
+    <p class="alignment">
+  The popular method of silhouette coefficients combines both cohesion and separation.
+  It can be used for individual points, clusters, or clusterings.
+</p>
 
+<p class="alignment">
+  The steps to calculate the silhouette coefficient for a point are the following
+  (using distances, but similarities can be used as well):
+</p>
+
+<ol class="alignment">
+  <li>
+    For the <i>i</i>-th object, calculate its average distance to all other objects in the same
+    cluster; call this value $a_i$.
+  </li>
+  <li>
+    For the <i>i</i>-th object and for any cluster not containing it, calculate the average
+    distance between the point and all the objects in a given cluster. Find the minimum
+    of these averages with respect to all clusters; call this value $b_i$.
+  </li>
+  <li>
+    For the <i>i</i>-th object, the silhouette coefficient is
+    \[
+    s_i = \frac{b_i - a_i}{\max(a_i, b_i)} .
+    \]
+  </li>
+</ol>
+
+<p class="alignment">
+  Thus, the value of the coefficient varies between -1 and 1. A negative value is not
+  desirable, since it would mean $a_i$ is greater than $b_i$, so the point tends to be
+  further away from points of its own cluster than external ones. We ideally want the
+  coefficient to be positive, and $a_i$ to be as close to 0 as possible.
+</p>
+
+<p class="alignment">
+  The silhouette coefficient of a whole cluster can be calculated as the average of the
+  coefficients of all the points in the cluster. A measure of the goodness of a clustering
+  can then be obtained by calculating the average coefficient over all the points in the dataset.
+</p>
+<h4>SSE</h4>
+<p class="alignment">SSE can be used to estimate the ”goodness” of more complex datasets, with irregularly
+shaped clusters. It can also be used to compare two clusters or clusterings by comparing
+their average SSE.</p>
+<p class="alignment">The SSE can also be used to estimate the number of clusters: if we plot the SSE
+versus the number of clusters obtained by executing an algorithm multiple times, we
+will likely see a distinct knee in the curve that corresponds to the ideal number of
+clusters to divide the data into. This can also be done with the silhouette coefficient,
+by looking at peaks instead of knees.</p>
     <p><a href="../blog.html">← Back to Blog List</a></p>
   </main>
 
