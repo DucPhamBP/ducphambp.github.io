@@ -44,7 +44,7 @@
     <h1>K-means Clustering and its variants</h1>
     <p class="date">Posted: 14/05/2025</p>
     <h2>K-means</h2>
-    <p>
+    <p class="alignment"> 
       K-means clustering is a technique that defines prototypes in terms of centroids, which are the mean of a group of points.
     </p>
     <h3>Algorithm 1: Basic K-means Algorithm</h3>
@@ -58,13 +58,13 @@
 </code></pre>
 
 
-    <p>
+    <p class="alignment">
       The distance measure used to assign a point to a cluster is typically the Euclidean or Manhattan distance for points in Euclidean space, and cosine distance for documents.
     </p>
 
     <h2>Sum of Squared Error (SSE)</h2>
 
-    <p>
+    <p class="alignment">
       As a way to measure the quality of a clustering, we use the sum of squared error (SSE):
     </p>
 
@@ -74,19 +74,19 @@
       \]
     </p>
 
-    <p>
+    <p class="alignment">
       Given a set of initial clusters, the objective of the algorithm is to find the clustering that minimizes the SSE. One way to reduce SSE is to increase \( K \), but a good clustering with a small \( K \) can have a lower SSE than a poor clustering with a big \( K \).
     </p>
 
     <h2>Proof of Convergence and Complexity</h2>
 
-    <p>
+    <p class="alignment">
       K-means always converges to a solution in a finite number of steps, although there’s no guarantee it will converge to the global optimal solution. Since most of the convergence happens in the early steps, the stopping condition is sometimes replaced with a "relaxed" version, e.g., repeat until only 1% of the points change clusters.
     </p>
 
     <h3>Proof</h3>
 
-    <p>
+    <p class="alignment">
       The following proof is based on the idea of K-means as an optimization problem that minimizes the SSE. Let \( C_i \) be the \( i \)-th cluster of size \( l_i \), \( x_j \) a generic point in \( C_i \), and \( c_i \) the mean of all the points in \( C_i \). Let \( c_k \) be the \( k \)-th centroid; assuming we’re in a one-dimensional case, we demonstrate that \( c_k \) minimizes the SSE by differentiating it and setting it equal to 0:
     </p>
 
@@ -116,17 +116,17 @@
       Therefore, \( c_k \) is always calculated as the centroid that minimizes the SSE. Since a (local) minimum exists, and each iteration decreases the global SSE, this minimum will be reached after a finite number of steps.
     </p>
 
-    <p>
+    <p class="alignment">
       The space complexity for K-means is modest, since only the data points and the centroids are stored: \( O((m + K)n) \), where \( m \) is the number of points and \( n \) is the dimension of the input data. The time complexity is also modest: \( O(I \times K \times m \times n) \), where \( I \) is the number of iterations required for convergence (usually small).
     </p>
         <h2>Bisecting K-means</h2>
-    <p>
+    <p class="alignment">
       This algorithm is an extension of the traditional K-means algorithm: in order to obtain
       K clusters, we create a cluster containing all the points in the dataset; this big cluster
       is split into two, and then one of the resulting clusters is split again, and so on, until
       the data is organized into exactly K clusters.
     </p>
-    <p>
+    <p class="alignment">
       To choose the way this split is done at each iteration, we can consider the largest
       cluster, or the one with the larger SSE, or use a mixed criterion. Different choices will
       produce different clusterings. Also, since this algorithm may not produce a solution
@@ -146,7 +146,7 @@
     </code></pre>
 
 
-    <p>
+    <p class="alignment">
       Compared to regular K-means, this variant is much less susceptible to initialization
       problems, since it performs several "trial" bisections (lines 4-6 in the pseudocode above)
       before choosing the output with the lowest SSE. On the other side, it may be time
@@ -156,7 +156,7 @@
     </p>
 
     <h2>X-means</h2>
-    <p>
+    <p class="alignment">
       X-means is another variant of K-means that exploits the Bayesian Information Criterion
       (BIC) score as a splitting strategy.
     </p>
@@ -168,13 +168,13 @@
       \text{BIC}(M_j) = l_j(D) - \frac{p_j}{2} \log R,
       \]
     </p>
-    <p>
+    <p class="alignment">
       where \( l_j(D) \) is the log-likelihood of the dataset \( D \), and estimates how close
       to the centroid are the points in each cluster. \( p_j \) is a function of the number
       of independent parameters, \( R \) is the number of points in a cluster, and \( M \)
       is the number of dimensions.
     </p>
-    <p>
+    <p class="alignment">
       The Bayesian Information Criterion (BIC) measures the improvement of the cluster structure between a cluster and
       its children (as in, the two new clusters that would be produced); if the BIC of the
       parent is less than the BIC of the children, the bisection is accepted.
@@ -192,7 +192,7 @@
 
 
     <h2>Expectation Maximization</h2>
-    <p>
+    <p class="alignment">
       In order to understand the data, we assume that it can be described by a generative
       process/model that fits the data. We assume that this model is a distribution from
       which data points are sampled, but sometimes using only one distribution to describe
@@ -200,7 +200,7 @@
       model that combines multiple distributions, each of which corresponds to a different
       cluster in the data.
     </p>
-    <p>
+    <p class="alignment">
       The algorithm that’s presented in this section can be seen as the “ancestor” of
       K-means. This algorithm is called Expectation Maximization (EM) algorithm,
       which calculates the probability that each point belongs to a certain distribution, and
@@ -216,7 +216,7 @@
         b. M-Step: Update Θ to maximize data likelihood.
     3. Until convergence.
     </code></pre>
-    <p>
+    <p class="alignment">
       The parallels between this algorithm and K-means are immediate: it starts with a
       random configuration of parameters (randomly choosing the centroids), then it enters
       a loop in which it first assigns each point to a distribution (assigning points to clusters
@@ -225,7 +225,7 @@
     </p>
 
     <h2>K-modes</h2>
-    <p>
+    <p class="alignment">
       K-modes is another clustering algorithm that’s similar to K-means, but can be used for
       categorical attributes. The distance between two records is calculated as the number
       of mismatches between their attributes:
@@ -240,7 +240,7 @@
         \end{cases}
     \]
     </p>
-    <p>
+    <p class="alignment">
       Another big difference is that it uses the mode as the representative object of a
       cluster instead of the mean, so it computes the frequency of each value of each attribute
       and finally chooses the one with the highest frequency.

@@ -44,18 +44,18 @@
     <h1>DBSCAN</h1>
     <p class="date">Posted: 05/07/2025</p>
     <h2>DBSCAN</h2>
-    <p>
+    <p class="alignment">
       Density-based clustering separates regions with high density from regions with low density. A popular density-based clustering algorithm is DBSCAN.
     </p>
-    <p>
+    <p class="alignment">
     Density is estimated for a particular point in the dataset by counting the number
     of neighbors within a specified radius (Eps) of that point, including the point itself.
     Fixed a value of MinPts, each point is then classified as one of the following:
     </p>
     <ul>
-    <li><strong>Core point</strong>: a point that is in the interior of a density-based cluster. It has MinPts or more points within Eps distance.</li>
-    <li><strong>Border point</strong>: a point that is not a core point, but is inside the neighborhood of one.</li>
-    <li><strong>Noise point</strong>: a point that is neither core nor border, so it has few points close by and is far away enough from core points of all clusters.</li>
+    <li class="alignment"><strong>Core point</strong>: a point that is in the interior of a density-based cluster. It has MinPts or more points within Eps distance.</li>
+    <li class="alignment"><strong>Border point</strong>: a point that is not a core point, but is inside the neighborhood of one.</li>
+    <li class="alignment"><strong>Noise point</strong>: a point that is neither core nor border, so it has few points close by and is far away enough from core points of all clusters.</li>
     </ul>
     <h3>Algorithm 1: DBSCAN algorithm</h3>
 
@@ -66,7 +66,7 @@
     4. Make each connected group into a cluster.
     5. Assign each border point to the cluster its associated core point belongs to.
     </code></pre>
-    <p>There’s the issue of determining the value of <em>Eps</em> and <em>MinPts</em> . The basic approach
+    <p class="alignment">There’s the issue of determining the value of <em>Eps</em> and <em>MinPts</em> . The basic approach
     is to look at the distance between a point and its k<sup>th</sup> nearest neighbor, called <em>k</em>-dist.
     For points that belong to a cluster, <em>k</em>-dist will be small if <em>k</em> is smaller than the cluster
     size, since the point will be in a dense area. For points that are outside of clusters,
@@ -77,42 +77,42 @@
     which <em>k</em>-dist is less than <em>Eps</em> will be core points, while all others will be either border
     or noise points.
     </p>
-    <p>
+    <p class="alignment">
         The value of <em>k</em> itself should be neither too small, since small numbers of points close
     together may be considered a cluster, nor too high, because smaller clusters may be labeled as noise.
     </p>
-    <p>
+    <p class="alignment">
         Since DBSCAN defines cluster on the basis of density, it’s resistant to noise, and
     can handle irregularly shaped clusters. On the other hand, it does not perform well if
     the data presents wildly varying densities, or in case of high dimensional data.
     </p>
-    <p>
+    <p class="alignment">
         The time complexity of the algorithm is <em>O(mt)</em>, where <em>m</em> is the number of points, and
     <em>t</em> is whatever time is needed to find the points in the <em>Eps</em> neighborhood of a generic
     point. In the worst case, the complexity is <em>O(m<sup>2</sup>)</em>, although usage of certain data
     structures for efficient retrieval of points within a given distance of a specified point for
     low-dimensional spaces can lower the average case complexity to <em>O(mlog(m))</em>.
     </p>
-    <p>The <strong>space complexity</strong> is <em>O(m)</em>, since it only needs to store a little amount of data
+    <p class="alignment">The <strong>space complexity</strong> is <em>O(m)</em>, since it only needs to store a little amount of data
     per data point (cluster label and classification of the point as core, border, or noise).</p>
     <h2>OPTICS</h2>
-    <p>OPTICS (Ordering Points To Identify the Clustering Structure) is a variant of DBSCAN
+    <p class="alignment">OPTICS (Ordering Points To Identify the Clustering Structure) is a variant of DBSCAN
     that addresses its main disadvantages. It produces an ordering of the dataset
     with respect to its density based clustering structure. It requires <em>Eps</em> and <em>MinPts</em> as
     parameters. Two distances are defined for each point <em>p</em>:</p>
-    </p>
+    </p >
     <ul>
-    <li>The <strong>core distance</strong>, which is the minimum value of radius required to classify the point as a core one. If p is not a core one, this distance is undefined.</li>
-    <li>The <strong>reachability distance</strong>, between p and another point q in the dataset, defined as the maximum between the core distance of the point p and the distance between p and q. It’s not defined if q is not a core point.</li>
+    <li class="alignment">The <strong>core distance</strong>, which is the minimum value of radius required to classify the point as a core one. If p is not a core one, this distance is undefined.</li>
+    <li class="alignment">The <strong>reachability distance</strong>, between p and another point q in the dataset, defined as the maximum between the core distance of the point p and the distance between p and q. It’s not defined if q is not a core point.</li>
     </ul>
-    <p>The algorithm produces a list of points, each annotated with their smallest reachability distance. To visualize the result, a reachability plot can be used, which is a special
+    <p class="alignment">The algorithm produces a list of points, each annotated with their smallest reachability distance. To visualize the result, a reachability plot can be used, which is a special
     kind of dendrogram. Points belonging to a cluster will have low reachability distance
     to their neighbor, and they will form a valley in the plot: the deeper the valley, the
     denser the cluster.</p>
-    <p>Clusters can be then extracted by selecting a threshold on the y-axis or a range
+    <p class="alignment">Clusters can be then extracted by selecting a threshold on the y-axis or a range
     on the x-axis after visual inspection. Alternatively, specific algorithms can be used to
     detect valleys depending on steepness, knee detection, or local minima.</p>
-    <p>Both core distance and reachability distance may be undefined in the case of no
+    <p class="alignment">Both core distance and reachability distance may be undefined in the case of no
     sufficiently dense clusters with respect to the chosen <em>Eps</em> value. If <em>Eps</em> is large enough
     this won’t happen, but in an extreme case <em>Eps</em> may be so high that any <em>Eps</em> neighborhood
     query returns the whole dataset. Eps itself is not necessary to OPTICS, but it’s

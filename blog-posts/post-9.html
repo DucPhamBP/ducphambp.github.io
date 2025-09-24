@@ -46,10 +46,10 @@
     <p>Hierarchical clustering techniques are an important category of clustering methods. They can be divided in:
     </p>
     <ul>
-    <li><strong>Agglomerative hierarchical clustering</strong>: start with the points as individual clusters, then merge the closest pair.</li>
-    <li><strong>Divisive hierarchical clustering</strong>: start with one big, all-inclusive cluster, then split it into smaller clusters until only individual points remain.</li>
+    <li class="alignment"><strong>Agglomerative hierarchical clustering</strong>: start with the points as individual clusters, then merge the closest pair.</li>
+    <li class="alignment"><strong>Divisive hierarchical clustering</strong>: start with one big, all-inclusive cluster, then split it into smaller clusters until only individual points remain.</li>
     </ul>
-    <p>The first group is most commonly used. A hierarchical clustering can be graphically displayed by using a dendrogram,
+    <p class="alignment">The first group is most commonly used. A hierarchical clustering can be graphically displayed by using a dendrogram,
       which is a tree-like graph that displays the order in which the clusters were merged (agglomerative) or split (divisive).</p>
     <h3>Algorithm 1: Agglomerative hierarchical clustering algorithm.</h3>
 
@@ -63,24 +63,24 @@
     </code></pre>
     <p>The key issue is defining proximity between clusters. Common measures include:</p>
     <ul>
-    <li><strong>MIN or single link</strong>: defines the proximity between clusters as the distance of
+    <li class="alignment"><strong>MIN or single link</strong>: defines the proximity between clusters as the distance of
 the closest two points that are in different clusters. It can handle non-elliptical
 shaped clusters, but it’s sensitive to noise and outliers;</li>
-    <li><strong>MAX or complete link or CLIQUE</strong>: defines the proximity between clusters
+    <li class="alignment"><strong>MAX or complete link or CLIQUE</strong>: defines the proximity between clusters
 as the maximum distance between two points that are in different clusters. It’s
 resistant to noise and outliers, but performs poorly for non globular clusters and
 tends to break them apart when too large;</li>
-    <li><strong>Group average</strong>:defines the proximity as the average distances of all possible
+    <li class="alignment"><strong>Group average</strong>:defines the proximity as the average distances of all possible
 pairs of points from different clusters. The trade-off between MIN and MAX, is
 not too affected by noise and outliers, but still tends to be biased towards globular
 clusters;</li>
     <li><strong>Distance between centroids;</strong></li>
-    <li><strong>Measure guided by an objective function</strong>: an example is Ward’s method,
+    <li class="alignment"><strong>Measure guided by an objective function</strong>: an example is Ward’s method,
 which measures the proximity between two clusters in terms of increase of SSE as
 a result of merging those clusters. Also influenced very little by noise and outliers,
 but biased towards globular clusters.</li>
     </ul>
-    <p>This clustering algorithm does not assume a particular number of clusters, since the
+    <p class="alignment">This clustering algorithm does not assume a particular number of clusters, since the
 “<i>desired</i>” number can be obtained by simply cutting the dendrogram at the appropriate
 height.</p>
 <p><a href="../blog.html">← Back to Blog List</a></p>
