@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regression</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script>
+  window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}};
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Regression</h1>
+    <p class="date">Posted: 05/10/2025</p>
+    <p class="alignment">Regression is a common task in supervised learning. While classification assigns to
+    each instance a class (out of a finite set of classes), regression predicts a real-valued
+    number. More formally: given a training set \( \langle x_i, y_i \rangle \) for some unknown target
+    function f, regression is the task of learning f by finding a good approximation; that
+    is, one that minimizes the error. The error function can be expressed in many ways;
+    some common functions are absolute error</p>
+    <p>  \[ \sum_i |\, y_i - f(x_i) \,| \]</p>
+    <p>and squared error:</p>
+    <p>   \[ \sum_i (\, y_i - f(x_i) \,)^2 \]</p>
+    <p>where \(y_i − f(x_i)\) is called residual.</p>
+    <h2>Linear Regression</h2>
+    <p class="alignment"> Linear regression models a linear relationship between a dependent variable \(Y\) and a
+    set of one or more independent variables \(X\). The target function is expressed as a linear
+    function: 
+    \[ f(x) = \sum_{i=1}^{n} a_i \cdot x_i + b = \mathbf{a}^T \cdot \mathbf{x} + b \]
+    where \(b\) is called intercept (or bias) and the vector \(\mathbf{a}\) is the slope. These are called free
+    parameters. If we consider only one independent variable, the task is called simple
+    linear regression; otherwise it’s called multiple linear regression. For multiple
+    correlated dependent variables, the task is called multivariate linear regression.
+  </p>
+  <p class="alignment">
+  The goal is to find some hypothesis (approximation of the target function \(f\)) that
+  for each input instance returns the expected value for that input according to \(f\). This
+  approximation corresponds to the function \(h\) that minimizes the error for each \(x_i\) in the
+  training set, i.e., it minimizes the residual \((y_i - h(x_i))\).
+  </p>
+  <p class="alignment">
+    There are many ways to find the values of \(a\) and \(b\) such that 
+    \(h(x) = \sum_i a_i \cdot x_i + b\) minimizes the error; one of the most common approaches is gradient descent. 
+    Since the error function is a simple convex function, it will certainly have a global minimum. 
+    By differentiating the error function with respect to all \(a_i\) and \(b\) and setting it to 0, we can find
+    the exact values of the free parameters that correspond to the minimum. Let’s use
+    the Least Squares method to minimize the error, calculated as the SSE, also known as
+    residual sum of squares. The free parameters will be referred to as the weight vector
+    \(\mathbf{w}\) from now on, to simplify notation:
+    \[ E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \cdot \mathbf{x}_i)^2 \]
+  </p>
+  <p class="alignment">
+    (here \(b\) is incorporated into \(\mathbf{w}\) as \(w_0\), and \(x_0\) is assumed to be 1). 
+    The gradient of the error function for a generic \(w_j\) is calculated as follows:
+    \[
+    \begin{align*}
+      \frac{\partial E(\mathbf{w})}{\partial w_j} 
+      &= \frac{\partial}{\partial w_j} \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 \\
+      &= 2 \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i) \frac{\partial}{\partial w_j} (y_i - \mathbf{w}^T \mathbf{x}_i) \\
+      &= 2 \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i) (0 + x_{i,j}) \\
+      &= 2 \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i) x_{i,j}
+    \end{align*}
+    \]
+  </p>
+
+  <p class="alignment">
+    where \(x_{i,j}\) refers to the \(j\)th attribute of the \(i\)th example. By setting this to 0 for all \(w_i\),
+    we find that:
+    \[
+    \begin{align*}
+      \frac{\partial E(\mathbf{w})}{\partial w_0} 
+      &= \frac{\partial E(\mathbf{w})}{\partial b} \\
+      &= 2 \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i) \\
+      &= 2 \sum_{i=1}^{n} (y_i - \mathbf{a}^T \mathbf{x}_i - b) \\
+      &= \sum_{i=1}^{n} (y_i - \mathbf{a}^T \mathbf{x}_i) - 2 n \cdot b = 0
+    \end{align*}
+    \]
+    \[
+      \Rightarrow b = \frac{\sum_{i=1}^{n} y_i - \mathbf{a}^T \mathbf{x}_i}{n}
+    \]
+    and:
+    \[
+      \mathbf{a}^T = \frac{n \cdot \sum_{i=1}^{n} y_i x_i - (\sum_{i=1}^{n} x_i)(\sum_{i=1}^{n} y_i)}
+                      {n \cdot \sum_{i=1}^{n} x_i^2 - (\sum_{i=1}^{n} x_i)^2}
+    \]
+  </p>
+  <p class="alignment">
+    Linear regression can also benefit from regularization, a technique that controls
+    training and forbids it from running into overfitting. A common regularization technique
+    is called Tikhonov regularization (or also ridge regression), which is especially
+    useful to mitigate multicollinearity. With regularization, the error function is
+    calculated as:
+    \[
+      E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2
+    \],
+    where \(\lambda\) is called learning rate. If the residual becomes too low, the norm 2 of the
+    weight vector will be high, so the training algorithm will decrease the values of the
+    weights to minimize the overall error, thus reducing the complexity of the model and
+    avoiding overfitting. Obviously, different values of \(\lambda\) will affect training differently: if
+    it’s too low it may not regularize enough, if it’s too high it may cause underfitting.
+    Another common regularization is lasso regularization, which uses norm 1 instead:
+    \[
+      E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1
+    \].
+  </p>
+  <p class="alignment">
+    Linear regression can also benefit from regularization, a technique that controls
+    training and forbids it from running into overfitting. A common regularization technique
+    is called Tikhonov regularization (or also ridge regression), which is especially
+    useful to mitigate multicollinearity. With regularization, the error function is
+    calculated as:
+    \[
+      E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2
+    \],
+    where \(\lambda\) is called learning rate. If the residual becomes too low, the norm 2 of the
+    weight vector will be high, so the training algorithm will decrease the values of the
+    weights to minimize the overall error, thus reducing the complexity of the model and
+    avoiding overfitting. Obviously, different values of \(\lambda\) will affect training differently: if
+    it’s too low it may not regularize enough, if it’s too high it may cause underfitting.
+    Another common regularization is lasso regularization, which uses norm 1 instead:
+    \[
+      E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1
+    \].
+  </p>
+  <p class="alignment">
+    They function similarly, but lasso regularization in particular performs what’s called
+    variable selection, i.e., it tends to bring multiple free parameters to 0 instead of
+    simply reducing them all in value (since norm 1 returns the sum of absolute values of
+    the weights instead of their squared sum). Here’s a list of commonly used error functions:
+  </p>
+
+  <ul>
+    <li>
+      Coefficient of determination:
+      \[
+        R^2(\mathbf{w}) = 1 - \frac{\sum_i (\mathbf{w}^T \mathbf{x}_i - y_i)^2}{\sum_i (y_i - \bar{y})^2}, \quad \bar{y} = \text{mean}(y)
+      \]
+    </li>
+    <li>
+      Mean Squared Error:
+      \[
+        \text{MSE}(\mathbf{w}) = \frac{\sum_i (y_i - \mathbf{w}^T \mathbf{x}_i)^2}{n}
+      \]
+    </li>
+    <li>
+      Mean Absolute Error:
+      \[
+        \text{MAE}(\mathbf{w}) = \frac{\sum_i \|y_i - \mathbf{w}^T \mathbf{x}_i\|}{n}
+      \]
+    </li>
+  </ul>
+  <h2>Non-linear Regression</h2>
+  <p class="alignment">For some collections of data, the relationship between X and Y may not be linear.
+  A model that’s often used for non-linear regression is K-Nearest Neighbors. It functions
+  the same as for classification, but instead of returning the majority class of the neighborhood, 
+  it returns the average value. It can used with the weighted variant as well.</p>
+  <p class="alignment">Another model that can be used for regression is Decision Trees. The tree can
+  be constructed with the same algorithms seen for classification, obviously using an
+  appropriate error measure (such as MSE or MAE). Then, once a leaf is reached when
+  calculating the value for a new instance, either the leaf is pure, so the only value present
+  is chosen as the prediction, or else the average of the values of the instances within that
+  leaf is chosen.</p>
+  <p><a href="../blog.html">← Back to Blog List</a></p>
+  </main>
+</body>
+</html>
