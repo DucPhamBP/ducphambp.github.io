@@ -148,7 +148,7 @@
     calculated as:
     \[
       E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2
-    \],
+    \]
     where \(\lambda\) is called learning rate. If the residual becomes too low, the norm 2 of the
     weight vector will be high, so the training algorithm will decrease the values of the
     weights to minimize the overall error, thus reducing the complexity of the model and
@@ -157,7 +157,7 @@
     Another common regularization is lasso regularization, which uses norm 1 instead:
     \[
       E(\mathbf{w}) = \sum_{i=1}^{n} (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1
-    \].
+    \]
   </p>
   <p class="alignment">
     They function similarly, but lasso regularization in particular performs what’s called
