@@ -1,4 +1,4 @@
-/* 🌐 Root Variables */
+/* Root Variables */
 :root {
   --clr-primary: #2c3e50;
   --clr-secondary: #333333;
@@ -8,7 +8,7 @@
   --clr-link: #004080;
 }
 
-/* 🧼 Reset and Base Styles */
+/* Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -40,7 +40,7 @@ code, pre {
   border-radius: 3px;
 }
 
-/* 🧱 Layout */
+/* Layout */
 .main-container {
   display: flex;
   min-height: 100vh;
@@ -73,7 +73,7 @@ code, pre {
   width: 100%;
 }
 
-/* 📸 Profile */
+/* Profile */
 .profile-img {
   width: 180px;
   height: 180px;
@@ -81,10 +81,9 @@ code, pre {
   object-fit: cover;
   margin: 0 auto 1.5rem;
   display: block;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
 
-/* 📝 Sidebar Text */
+/* Sidebar Text */
 .sidebar h1 {
   font-size: 1.8rem;
   margin-bottom: 0.5rem;
@@ -119,7 +118,7 @@ code, pre {
   flex: 1;
 }
 
-/* 🌐 Social Links */
+/* Social Links */
 .social-links {
   display: flex;
   justify-content: center;
@@ -146,7 +145,7 @@ code, pre {
   color: #1d6fa5;
 }
 
-/* 🧭 Navigation */
+/* Navigation */
 #navbar {
   position: sticky;
   top: 0;
@@ -181,7 +180,7 @@ code, pre {
   margin-right: 0.5rem;
 }
 
-/* 📄 Section Styling */
+/* Section Styling */
 .section {
   padding: 3rem 2rem;
   animation: fadeIn 0.6s ease forwards;
@@ -197,7 +196,7 @@ code, pre {
   color: var(--clr-primary);
 }
 
-/* 🧾 Card */
+/* Card */
 .card {
   background: var(--clr-card-bg);
   padding: 1.5rem;
@@ -212,7 +211,7 @@ code, pre {
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* 🧠 Skills */
+/* Skills */
 #skills h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
@@ -252,7 +251,7 @@ code, pre {
   line-height: 1.5;
   font-family: 'Courier New', Courier, monospace;
 }
-/* 📱 Mobile Optimized (<=768px) */
+/* Mobile Optimized (<=768px) */
 @media (max-width: 768px) {
   .main-container {
     flex-direction: column;
@@ -338,7 +337,7 @@ code, pre {
     display: block;
   }
 }
-/* 📄 Section Styling */
+/* Section Styling */
 .section {
   padding: 3rem 2rem;
   animation: fadeIn 0.6s ease forwards;
@@ -360,7 +359,7 @@ code, pre {
   content: none;
 }
 
-/* 🔗 CV Link */
+/* CV Link */
 .cv-link {
   color: var(--clr-link);
   font-weight: bold;
@@ -372,7 +371,7 @@ code, pre {
   text-decoration: none;
 }
 
-/* 🧾 Card */
+/* Card */
 .card {
   background: var(--clr-card-bg);
   padding: 1.5rem;
@@ -387,7 +386,7 @@ code, pre {
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* 🎓 Education & Research */
+/* Education & Research */
 .education-item .edu-header h3 a,
 .exp-header h3 a {
   color: var(--clr-secondary);
@@ -429,7 +428,7 @@ code, pre {
   top: 0.2rem;
   color: var(--clr-primary);
 }
-/* 🏆 Certifications */
+/* Certifications */
 
 #certifications h2 {
   font-size: 2rem;
@@ -455,7 +454,7 @@ code, pre {
   color: #1d6fa5;
 }
 
-/* 💼 Experience */
+/* Experience */
 .experience-item {
   margin-bottom: 2rem;
 }
@@ -474,7 +473,7 @@ code, pre {
   margin-bottom: 0.8rem;
 }
 
-/* 🎞️ Animations */
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
