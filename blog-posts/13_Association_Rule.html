@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Association Rule</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <!-- Highlight.js (for pseudocode formatting) -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Association Rule</h1>
+    <p class="date">Posted: 13/01/2026</p>
+
+<p class="alignment">Association analysis is a field of techniques aimed at extracting interesting relationships hidden in large datasets. A common application of association analysis is for market
+basket transactions, which is data referring to purchases done by customers in shops. This data is typically in the form of a set of rows, one per transaction, each containing
+the set of items bought by a given customer during a single trip. This information can be used to study purchasing habits in order to support a variety of business-related
+applications, such as marketing promotions, inventory management, and customer relationship management.</p> 
+<h2>Terminology</h2>
+<p>Before explaining any algorithm, we need to define some useful terms. As mentioned before, the data is organized into transactions. Let I be the set of all items, and T the set of all transactions. Each transaction ti contains a number of subsets of I, called an itemsets: ti = {X1,X2, . . . ,Xn}, Xj = {i1, i2, . . . , ik}. An itemset containing k items is also called a k-itemset. An itemset with no elements is called the null (or empty) itemset. A transaction ti contains an itemset X if X is a subset of ti.</p>
+
+<p>An important property of an itemset is its support count.</p>
+
+<p>The support count of an itemset X is calculated as:</p>
+
+<p>\[
+\sigma(X) = \#\{t_i|X \subseteq t_i, t_i \in T\}
+\]</p>
+
+<p>Support Count</p>
+
+<p>In other words, the support count is the number of transactions that contain that itemset. Often, the property of interest is the support.</p>
+
+<p>The support of an itemset X is calculated as:</p>
+
+<p>\[
+s(X) = \frac{\sigma(X)}{N}
+\]</p>
+
+
+<p>An itemset is deemed frequent if its support s(X) is greater than some used-defined minimum threshold, minsup.</p>
+
+<p>An association rule is an implication expression between two disjoint itemsets X and Y :</p>
+
+<p>\[
+X \rightarrow Y
+\]</p>
+
+<p>X is called the antecedent, Y the consequent.</p>
+
+<p>The strength of an association rule can be measured both in terms of support, and confidence.</p>
+
+<p>The support of an association rule X → Y is calculated as:</p>
+
+<p>\[
+s(X \rightarrow Y ) = \frac{\sigma(X \cup Y )}{N}
+\]</p>
+
+<p>The confidence of an association rule X → Y is calculated as:</p>
+
+<p>\[
+c(X \rightarrow Y ) = \frac{\sigma(X \cup Y )}{\sigma(X)}
+\]</p>
+
+
+<p>Support determines how often a rule is applicable to a given dataset, while confidence determines how frequently items in Y appear in transactions that contain X.</p>
+
+<p>The goal of association analysis is to extract all rules whose support and confidence are higher than minsup and minconf, respectively. The brute force approach, in which all possible rules are generated and classified as frequent or infrequent, is highly computationally expensive: for a given dataset of d items, we can list a total of \( 3^d-2^{d+1}+1 \) association rules.</p>
+
+<p>Typically, association analysis is broken into two steps: frequent itemset generation, which finds all itemsets with an high enough support, and rule generation, which generates rules based on the frequent itemsets found in the previous step, keeping only the ones with high enough confidence.</p>
+<h2>Frequent Itemset Generation</h2>
+<p>In general, a dataset that contains k items can generate up to \(2^k-1\) itemsets (excluding the empty set). Since k is often very big, the search space of itemsets is too large to be explored exhaustively. The brute-force approach to generate all possible itemsets and calculating support for each of them has a complexity of \(O(NMw)\), where N is the number of transactions, M is the number of candidate itemsets, and w is the maximum transaction width (i.e., the number of item a transaction contains). The most common efficient solution to the problem is based on the Apriori principle.</p>
+
+<p>If an itemset is frequent, then all of its subsets must also be frequent.</p>
+
+<p>Apriori principle</p>
+
+<p>This principle also implies that if an itemset is infrequent, then all of its supersets will also be infrequent. Consider the example dataset represented by the table below:</p>
+
+<table border="1" cellpadding="6" cellspacing="0" style="margin-left:auto; margin-right:auto; text-align:center;">
+  <tr>
+    <th>TID</th>
+    <th>Items</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>A, B, C</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>B, D, E, F</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>C, D, F</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>B, E, F</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>A, B, E, F</td>
+  </tr>
+</table>
+
+<p>Assuming a minsup threshold of 0.6, the itemset {B,E, F} is frequent. The itemsets {B,E}, {B, F}, and {E, F} are frequent as well. Conversely, {A,B} is not frequent,</p>
+
+<p>so any itemset obtained by adding items to it will also be infrequent. The Apriori property holds because of the anti-monotone property of the support measure.</p>
+
+<p>A measure f possesses the anti-monotone property if for every itemset X that is a proper subset of an itemset Y , it holds that \( f(Y ) \le f(X) \).</p>
+<h3>Apriori Algorithm</h3>
+<p>The Apriori algorithm uses the Apriori principle to generate all potential frequent itemsets and prune infrequent ones. The pseudocode for the algorithm is presented below.</p>
+
+<p>Algorithm 10 Frequent itemset generation of the Apriori algorithm.</p>
+
+<pre><code class="language-text">
+Algorithm 10 Frequent itemset generation of the Apriori algorithm.
+1:  k = 1
+2:  Fₖ = { i ∈ I ∣ s({i}) ≥ minsup }          # find all frequent itemsets
+3:  repeat
+4:      k = k + 1
+5:      Cₖ = candidate-gen(Fₖ₋₁)              # generate all candidate itemsets
+6:      Cₖ = candidate-prune(Cₖ, Fₖ₋₁)        # prune itemsets with infrequent subsets
+7:      for all t ∈ T do
+8:          Cₜ = subsets(Cₖ, t)
+9:          for all c ∈ Cₜ do
+10:             σ(c) = σ(c) + 1                # increment support count
+11:         end for
+12:     end for
+13:     Fₖ = { c ∈ Cₖ ∣ s(c) ≥ minsup }        # find all frequent k-itemsets
+14: until Fₖ = ∅
+15: return ⋃Fₖ
+</code></pre>
+
+
+<p>The algorithm starts by scanning the dataset and finding all frequent items, constructing the set of frequent 1-itemsets. The main loop can be broken into three different main phases: candidate generation, candidate pruning, and support counting.</p>
+<h4>Candidate generation</h4>
+
+<p>This phase generates new candidate k-itemsets by “fusing” together the frequent (k−1)-itemsets found in the previous iteration. The brute-force approach consists in combining all d items to produce all possible k-itemsets, but it would result in a total of 
+<span style="white-space:nowrap;">(d&nbsp;choose&nbsp;k)</span> candidates.</p>
+
+<p>An alternative method for candidate generation is the Fk−1 × F1 method. Each frequent (k − 1)-itemset is extended with frequent items that are not part of the (k − 1)-itemset. This procedure is complete, since every frequent k-itemset is composed of a frequent (k − 1)-itemset and a frequent 1-itemset. All frequent k-itemsets are contained within the candidate k-itemsets generated. Still, this procedure produces a large number of unnecessary candidates, and can produce duplicate candidates as well.</p>
+
+<p>Another method is the Fk−1 × Fk−1 method, which is the one actually used by the Apriori algorithm. The set of candidate k-itemsets is obtained by merging together pairs of frequent (k − 1)-itemsets. A pair is merged only if their first k − 2 items, sorted lexicographically, perfectly match. More formally: let A = {a1, a2, . . . , ak−1} and B = {b1, b2, . . . , bk−1} be two frequent (k − 1)-itemsets. A and B can be merged if and only if:</p>
+
+<p>\[
+a_i = b_i,\; i \in [1, k − 2].
+\]</p>
+
+<p>This method is both complete and guaranteed to never generate duplicates.</p>
+<h4>Candidate pruning</h4>
+<p>Pruning removes all the candidate k-itemsets that contain at least one infrequent subset (since as per the Apriori principle, those k-itemsets will certainly be infrequent as well).</p>
+
+<p>So, for a given candidate k-itemset \( X = \{i_1, i_2, \ldots, i_k\} \), the procedure checks if any itemset \( X - \{i_j\} \) does not appear in the set of frequent (k − 1)-itemsets.</p>
+
+<p>For the specific case of the Fk−1 × Fk−1 method, the pruning procedure only needs to check k − 2 subsets for each candidate, since two of its (k − 1) subsets (the ones merged to generate it) are already known to be frequent.</p>
+<h4>Support counting</h4>
+<p>Support counting simply iterates over all the transactions in the dataset and increases the support count of the candidate itemsets contained into each of them. The bruteforce approach to counting is to compare each transaction against every single candidate itemset, but, as always, this is computationally expensive.</p>
+
+<p>The method followed by Apriori exploits a prefix tree structure to find the candidates contained in a transaction. The root of the tree corresponds to the full transaction t = {i1, i2, . . . , in}. Assuming that each itemset keeps its items always in increasing lexicographic order, an itemset can be enumerated by specifying the smallest item first, followed by the larger ones.</p>
+
+<p>So, given a transaction t = {1, 2, 3, 4, 5}, all 3-itemsets can only start with either 1, 2, or 3. The root will have three children at level 1, one for each “starting” item. The same thing can be repeated to produce level 2.</p>
+
+<p>If 1 is the first item of the 3-itemset, it can be only followed by 2, 3, or 4, but not 5, since then it could not have a total of 3 items. The node that “starts” with 1 will have three children, the one that “starts” with 2 will have two children, and finally the node “starting” with 3 will only have one child.</p>
+
+<p class="alignment">This process is repeated until all leaf nodes containing all possible k-itemsets contained in the transaction are reached. The support of all the itemsets found is simply increased by 1.</p>
+
+<p>Below is the prefix tree generated with the above example.</p>
+<figure style="text-align:center;">
+  <img src="photo/association rule.jpg" style="width:50%;">
+  <figcaption>Example</figcaption>
+</figure>
+
+<h2>Rule Generation</h2>
+<p>Each frequent k-itemset, Y , can produce up to \(2^k - 2\) association rules, excluding rules with empty antecedents or consequents.</p>
+
+<p class="alignment">An association rule can be extracted by partitioning the itemset Y into two non empty subsets, X and Y − X, such that \( c(X \rightarrow Y - X) \) is greater than minconf.</p>
+
+<p class="alignment">Computing the confidence of an association rule does not require additional scans of the transaction dataset. The itemsets from which rules are extracted from are all frequent, and so are their subsets.</p>
+
+<p class="alignment">Below is the pseudocode of the algorithm.</p>
+
+<pclass="alignment">The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded.</p>
+
+<p class="alignment">The remaining rules are merged to generate new candidate rules: each pair of rules generates</p>
+<p>Algorithm 11 Rule generation of the Apriori algorithm.</p>
+
+<pre><code class="language-text">
+1:  k = 2
+2:  for each frequent k-itemset fk do
+3:      H1 = { i | i ∈ fk }
+4:      ap-genrules(fk, H1)
+5:  end for
+</code></pre>
+
+<p>Algorithm 12 Procedure ap-genrules(fk, Hm).</p>
+
+<pre><code class="language-text">
+1:  for hm ∈ Hm do
+2:      conf = σ(fk) / σ(fk − hm)
+3:      if conf ≥ minconf then
+4:          Output (fk − hm) → hm.
+5:      else
+6:          Delete hm from Hm.
+7:      end if
+8:  end for
+9:  if k > m + 1 then
+10:     Hm+1 = candidate-gen(Hm)
+11:     ap-genrules(fk, Hm+1)
+12: end if
+</code></pre>
+
+<p>a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)1</p>
+<h2>Compact Representation of Frequent Itemsets</h2>
+<p class="alignment">The number of frequent itemsets generated from a transaction dataset can be very large,
+so it’s useful to identify a small representative set of frequent itemsets from which all
+other frequent itemsets can be derived. Two such representations are presented in this
+section.</p>
+<h3>Maximal Frequent Itemsets</h3>
+<p class="alignment"> Maximal frequent itemset: A frequent itemset is maximal if none of its immediate supersets is frequent. If we only store maximal frequent itemsets, all other frequent itemsets can be easily
+extracted since they will be their subsets. This representation is especially useful for
+datasets that produce very long frequent itemsets, as there are exponentially more
+frequent itemsets in such data. However, maximal frequent itemsets do not contain the
+support information of their subsets, so an additional pass over the data is needed to
+determine the support counts of non-maximal frequent itemsets.</p>
+<p class="alignment">Closed itemset: An itemset X is closed if none of its immediate supersets has exactly the same support count as X. </p>
+<p class="alignment">Closed frequent itemset: An itemset is a closed frequent itemset if it is closed and its support is greater than or equal than minsup.</p>
+<p>Closed frequent itemsets provide a minimal representation while still keeping support information about all frequent itemsets. If we know their support counts, we can derive the support count of any other itemset.</p>
+
+<p>Starting from the longest frequent itemsets, for each set of frequent k-itemsets, and for each non-closed itemset f in that set, the support count is calculated as:</p>
+
+<p>\[
+f.sup = \max \{ f'.sup : f' \in F_{k+1}, f \subset f' \}
+\]</p>
+<p>Association analysis algorithms can still generate huge amounts of frequent rules. Not all of those rules may be interesting, however. There is a need to establish some set of objective interestingness measures, that can be used to rank patterns in terms of how much or how little they are interesting. Afterwards, we need to establish some subjective measures, that measure how actually useful a pattern can be in revealing unexpected relationships among data.</p>
+
+<h3>Objective Measures of Interestingness</h3>
+
+<p>An objective measure is a data-driven approach for evaluating the quality of association patterns. It is domain independent, and the user only needs to set a minimum threshold to filter out low-quality patterns. An objective measure is usually calculated using the frequency counts reported into a contingency table.</p>
+
+<table border="1" cellpadding="6" cellspacing="0" style="margin-left:auto; margin-right:auto; text-align:center;">
+  <tr>
+    <th></th>
+    <th>B</th>
+    <th>B¯</th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>A</th>
+    <td>f11</td>
+    <td>f10</td>
+    <td>f1+</td>
+  </tr>
+  <tr>
+    <th>A¯</th>
+    <td>f01</td>
+    <td>f00</td>
+    <td>f0+</td>
+  </tr>
+  <tr>
+    <th></th>
+    <td>f+1</td>
+    <td>f+0</td>
+    <td>N</td>
+  </tr>
+</table>
+
+<p>Contingency table for variables A and B.</p>
+
+<p>Each entry fij in the table indicates a frequency count; e.g., f11 indicates the amount of times both A and B appear inside a transaction, while f10 indicates the number of times A appears but not B.</p>
+
+<p>Support and confidence are two measures that can be derived from such table. However, they are not infallible; support may still exclude some interesting patterns in the data that involve low support items, and confidence does not necessarily guarantee that a rule is reasonable. To better illustrate this last issue, look at the example in the table below.</p>
+
+<table border="1" cellpadding="6" cellspacing="0" style="margin-left:auto; margin-right:auto; text-align:center;">
+  <tr>
+    <th></th>
+    <th>Coffee</th>
+    <th>Coffee negative</th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>Tea</th>
+    <td>150</td>
+    <td>50</td>
+    <td>200</td>
+  </tr>
+  <tr>
+    <th>Tea negative</th>
+    <td>650</td>
+    <td>150</td>
+    <td>800</td>
+  </tr>
+  <tr>
+    <th></th>
+    <td>800</td>
+    <td>200</td>
+    <td>1000</td>
+  </tr>
+</table>
+
+<p>Assume we want to evaluate the association {Tea} → {Coffee}: people who drink tea also drink coffee. The rule’s support is 15% (150/1000), and its confidence is 75% (150/200). However, the total fraction of people who drink coffee is 80%, while the fraction of tea drinkers who drink coffee is only 75%. This means that knowing that a person drinks tea actually lowers the probability of that same person being a coffee drinker.</p>
+
+<p>The limitations of confidence can be better expressed in a statistical way. The support of a variable measures the probability of its occurrence, while the support of {A,B} measures the probability of the two items occurring together. So, the joint probability can be expressed as follows:</p>
+
+<p>\[
+P(A,B) = s(A,B) = \frac{f_{11}}{N}.
+\]</p>
+
+<p>If A and B are statistically independent, then \( P(A,B) = P(A) \times P(B) \), so we can rewrite the above equation as:</p>
+
+<p>\[
+P(A,B) = s(A,B) = \frac{f_{1+}}{N} \times \frac{f_{+1}}{N}.
+\]</p>
+
+<p>If the supports between two variables calculated in the two ways shown above are the same, then the variables are independent, while if they are very different it means the two variables are dependent. Since the confidence measure considers the deviance of s(A,B) from s(A), but not from s(A)×s(B), it does not really detect spurious patterns, and potentially rejects interesting ones.</p>
+
+<p>Some other objective measures that take this into account are defined below.</p>
+<p>Lift:</p>
+<p>\[
+\text{Lift}(X,Y) = \frac{P(Y \mid X)}{P(Y)} = \frac{c(X \rightarrow Y)}{s(Y)}
+\]</p>
+
+<p>Interest:</p>
+<p>\[
+I(X,Y) = \frac{P(X,Y)}{P(X)P(Y)} = \frac{f_{11}}{s(X)\times s(Y)}
+\]</p>
+
+<p>Lift and interest are essentially the same measure, but lift is used for association rules, while interest is used for itemsets.</p>
+<p>Piatesky-Shapiro:</p>
+<p>\[
+PS(X,Y) = P(X,Y) - P(X)P(Y) = s(f_{11}) - s(X)\times s(Y)
+\]</p>
+
+<p>ϕ-coefficient:</p>
+<p>\[
+\phi(X,Y) = \frac{P(X,Y) - P(X)P(Y)}{\sqrt{P(X)(1-P(X))P(Y)(1-P(Y))}}
+= \frac{f_{11} - s(X)\times s(Y)}{\sqrt{s(X)(1-s(X))\times s(Y)(1-P(Y))}}
+\]</p>
+
+<h2>Multi-Level Association Rules</h2>
+<p>particular domain. For example, a concept hierarchy can be an item taxonomy describing relationships between items in market basket data: milk and bread are a type of food, DVD is a type of home electronics item. Concept hierarchies can be defined on the basis of some domain-specific knowledge or based on a standard classification scheme defined by certain organizations.</p>
+
+<p>A concept hierarchy can be defined using a directed acyclic graph; if there is an edge going from a node p to a node c, then p is the parent of c, and c is the child of p. If there is a path that goes from node a to node d, then a is the ancestor of d, and d is the descendant of a.</p>
+
+<p>The main advantages of incorporating concept hierarchies into association analysis are related to the fact that items at lower levels of the hierarchy may not have enough support to appear as frequent, but if they are incorporated into higher level concepts, they can contribute to the analysis. On the flip side, rules obtained from itemsets with items from higher levels of the hierarchy may be too generic, and/or have too low confidence, so being able to use more specific concepts may highlight interesting relationships. Rules found at the lower levels of the hierarchy tend to be too specific and may not be as interesting as rules found at higher levels.</p>
+
+<p>To handle concept hierarchies, we can consider two approaches:</p>
+
+<ul>
+  <li>Extending the current association rule formation by adding higher level items to each transaction; i.e., the transaction {whole milk,wheat bread} becomes {whole milk,wheat bread, milk, bread, food}. However, items at higher levels will have much higher support counts, and if the chosen minsup threshold is too low, there will be too many frequent itemsets involving high-level items. Additionally, this approach increases the dimensionality of the data, making transactions actually longer.</li>
+
+  <li>Generating frequent patterns at highest levels first; then, generating frequent patterns at the next highest level lower than the previous one, and so on. While this method will surely find all patterns for all hierarchy levels, it’s very costly as it passes multiple times over the data (once for each level), and does not capture cross-level association patters.</li>
+</ul>
+
+<h2>FP-Growth</h2>
+<p>Apriori is an historically significant algorithm for pattern mining, but it suffers from a series of inefficiencies. The biggest bottleneck is represented by candidate generation. Especially during the first iterations, the number of candidates increases exponentially, and each of those candidates will have to be evaluated for pruning and eventually have its support calculated. Specifically, if n is the length of the longest pattern, the algorithm will need n + 1 scans of the dataset.</p>
+
+<p>FP-Growth (“Frequent Pattern Growth”) is a more efficient algorithm that follows a different approach to extract frequent itemsets. The dataset is encoded using a compact data structure called FP-Tree, and extracts frequent itemsets directly from this structure instead of generating them in a bottom-up way like Apriori does.</p>
+
+<h3>FP-Tree Representation</h3>
+<p>The first step of the algorithm consist in constructing the FP-tree that represents the input data.</p>
+
+<ol>
+  <li>The dataset is scanned to calculate the support count of each item, and infrequent items are discarded. All frequent ones are sorted on the basis of their support count in descending order within each transaction of the dataset.</li>
+
+  <li>Each transaction is read and nodes are gradually added to the tree, mapping each transaction. The tree always starts with an empty root ({}). The first transaction is read, and items are added as nodes so that the first item found is the child of the root, the second is the child of the first item, and so on, setting their support count to 1. As the second transaction is read, new nodes are added or existing nodes’ support counts are increased. Additionally, if multiple paths share the same items, the corresponding nodes are linked one to the other.</li>
+</ol>
+
+<p>This data structure is both complete (it correctly maps all transactions in the dataset, preserving all information needed for pattern mining), and compact (it reduces irrelevant information and is never larger than the original dataset).</p>
+
+<h3>Mining Frequent Itemsets From FP-Trees</h3>
+<p>Once the tree has been constructed, the algorithm can extract all the frequent itemsets in the database, employing a divide-and-conquer strategy. The mining starts from single items and gradually builds longer itemsets.</p>
+
+<ol>
+  <li>All the prefix paths containing a certain item i are gathered.</li>
+
+  <li>The support count of that item is obtained by adding the support counts associated with the nodes that are related to that item. If its support is higher than minsup, the item is declared a frequent 1-itemset, and the algorithm proceeds to the next step, trying to find frequent itemsets ending in i.</li>
+
+  <li>All the subproblems involving i and one other item are solved; e.g., if the nodelink paths in the FP-tree that end in i involve the items j, k, and l, the algorithm will try to find frequent itemsets ending in ji, ki, and li. Before solving these subproblems, the prefix paths found in the first step are converted into a conditional FP-tree. This tree is obtained in the following way:
+    <ol type="a">
+      <li>All paths are truncated, excluding the item i, since we already know all these paths are relative to that specific item.</li>
+      <li>The support counts along the paths are updated since they may include counts that involve transactions without i. This step constructs the conditional pattern base of item i.</li>
+      <li>Some of the items may now be infrequent, and are therefore removed from the structure.</li>
+    </ol>
+  </li>
+
+  <li>To find all frequent itemsets ending in ji, the prefix paths for j are gathered from the conditional FP-tree that was just constructed. By adding the frequency counts associated with j, we obtain the support count of ji. The algorithm then constructs the conditional FP-tree for ji using the same procedure as before; it gathers all prefix paths ending in j, truncates the last node, and updates the support counts of each item, removing infrequent ones if needed. After itemsets ending in ji are identified, the algorithm can continue by generating conditional FP-trees for three-item itemsets, or alternatively continue to a different two-item itemset if no more prefix paths are found.</li>
+</ol>
+
+<p>FP-growth is an order of magnitude faster than Apriori. It does not generate and test candidates and uses a compact data structure that does not require multiple passes over the dataset.</p>
+
+<p><a href="../blog.html">← Back to Blog List</a></p>
+</main>
+
+</body>
+</html>
