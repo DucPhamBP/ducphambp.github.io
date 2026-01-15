@@ -383,7 +383,7 @@ PS(X,Y) = P(X,Y) - P(X)P(Y) = s(f_{11}) - s(X)\times s(Y)
 <p class="alignment">FP-Growth (“Frequent Pattern Growth”) is a more efficient algorithm that follows a different approach to extract frequent itemsets. The dataset is encoded using a compact data structure called FP-Tree, and extracts frequent itemsets directly from this structure instead of generating them in a bottom-up way like Apriori does.</p>
 
 <h3>FP-Tree Representation</h3>
-<p>The first step of the algorithm consist in constructing the FP-tree that represents the input data.</p>
+<p class="alignment">The first step of the algorithm consist in constructing the FP-tree that represents the input data.</p>
 
 <ol>
   <li class="alignment">The dataset is scanned to calculate the support count of each item, and infrequent items are discarded. All frequent ones are sorted on the basis of their support count in descending order within each transaction of the dataset.</li>
@@ -394,7 +394,7 @@ PS(X,Y) = P(X,Y) - P(X)P(Y) = s(f_{11}) - s(X)\times s(Y)
 <p class="alignment">This data structure is both complete (it correctly maps all transactions in the dataset, preserving all information needed for pattern mining), and compact (it reduces irrelevant information and is never larger than the original dataset).</p>
 
 <h3>Mining Frequent Itemsets From FP-Trees</h3>
-<p>Once the tree has been constructed, the algorithm can extract all the frequent itemsets in the database, employing a divide-and-conquer strategy. The mining starts from single items and gradually builds longer itemsets.</p>
+<p class="alignment">Once the tree has been constructed, the algorithm can extract all the frequent itemsets in the database, employing a divide-and-conquer strategy. The mining starts from single items and gradually builds longer itemsets.</p>
 
 <ol>
   <li>All the prefix paths containing a certain item i are gathered.</li>
@@ -403,9 +403,9 @@ PS(X,Y) = P(X,Y) - P(X)P(Y) = s(f_{11}) - s(X)\times s(Y)
 
   <li>All the subproblems involving i and one other item are solved; e.g., if the nodelink paths in the FP-tree that end in i involve the items j, k, and l, the algorithm will try to find frequent itemsets ending in ji, ki, and li. Before solving these subproblems, the prefix paths found in the first step are converted into a conditional FP-tree. This tree is obtained in the following way:
     <ol type="a">
-      <li>All paths are truncated, excluding the item i, since we already know all these paths are relative to that specific item.</li>
-      <li>The support counts along the paths are updated since they may include counts that involve transactions without i. This step constructs the conditional pattern base of item i.</li>
-      <li>Some of the items may now be infrequent, and are therefore removed from the structure.</li>
+      <li class="alignment">All paths are truncated, excluding the item i, since we already know all these paths are relative to that specific item.</li>
+      <li class="alignment">The support counts along the paths are updated since they may include counts that involve transactions without i. This step constructs the conditional pattern base of item i.</li>
+      <li class="alignment">Some of the items may now be infrequent, and are therefore removed from the structure.</li>
     </ol>
   </li>
 
