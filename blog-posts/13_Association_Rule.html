@@ -42,7 +42,7 @@
   <!-- Main content -->
   <main class="content">
     <h1>Association Rule</h1>
-    <p class="date">Posted: 13/01/2026</p>
+    <p class="date">Posted: 15/01/2026</p>
 
 <p class="alignment">Association analysis is a field of techniques aimed at extracting interesting relationships hidden in large datasets. A common application of association analysis is for market
 basket transactions, which is data referring to purchases done by customers in shops. This data is typically in the form of a set of rows, one per transaction, each containing
@@ -58,8 +58,6 @@ applications, such as marketing promotions, inventory management, and customer r
 <p>\[
 \sigma(X) = \#\{t_i|X \subseteq t_i, t_i \in T\}
 \]</p>
-
-<p>Support Count</p>
 
 <p>In other words, the support count is the number of transactions that contain that itemset. Often, the property of interest is the support.</p>
 
@@ -104,8 +102,6 @@ c(X \rightarrow Y ) = \frac{\sigma(X \cup Y )}{\sigma(X)}
 <p>In general, a dataset that contains k items can generate up to \(2^k-1\) itemsets (excluding the empty set). Since k is often very big, the search space of itemsets is too large to be explored exhaustively. The brute-force approach to generate all possible itemsets and calculating support for each of them has a complexity of \(O(NMw)\), where N is the number of transactions, M is the number of candidate itemsets, and w is the maximum transaction width (i.e., the number of item a transaction contains). The most common efficient solution to the problem is based on the Apriori principle.</p>
 
 <p>If an itemset is frequent, then all of its subsets must also be frequent.</p>
-
-<p>Apriori principle</p>
 
 <p>This principle also implies that if an itemset is infrequent, then all of its supersets will also be infrequent. Consider the example dataset represented by the table below:</p>
 
@@ -215,7 +211,8 @@ a_i = b_i,\; i \in [1, k − 2].
 
 <pclass="alignment">The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded.</p>
 
-<p class="alignment">The remaining rules are merged to generate new candidate rules: each pair of rules generates</p>
+<p class="alignment">The remaining rules are merged to generate new candidate rules: each pair of rules generates a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)</p>
+
 <p>Algorithm 11 Rule generation of the Apriori algorithm.</p>
 
 <pre><code class="language-text">
@@ -242,8 +239,6 @@ a_i = b_i,\; i \in [1, k − 2].
 11:     ap-genrules(fk, Hm+1)
 12: end if
 </code></pre>
-
-<p>a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)1</p>
 <h2>Compact Representation of Frequent Itemsets</h2>
 <p class="alignment">The number of frequent itemsets generated from a transaction dataset can be very large,
 so it’s useful to identify a small representative set of frequent itemsets from which all
@@ -256,8 +251,11 @@ datasets that produce very long frequent itemsets, as there are exponentially mo
 frequent itemsets in such data. However, maximal frequent itemsets do not contain the
 support information of their subsets, so an additional pass over the data is needed to
 determine the support counts of non-maximal frequent itemsets.</p>
-<p class="alignment">Closed itemset: An itemset X is closed if none of its immediate supersets has exactly the same support count as X. </p>
-<p class="alignment">Closed frequent itemset: An itemset is a closed frequent itemset if it is closed and its support is greater than or equal than minsup.</p>
+<ul>
+  <li><strong>Closed itemset:</strong> An itemset X is closed if none of its immediate supersets has exactly the same support count as X.</li>
+  <li><strong>Closed frequent itemset:</strong> An itemset is a closed frequent itemset if it is closed and its support is greater than or equal than minsup.</li>
+</ul>
+
 <p>Closed frequent itemsets provide a minimal representation while still keeping support information about all frequent itemsets. If we know their support counts, we can derive the support count of any other itemset.</p>
 
 <p>Starting from the longest frequent itemsets, for each set of frequent k-itemsets, and for each non-closed itemset f in that set, the support count is calculated as:</p>
