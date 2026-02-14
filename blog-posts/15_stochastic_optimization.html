@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Two-stage stochastic optimization</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Two-stage stochastic optimization</h1>
+    <p class="date">Posted: 14/02/2026</p>
+<p class="alignment">Lập trình tuyến tính/số nguyên truyền thống được thiết kế cho các bài toán xác định (deterministic), giả định rằng tất cả các dữ liệu đều đã biết và cố định. 
+    Mặc dù điều này giúp việc mô hình hóa trở nên đơn giản hơn, nhưng nó hiếm khi phản ánh đúng điều kiện thực tế. 
+    Ví dụ, trong thị trường chứng khoán, việc dự đoán giá hoặc lợi nhuận trong tương lai thường chứa rất nhiều yếu tố khó đoán.</p>
+<p class="alignment">Một số phương pháp đã được đề xuất để xử lý các thách thức liên quan đến sự không chắc chắn (uncertainty) trong các tham số, bao gồm: sensitivity analysis, robust optimization, chance constraints, và two-stage stochastic programming with recourse. 
+    Trong bài viết này, chúng ta sẽ tập trung vào phương pháp <strong>two-stage stochastic optimization</strong>.</p>
+<h2>1. Tổng quan</h2>
+<p class="alignment">Trong <strong>two-stage stochastic optimization</strong>, chúng ta chia các biến quyết định thành hai giai đoạn:</p>
+<figure style="text-align: center;">
+    <img src="../blog-posts/photo/Illustration-of-two-stage-stochastic-programming.png" 
+         alt="Illustration of two-stage stochastic programming" 
+         style="max-width: 80%; height: auto;">
+    <figcaption style="margin-top: 8px">
+    Hình 1: Cấu trúc two-stage stochastic optimization
+    </figcaption>
+</figure>
+
+  <ol>
+    <li class="alignment">
+      <strong>Biến quyết định giai đoạn một (First-stage decision variables)</strong>: Đây là các quyết định phải được đưa ra trước khi sự không chắc chắn xảy ra. Chúng thường được gọi là các quyết định “here-and-now”, và những quyết định này thường không thể thay đổi hoặc rất tốn kém để điều chỉnh sau khi đã thực hiện. Ví dụ như mức sản xuất ban đầu hoặc quyết định vị trí xây dựng cơ sở lớn.
+    </li>
+    <li class="alignment">
+      <strong>Biến quyết định giai đoạn hai (Second-stage decision variables)</strong>: Đây là các quyết định được đưa ra sau khi sự không chắc chắn đã xảy ra. Chúng thường được gọi là ‘recourse decisions’ vì chúng ta đang phản ứng lại các tình huống xảy ra và các quyết định đã đưa ra ở giai đoạn một.
+    </li>
+  </ol>
+
+  <p class="alignment">Việc lựa chọn biến nào thuộc giai đoạn một hay giai đoạn hai là do người ra quyết định quyết định, và phụ thuộc vào bản chất của bài toán.</p>
+
+  <p class="alignment">Trong bài toán two-stage stochastic programming, sự không chắc chắn được mô tả bằng một tập các kịch bản (<em>scenarios</em>), mỗi kịch bản có xác suất xảy ra và giá trị tham số khác nhau. Ví dụ, nếu chúng ta có sự không chắc chắn về cả nhu cầu (<em>demand</em>) và khả năng hoạt động của máy móc (<em>machine availability</em>), thì chúng ta sẽ có một tập các kịch bản như sau.</p>
+<table class="scenario-table">
+    <caption>Bảng 2: Xác suất, nhu cầu và khả năng hoạt động theo các kịch bản</caption>
+    <thead>
+        <tr>
+            <th>Scenario</th>
+            <th>Probability</th>
+            <th>Demand</th>
+            <th>Availability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>0.2</td>
+            <td>35</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>0.1</td>
+            <td>25</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>0.05</td>
+            <td>15</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>0.2</td>
+            <td>30</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>0.3</td>
+            <td>25</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>0.03</td>
+            <td>45</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>0.12</td>
+            <td>40</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+  <p class="alignment">Lưu ý rằng tổng các xác suất của các kịch bản bằng 1.</p>
+
+  <p class="alignment">Mục tiêu của <strong>two-stage stochastic optimization</strong> là tối thiểu hóa hoặc tối đa hóa tổng giá trị kỳ vọng (<em>expected objective value</em>) của hàm mục tiêu, đồng thời xem xét cả biến quyết định giai đoạn một và giai đoạn hai. 
+    Trong một số tài liệu, bài toán này thường được viết dưới dạng sau:</p>
+$$
+\min_{x \in X} \; c^\top x + \mathbb{E}_{\xi}[ Q(x, \xi) ]
+$$
+
+
+<p>trong đó hàm chi phí giai đoạn hai được định nghĩa bởi:</p>
+
+$$
+Q(x, \xi) = \min_{y} \; q(\xi)^\top y
+$$
+$$
+\text{s.t.} \quad 
+W(\xi)y = h(\xi) - T(\xi)x, \quad 
+y \ge 0.
+$$
+
+<p class="alignment">
+Trong đó, \( x \in X \subseteq \mathbb{R}^n \) là các biến quyết định giai đoạn một (first-stage decision variables), 
+được lựa chọn trước khi sự không chắc chắn xảy ra. 
+Ký hiệu \( \xi \) biểu diễn biến ngẫu nhiên (random vector) mô tả sự không chắc chắn của các tham số trong bài toán.</p>
+
+<p class="alignment">Hàm \( Q(x, \xi) \) là giá trị tối ưu của bài toán giai đoạn hai (second-stage problem), 
+còn được gọi là hàm recourse, và phụ thuộc vào cả quyết định giai đoạn một \( x \) 
+và giá trị thực hiện của biến ngẫu nhiên \( \xi \). </p>
+<p class="alignment"> Ký hiệu \( \mathbb{E}_{\xi}[Q(x,\xi)] \) là giá trị kỳ vọng (expected value) của chi phí giai đoạn hai 
+theo phân phối xác suất của \( \xi \). Do đó, hàm mục tiêu bao gồm chi phí giai đoạn một \( c^\top x \) 
+và chi phí kỳ vọng của giai đoạn hai. </p>
+<p class="alignment"> Trong bài toán giai đoạn hai, \( y \) là các biến quyết định giai đoạn hai (second-stage decision variables), 
+được lựa chọn sau khi \( \xi \) được quan sát. 
+Các ma trận và vector \( W(\xi), h(\xi), T(\xi), q(\xi) \) phụ thuộc vào giá trị của biến ngẫu nhiên \( \xi \).
+</p>
+
+  <p class="alignment">Nếu chúng ta có một số lượng kịch bản hữu hạn (ví dụ, Ω = 4), thì dạng mở rộng tương đương (<em>equivalent extensive form</em>) có thể được viết như sau:</p>
+$$
+\begin{aligned}
+\min_{x, y_1, y_2, y_3, y_4} \quad 
+& c^\top x 
++ p_1 q(\xi_1)^\top y_1 
++ p_2 q(\xi_2)^\top y_2 
++ p_3 q(\xi_3)^\top y_3 
++ p_4 q(\xi_4)^\top y_4 \\
+\text{s.t.} \quad
+& Ax = b, \\
+& W(\xi_1) y_1 = h(\xi_1) - T(\xi_1) x, \\
+& W(\xi_2) y_2 = h(\xi_2) - T(\xi_2) x, \\
+& W(\xi_3) y_3 = h(\xi_3) - T(\xi_3) x, \\
+& W(\xi_4) y_4 = h(\xi_4) - T(\xi_4) x, \\
+& x, y_1,y_2,y_3,y_4 \ge 0.
+\end{aligned}
+$$
+
+
+<p class="alignment">
+Trong đó, \( x \) là các biến quyết định giai đoạn một (first-stage decision variables), 
+được dùng chung cho tất cả các kịch bản. 
+Với mỗi kịch bản \( \xi_i \), ta có một tập biến quyết định giai đoạn hai riêng biệt \( y_i \). 
+Hàm mục tiêu là tổng chi phí giai đoạn một và chi phí kỳ vọng của các bài toán giai đoạn hai.
+</p>
+  <p>Lưu ý rằng:</p>
+  <ul>
+    <li class="alignment">Các ràng buộc (<em>constraints</em>) được xác định cho từng kịch bản, do đó làm tăng kích thước bài toán và độ phức tạp tính toán.</li>
+    <li class="alignment">Hàm mục tiêu bao gồm giá trị kỳ vọng trên tất cả các kịch bản có thể xảy ra.</li>
+    <li class="alignment">Nghiệm của giai đoạn một phải khả thi (<em>feasible</em>) cho tất cả các khả năng xảy ra của các ràng buộc ở giai đoạn hai.</li>
+  </ul>
+<h2>2. Một số ví dụ</h2>
+<h3>Bài toán Network Design</h3>
+
+<p class="alignment">
+Bài toán network design là ví dụ kinh điển sử dụng 2 stage stochastic optimization, trong đó nhiều loại hàng hóa cần được vận chuyển qua một mạng lưới phải được thiết kế trước khi nhu cầu của các hàng hóa này được biết.
+Mỗi tuyến đường nếu được mở sẽ phát sinh chi phí cố định. Sau khi mở, tuyến đó có một giới hạn công suất và mỗi đơn vị hàng vận chuyển qua sẽ phát sinh 
+chi phí biến đổi.
+</p>
+<figure style="text-align: center;">
+    <img src="../blog-posts/photo/10287_2023_446_Fig3_HTML.webp" 
+         alt="Two stage stochastic network design problem" 
+         style="max-width: 60%; height: auto;">
+    <figcaption style="margin-top: 8px">
+    Hình 2: Bài toán two-stage stochastic network deisgn
+    </figcaption>
+</figure>
+<h4>Giai đoạn 1: Quyết định đầu tư</h4>
+
+<p class="alignment">
+Trước khi biết nhu cầu thực tế, ta phải quyết định tuyến đường nào sẽ được mở. 
+Gọi biến quyết định:
+</p>
+
+<ul>
+<li>x<sub>a</sub> = 1 nếu mở tuyến a,</li>
+<li>x<sub>a</sub> = 0 nếu không mở.</li>
+</ul>
+
+<p>
+Chi phí cố định phải trả là:
+</p>
+
+<p>
+$$
+\sum_{a \in A} c_a x_a
+$$
+</p>
+
+<h4>Giai đoạn 2: Quyết định vận chuyển sau khi biết kịch bản</h4>
+
+<p class="alignment">
+Khi một kịch bản i xảy ra và nhu cầu được biết, ta quyết định lượng hàng của mỗi loại c vận chuyển qua mỗi tuyến a.
+Gọi:
+</p>
+
+<ul>
+<li>y<sub>ac</sub><sup>i</sup> là lượng hàng hóa c đi qua tuyến a trong kịch bản i.</li>
+</ul>
+
+<p>
+Chi phí vận chuyển trong kịch bản i là:
+</p>
+
+<p>
+$$
+\sum_{c \in C} \sum_{a \in A} q_{ac} y_{ac}^i
+$$
+</p>
+
+<h4>Hàm mục tiêu: Tối thiểu hóa chi phí kỳ vọng</h4>
+
+<p class="alignment">
+Vì mỗi kịch bản xảy ra với xác suất như nhau (giả sử có N kịch bản), 
+ta tối thiểu hóa tổng chi phí kỳ vọng:
+</p>
+
+<p>
+$$
+\min \quad 
+\sum_{a \in A} c_a x_a 
++ \frac{1}{N} \sum_{i=1}^{N}
+\sum_{c \in C} \sum_{a \in A} q_{ac} y_{ac}^i
+$$
+</p>
+
+<h4>Các ràng buộc</h4>
+
+<p><strong>1. Bảo toàn dòng (flow conservation)</strong></p>
+
+<p class="alignment">
+Tại mỗi nút, với mỗi loại hàng và mỗi kịch bản, 
+tổng dòng vào và dòng ra phải cân bằng theo nhu cầu:
+</p>
+
+<p>
+$$
+\sum_{a: a(0)=v} y_{ac}^i
+-
+\sum_{a: a(1)=v} y_{ac}^i
+=
+d_{vc}^i
+$$
+</p>
+
+<p class="alignment">
+Điều này đảm bảo hàng hóa được vận chuyển đúng từ điểm xuất phát đến điểm đích.
+</p>
+
+<p><strong>2. Ràng buộc công suất</strong></p>
+
+<p class="alignment">
+Tổng lượng hàng đi qua tuyến a trong mỗi kịch bản không được vượt quá công suất nếu tuyến đó được mở:
+</p>
+
+<p>
+$$
+\sum_{c \in C} y_{ac}^i \le u_a x_a
+$$
+</p>
+
+<p><strong>3. Điều kiện biến</strong></p>
+
+<p>
+$$
+x_a \in \{0,1\}, \quad y_{ac}^i \ge 0
+$$
+</p>
+
+<h4>Liên hệ với cấu trúc two-stage stochastic</h4>
+
+<p>
+Mô hình này có cấu trúc hai giai đoạn rất rõ ràng:
+</p>
+
+<ul>
+<li>Giai đoạn 1: quyết định x<sub>a</sub> trước khi biết nhu cầu.</li>
+<li>Giai đoạn 2: quyết định y<sub>ac</sub><sup>i</sup> sau khi nhu cầu được tiết lộ.</li>
+</ul>
+
+<p class="alignment">
+Hàm mục tiêu tính theo kỳ vọng qua các kịch bản, thể hiện việc tối ưu hóa quyết định hiện tại dựa trên rủi ro tương lai.
+</p>
+<h3>Bài toán Capacitated Warehouse Location</h3>
+<p class="alignment">Một ví dụ khác cũng hay được sử dụng phương pháp 2 stage stochastic optimization là bài toán 
+  Capacitated Warehouse Location (CWL). Ý tưởng cơ bản là ta phải quyết định vị trí mở kho và sau đó phân bổ kho đó cho khách hàng, 
+  trong khi sự xuất hiện của khách hàng (demand) là ngẫu nhiên.</p>
+<figure style="text-align: center;">
+    <img src="../blog-posts/photo/10287_2023_446_Fig8_HTML.webp" 
+         alt="Two stage stochastic capacitated facility location problem" 
+         style="max-width: 80%; height: auto;">
+    <figcaption style="margin-top: 8px">
+    Hình 3: Bài toán two-stage stochastic capacitated facility location
+    </figcaption>
+</figure>
+<h4>Giai đoạn 1: Quyết định mở kho</h4>
+
+<p class="alignment">
+Trước khi biết khách hàng (demand) thực tế xuất hiện, ta phải quyết định kho nào sẽ được mở. Gọi biến quyết định:
+</p>
+
+<ul>
+  <li>x<sub>f</sub> = 1 nếu mở kho tại vị trí f,</li>
+  <li>x<sub>f</sub> = 0 nếu không mở.</li>
+</ul>
+
+<p>
+Chi phí cố định phải trả cho việc mở kho:
+</p>
+
+<p>
+$$
+\sum_{f \in F} c_f x_f
+$$
+</p>
+
+<h4>Giai đoạn 2: Phân bổ khách hàng theo kịch bản</h4>
+
+<p class="alignment">
+Khi một kịch bản i xảy ra và demand khách hàng xuất hiện, ta quyết định mỗi khách hàng được phục vụ bởi kho nào. 
+Gọi:
+</p>
+
+<ul>
+  <li>y<sub>cf</sub><sup>i</sup> = 1 nếu khách hàng c được phục vụ bởi kho f trong kịch bản i, 0 nếu không.</li>
+  <li>z<sub>f</sub><sup>i</sup> ≥ 0 là lượng công suất bổ sung cần thiết cho kho f trong kịch bản i nếu nhu cầu vượt quá công suất sẵn có.</li>
+</ul>
+
+<p>
+Chi phí phân bổ và bổ sung công suất trong kịch bản i là:
+</p>
+
+<p>
+$$
+\sum_{c \in C} \sum_{f \in F} q_{cf} y_{cf}^i + \sum_{f \in F} b_f z_f^i
+$$
+</p>
+
+<h4>Hàm mục tiêu: Tối thiểu hóa chi phí kỳ vọng</h4>
+
+<p class="alignment">
+Giả định mỗi kịch bản xảy ra với xác suất bằng nhau (giả sử có N kịch bản), chúng ta tối thiểu hóa tổng chi phí kỳ vọng (thực tế thì xác suất có thể random tùy vào điều kiện thực tế):
+</p>
+
+<p>
+$$
+\min \quad 
+\sum_{f \in F} c_f x_f 
++ \frac{1}{N} \sum_{i=1}^{N} \left(
+\sum_{c \in C} \sum_{f \in F} q_{cf} y_{cf}^i + \sum_{f \in F} b_f z_f^i
+\right)
+$$
+</p>
+
+<h4>Các ràng buộc</h4>
+
+<p><strong>1. Giới hạn tổng số kho mở</strong></p>
+
+<p>
+Tổng số kho mở không vượt quá v:
+</p>
+
+<p>
+$$
+\sum_{f \in F} x_f \le v
+$$
+</p>
+
+<p><strong>2. Giới hạn công suất</strong></p>
+
+<p class="alignment">
+Tổng nhu cầu của các khách hàng gán cho kho f trong kịch bản i không vượt quá công suất sẵn có cộng với công suất bổ sung:
+</p>
+
+<p>
+$$
+\sum_{c \in C} d_{cf} y_{cf}^i \le u x_f + z_f^i \quad \forall f, i
+$$
+</p>
+
+<p><strong>3. Không phục vụ nếu kho không mở (Big-M constraint)</strong></p>
+
+<p>Ràng buộc đảm bảo nếu kho f không được mở (x<sub>f</sub> = 0) thì biến z<sub>f</sub><sup>i</sup> bắt buộc bằng 0. 
+Đây là một ràng buộc kiểu Big-M, giúp đảm bảo rằng không thể phân bổ thêm cho khách hàng hoặc thêm công suất cho một kho không tồn tại.
+</p>
+
+<p>
+$$
+z_f^i \le M x_f \quad \forall f, i
+$$
+</p>
+
+<p><strong>4. Mỗi khách hàng được phục vụ đúng scenario</strong></p>
+
+<p>
+Nếu khách hàng c xuất hiện trong kịch bản i, nó phải được phục vụ bởi một kho.  Ràng buộc đảm bảo rằng nếu khách hàng xuất hiện trong một kịch bản thì phải được gán cho đúng một kho. 
+Nếu khách hàng không xuất hiện trong kịch bản đó, thì không được gán cho kho nào.
+</p>
+
+<p>
+$$
+\sum_{f \in F} y_{cf}^i = h_c^i \quad \forall c, i
+$$
+</p>
+
+<p><strong>5. Điều kiện biến</strong></p>
+
+<p>
+$$
+x_f \in \{0,1\}, \quad y_{cf}^i \in \{0,1\}, \quad z_f^i \ge 0
+$$
+</p>
+
+<h3>Liên hệ với cấu trúc two-stage stochastic</h3>
+
+<p>
+Mô hình CWL có cấu trúc hai giai đoạn rất rõ ràng:
+</p>
+
+<ul>
+  <li>Giai đoạn 1: quyết định x<sub>f</sub> trước khi biết khách hàng (và demand) xuất hiện.</li>
+  <li>Giai đoạn 2: quyết định y<sub>cf</sub><sup>i</sup> và z<sub>f</sub><sup>i</sup> sau khi kịch bản về khách hàng (và demand) được tiết lộ.</li>
+</ul>
+
+<p>
+Hàm mục tiêu tính theo kỳ vọng qua các kịch bản, thể hiện việc tối ưu hóa quyết định hiện tại dựa trên rủi ro tương lai, đúng bản chất của 2-stage stochastic optimization.
+</p>
+<p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+
+</body>
+</html>

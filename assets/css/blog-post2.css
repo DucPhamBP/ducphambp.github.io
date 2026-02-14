@@ -119,3 +119,20 @@ figcaption::before {
   margin-left: auto;
   margin-right: auto;
 }
+
+.scenario-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.scenario-table th,
+.scenario-table td {
+    border: 1px solid black;
+    padding: 6px;
+    text-align: center;
+}
+
+.scenario-table th {
+    font-weight: bold;
+    background-color: #f2f2f2;
+}

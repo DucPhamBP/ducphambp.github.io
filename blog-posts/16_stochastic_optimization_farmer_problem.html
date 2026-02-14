@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stochastic Optimization</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Stochastic Optimization: bài toán người nông dân (The farmer’s problem)</h1>
+    <p class="date">Posted: 26/12/2025</p>
+
+    <p class="alignment">Bài toán người nông dân (Farmer’s problem) là một ví dụ kinh điển trong stochastic optimization , 
+    được sử dụng trong sách "Introduction to Stochastic Programming" của Birge và Louveaux, dùng để minh họa cách mô hình hóa (modelling) và giải (solve) các bài toán ra quyết định dưới điều kiện không chắc chắn (uncertainty). 
+    Bài toán thể hiện cấu trúc two-stage stochastic program với recourse, trong đó các quyết định phải được đưa ra trước khi các biến ngẫu nhiên được hiện thực hóa, và sau đó được điều chỉnh thông qua các quyết định bù (recourse decisions) khi thông tin không chắc chắn trở nên rõ ràng.
+    Trong bài viết này, mình sẽ hướng dẫn cách mô hình hóa bài toán dưới dạng stochastic programming, và cung cấp cách lập trình để tìm nghiệm tối ưu thông qua ngôn ngữ AMPL và Python.</p>
+
+    <h2>1. Mô tả bài toán</h2>
+
+    <p>Một người nông dân có 500 acres đất trồng trọt và trồng ba loại cây:</p>
+    <ul>
+        <li>Lúa mì (wheat)</li>
+        <li>Bắp (Corn)</li>
+        <li>Củ cải đường (Sugar beets)</li>
+    </ul>
+
+    <p class="alignment">Trước khi biết điều kiện thời tiết của năm tới (weather scenario), người nông dân phải quyết định diện tích đất dành cho từng loại cây (first-stage decisions). 
+      Trang trại cần tối thiểu 200 tấn lúa mì và 240 tấn bắp để làm thức ăn cho gia súc. Các số lượng này có thể được sản xuất trên trang trại hoặc mua từ trung gian. Phần dư có thể bán ra thị trường.</p>
+
+    <p>Giá bán trung bình:</p>
+    <ul>
+        <li>Lúa mì: 170 $/tấn</li>
+        <li>Bắp: 150 $/tấn</li>
+        <li>Củ cải đường 36 $/tấn</li>
+    </ul>
+
+    <p class="alignment">Giá mua cao hơn 40% so với giá bán. Số liệu được thể hiện qua bảng sau:</p>
+    <table class="scenario-table">
+        <caption>Bảng 1: Chi phí và năng suất các loại cây</caption>
+        <thead>
+            <tr>
+                <th>Mùa vụ (Crop)</th>
+                <th>Năng suất (Yield) (T/acre)</th>
+                <th>Chi phí trồng (Planting cost) ($/acre)</th>
+                <th>Giá bán (Selling price) ($/T)</th>
+                <th>Giá mua (Purchase price) ($/T)</th>
+                <th>Yêu cầu tối thiểu (Minimum requirement) (T)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Lúa mì</td>
+                <td>2.5</td>
+                <td>150</td>
+                <td>170</td>
+                <td>238</td>
+                <td>200</td>
+            </tr>
+            <tr>
+                <td>Bắp</td>
+                <td>3.0</td>
+                <td>230</td>
+                <td>150</td>
+                <td>210</td>
+                <td>240</td>
+            </tr>
+            <tr>
+                <td>Củ cải đường</td>
+                <td>20</td>
+                <td>260</td>
+                <td>36</td>
+                <td>–</td>
+                <td>–</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="alignment">Giả sử bây giờ chúng ta muốn mô hình hóa bài toán với việc xét đến yếu tố năng suất cây trồng là không chắc chắn, phụ thuộc vào điều kiện thời tiết, như được tóm tắt trong bảng dưới đây.</p>
+
+    <table class="scenario-table">
+      <caption>Bảng 2: Kịch bản và năng suất dự kiến</caption>
+        <thead>
+            <tr>
+                <th>Kịch bản (Scenario)</th>
+                <th>Mô tả thời tiết (Description)</th>
+                <th>Năng suất lúa mì (tons/acre)</th>
+                <th>Năng suất bắp (tons/acre)</th>
+                <th>Năng suất củ cải đường (tons/acre)</th>
+                <th>Xác suất (Probability)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>s = 1</td>
+                <td>Tốt (good)</td>
+                <td>3</td>
+                <td>3.6</td>
+                <td>20</td>
+                <td>0.25</td>
+            </tr>
+            <tr>
+                <td>s = 2</td>
+                <td>Trung bình (average)</td>
+                <td>2.5</td>
+                <td>3</td>
+                <td>15</td>
+                <td>0.4</td>
+            </tr>
+            <tr>
+                <td>s = 3</td>
+                <td>Tệ (bad)</td>
+                <td>2</td>
+                <td>2.4</td>
+                <td>10</td>
+                <td>0.35</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="alignment">Từ dữ liệu trên, hãy lập mô hình tính toán để tối đa hóa lợi nhuận kỳ vọng cho người nông dân.</p>
+
+    <h2>2. Giải deterministic problem</h2>
+
+    <p class="alignment">Từ dữ liệu bài toán trên, ta có mô hình linear programming như sau:</p>
+
+    $$
+    \max Z = -150x_w - 230x_c - 260x_b + 170y_w + 150y_c + 36y_b - 238z_w - 210z_c
+    $$
+
+    $$
+    \text{subject to: } 
+    \begin{cases}
+    x_w + x_c + x_b \le 500 \\
+    2.5 x_w + z_w - y_w \ge 200 \\
+    3 x_c + z_c - y_c \ge 240 \\
+    20 x_b - y_b \ge 0 \\
+    x_w, x_c, x_b, y_w, y_c, y_b, z_w, z_c \ge 0
+    \end{cases}
+    $$
+<p>Trong đó:</p>
+
+<div style="text-align: center; margin: 10px 0;">
+    <div style="display: inline-block; text-align: left;">
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( x_w \)</span>: diện tích đất trồng lúa mì (acre)</p>
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( x_c \)</span>: diện tích đất trồng bắp (acre)</p>
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( x_b \)</span>: diện tích đất trồng củ cải đường (acre)</p>
+
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( y_w \)</span>: lượng lúa mì mua từ nhà bán sỉ (tấn)</p>
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( y_c \)</span>: lượng bắp mua từ nhà bán sỉ (tấn)</p>
+
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( z_w \)</span>: lượng lúa mì bán ra (tấn)</p>
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( z_c \)</span>: lượng bắp bán ra (tấn)</p>
+        <p style="margin:3px 0;"><span style="display:inline-block; width:20px;">\( z_b \)</span>: lượng củ cải đường bán ra (tấn)</p>
+    </div>
+</div>
+
+
+
+
+    <p>Giải bài toán trên, ta thu được kết quả:</p>
+
+    $$
+    x_w = 80 , \quad x_c = 80, \quad x_b=340, \quad y_w = 0, \quad y_c = 0, \quad z_b = 5100, \quad Z = 64,800  
+    $$
+    <p class="alignment">Nếu ta giải bài toán theo từng kịch bản riêng biệt, thì ta có kết quả sau:</p>
+
+    <table class="scenario-table">
+    <thead>
+        <tr>
+            <th>Tốt (Good)</th>
+            <th>Trung bình (Fair)</th>
+            <th>Tệ (Bad)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                x<sub>w</sub> = 66.67, x<sub>c</sub> = 66.67,<br>
+                x<sub>b</sub> = 366.67, y<sub>w</sub> = 0,<br>
+                y<sub>c</sub> = 0, z<sub>b</sub> = 7,333.33,<br>
+                z<sub>w</sub> = 0, z<sub>c</sub> = 0<br><br>
+                <strong>Z = 143,333.33</strong>
+            </td>
+            <td>
+                x<sub>w</sub> = 80, x<sub>c</sub> = 80,<br>
+                x<sub>b</sub> = 340, y<sub>w</sub> = 0,<br>
+                y<sub>c</sub> = 0, z<sub>b</sub> = 5,100,<br>
+                z<sub>w</sub> = 0, z<sub>c</sub> = 0<br><br>
+                <strong>Z = 64,800</strong>
+            </td>
+            <td>
+                x<sub>w</sub> = 400, x<sub>c</sub> = 100,<br>
+                x<sub>b</sub> = 0, y<sub>w</sub> = 0,<br>
+                y<sub>c</sub> = 0, z<sub>w</sub> = 600,<br>
+                z<sub>b</sub> = 0, z<sub>c</sub> = 0<br><br>
+                <strong>Z = 19,000</strong>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+    <h2>3. Giải 2-stages stochastic problem</h2>
+<h3>Tổng quan</h3>
+<p class="alignment">Xét một bài toán w-stages stochastic, trong đó vector biến quyết định được chia thành hai nhóm: biến giai đoạn một (<em>here-and-now</em>) 
+$x \in \mathbb{R}^n$ và biến giai đoạn hai (<em>recourse decisions</em>) 
+$y(\xi) \in \mathbb{R}^m$, phụ thuộc vào biến ngẫu nhiên $\xi$. Khi đó, mô hình hai giai đoạn với recourse có dạng tổng quát:</p>
+
+$$
+\min_{x \in X} \; c^\top x + \mathbb{E}_{\xi}[ Q(x, \xi) ]
+$$
+
+
+<p>trong đó hàm chi phí giai đoạn hai được định nghĩa bởi:</p>
+
+$$
+Q(x, \xi) = \min_{y} \; q(\xi)^\top y
+$$
+$$
+\text{s.t.} \quad 
+W(\xi)y = h(\xi) - T(\xi)x, \quad 
+y \ge 0.
+$$
+
+
+<p>Ở đây:</p>
+<ul>
+    <li>$x$ là quyết định được đưa ra trước khi biết $\xi$</li>
+    <li>$y$ là quyết định điều chỉnh sau khi $\xi$ được quan sát</li>
+    <li>$c$ là vector chi phí giai đoạn một</li>
+    <li>$q(\xi)$ là vector chi phí giai đoạn hai</li>
+    <li>$T(\xi)$ liên kết quyết định giai đoạn một với ràng buộc giai đoạn hai</li>
+    <li>$W(\xi)$ và $h(\xi)$ xác định cấu trúc hệ ràng buộc sau khi bất định được hiện thực hóa</li>
+</ul>
+
+<p class="alignment">Nếu không gian bất định rời rạc với tập kịch bản $S = \{1, \dots, |S|\}$ và xác suất $p_s$, mô hình tương đương dạng xác định mở rộng (<em>deterministic equivalent</em>):</p>
+
+$$
+\min_{x, y_s} \; c^\top x + \sum_{s \in S} p_s \, q_s^\top y_s.
+$$
+
+
+
+<p class="alignment">Trở lại bài toán hiện tại, yếu tố stochastic là năng suất cây trồng phụ thuộc vào kịch bản thời tiết theo bảng 2
+$s \in S = \{1,2,3\}$.</p>
+
+<p>Biến giai đoạn một:</p>
+$$
+x = (x_w, x_c, x_b)
+$$
+<p class="alignment">là diện tích đất phân bổ cho lúa mì, bắp và củ cải đường. Các quyết định này được đưa ra trước khi biết năng suất thực tế.</p>
+
+<p>Biến giai đoạn hai: với mỗi kịch bản $s$, ta có</p>
+$$
+y_s = (y_{w,s}, y_{c,s}, z_{w,s}, z_{c,s}, z_{b,s})
+$$
+<p>bao gồm lượng mua bổ sung và lượng bán ra sau khi năng suất được quan sát.</p>
+
+<h3>Hàm mục tiêu</h3>
+<p>Lợi nhuận kỳ vọng cần tối đa hóa:</p>
+$$
+\max_x \; -150 x_w - 230 x_c - 260 x_b 
++ \sum_{s \in S} p_s \, Q(x,s).
+$$
+
+<p>trong đó:</p>
+$$
+Q(x,s) = \max_{y_s} \; 
+170 z_{w,s} + 150 z_{c,s} + 36 z_{b,s}
+- 238 y_{w,s} - 210 y_{c,s}.
+$$
+
+
+<h3>Ràng buộc</h3>
+
+<p>Ràng buộc đất (giai đoạn một):</p>
+$$
+x_w + x_c + x_b \le 500
+$$
+
+<p>Với mỗi kịch bản $s$, ràng buộc cân bằng vật chất:</p>
+$$
+a_{w,s} x_w + y_{w,s} - z_{w,s} \ge 200,
+$$
+$$
+a_{c,s} x_c + y_{c,s} - z_{c,s} \ge 240,
+$$
+$$
+a_{b,s} x_b - z_{b,s} \ge 0,
+$$
+$$
+x \ge 0, \quad y_s \ge 0.
+$$
+
+<p>Trong đó $a_{w,s}, a_{c,s}, a_{b,s}$ là năng suất tương ứng theo từng kịch bản thời tiết.</p>
+<h3>Trở lại bài toán </h3>
+Thế số vào, ta có:
+
+<div style="text-align: center; margin: 20px 0;">
+$$
+\begin{alignedat}{2}
+\max Z = \; & 
+170(0.25 z_{w,1} + 0.4 z_{w,2} + 0.35 z_{w,3}) \\
+& + 150(0.25 z_{c,1} + 0.4 z_{c,2} + 0.35 z_{c,3}) \\
+& + 36(0.25 z_{b,1} + 0.4 z_{b,2} + 0.35 z_{b,3}) \\
+& - 238(0.25 y_{w,1} + 0.4 y_{w,2} + 0.35 y_{w,3}) \\
+& - 210(0.25 y_{c,1} + 0.4 y_{c,2} + 0.35 y_{c,3}) \\
+& - (150 x_w + 230 x_c + 260 x_b)
+\end{alignedat}
+$$
+</div>
+
+<div style="text-align: center; margin: 20px 0;">
+$$
+\begin{alignedat}{2}
+\text{subject to:} \quad
+& x_w + x_c + x_b \le 500 \\
+& 3 x_w + y_{w,1} - z_{w,1} \ge 200 \\
+& 2.5 x_w + y_{w,2} - z_{w,2} \ge 200 \\
+& 2 x_w + y_{w,3} - z_{w,3} \ge 200 \\
+& 3.6 x_c + y_{c,1} - z_{c,1} \ge 240 \\
+& 3 x_c + y_{c,2} - z_{c,2} \ge 240 \\
+& 2.4 x_c + y_{c,3} - z_{c,3} \ge 240 \\
+& 20 x_b - z_{b,1} \ge 0 \\
+& 15 x_b - z_{b,2} \ge 0 \\
+& 10 x_b - z_{b,3} \ge 0 \\
+& x_w, x_c, x_b, y_{w,s}, z_{w,s} \ge 0
+\end{alignedat}
+$$
+</div>
+<p class="alignment">
+Một điểm quan trọng cần lưu ý là các biến quyết định ở giai đoạn hai được tách thành các biến 
+<em>recourse</em> theo từng <em>scenario</em>. 
+Ví dụ, biến \( z_w \) không còn là một biến duy nhất mà được tách thành 
+\( z_{w,1} \), \( z_{w,2} \), \( z_{w,3} \) tương ứng với ba kịch bản thời tiết. 
+Điều này có nghĩa là sau khi thời tiết thực tế được tiết lộ, người nông dân có thể điều chỉnh 
+quyết định bán hoặc mua sao cho phù hợp với từng tình huống cụ thể.
+</p>
+
+<p class="alignment">
+Tương tự, tất cả các biến như \( y_w, y_c, z_c, z_b \) đều được mở rộng theo chỉ số 
+kịch bản \(s\). Khi đó, các ràng buộc (ví dụ như nhu cầu thức ăn cho gia súc) 
+cũng phải được viết riêng cho từng scenario. Nhờ vậy, mô hình phản ánh đúng bản chất của 
+<em>two-stage stochastic programming with recourse</em>: 
+quyết định diện tích trồng được đưa ra trước, còn quyết định mua/bán được điều chỉnh sau.
+</p>
+
+<p>
+Giải mô hình này, ta thu được nghiệm:
+</p>
+
+<div style="text-align: center; margin: 20px 0;">
+$$
+\begin{alignedat}{3}
+x_w &= 420      &\qquad y_{w,1} &= 0     &\qquad z_{w,1} &= 1060 \\
+x_c &= 80       &\qquad y_{c,1} &= 0     &\qquad z_{c,1} &= 48   \\
+x_b &= 0        &\qquad y_{b,1} &= 0     &\qquad z_{b,1} &= 0    \\[6pt]
+
+                &             & y_{w,2} &= 0     &\qquad z_{w,2} &= 850 \\
+                &             & y_{c,2} &= 0     &\qquad z_{c,2} &= 0   \\
+                &             & y_{b,2} &= 0     &\qquad z_{b,2} &= 0   \\[6pt]
+
+                &             & y_{w,3} &= 0     &\qquad z_{w,3} &= 640 \\
+                &             & y_{c,3} &= 48    &\qquad z_{c,3} &= 0   \\
+                &             & y_{b,3} &= 0     &\qquad z_{b,3} &= 0   
+\end{alignedat}
+$$
+
+$$
+Z = 57,\!802
+$$
+</div>
+
+<p class="alignment">
+Nếu bạn nhìn vào giá trị của hàm mục tiêu, chúng ta không thể đơn giản tính nó bằng cách lấy kỳ vọng (expectation) 
+của các giá trị hàm mục tiêu thu được khi giải riêng từng kịch bản:
+</p>
+$$
+0.25 * (143,333.33) + 0.4 * (64,800) + 0.35 * (19,000) = 68,403.33
+$$
+<p class="alignment">
+Nếu giải từng kịch bản riêng lẻ, ta đang vô tình giả định rằng người nông dân biết trước 
+điều kiện thời tiết – tức là có <em>perfect information</em>. 
+Trong thực tế, điều này là không thể. Một phương án tối ưu cho năm tốt hoàn toàn có thể trở nên không khả thi 
+nếu năm đó lại là tệ.
+</p>
+
+<p class="alignment">
+Ngược lại, mô hình <em>two-stage stochastic</em> buộc chúng ta 
+phải chọn quyết định diện tích trồng sao cho tối ưu trên toàn bộ các kịch bản có thể xảy ra. 
+Nói cách khác, đây là một chiến lược ra quyết định có tính đến rủi ro,  thay vì dựa trên giả định biết trước tương lai.
+</p>
+
+<h2>4. Python</h2>
+<p>Dưới đây là đoạn Python code mình đã lập trình để giải bài toán trên, mình chọn solver CBC.</p>
+<pre><code class="language-python">
+import pulp
+
+# model
+m = pulp.LpProblem("stochastic_programming", pulp.LpMaximize)
+
+# parameters
+crops = ['wheat','corn','beet']
+scenarios = ['S1','S2','S3']
+
+yields = [[3, 3.6, 20],
+          [2.5, 3, 15],
+          [2, 2.4, 10]]
+
+yields_prop = [0.25, 0.4, 0.35]
+selling_profit = [170, 150, 36]
+purchase_cost = [238, 210, 1000000]
+plant_cost = [150, 230, 260]
+rhs = [200, 240, 0]
+
+# decision variables
+land = pulp.LpVariable.dicts("x", crops, lowBound=0)
+purchase = pulp.LpVariable.dicts("y", (scenarios, crops), lowBound=0)
+sold = pulp.LpVariable.dicts("z", (scenarios, crops), lowBound=0)
+
+# constraint: total land
+m += pulp.lpSum(land[j] for j in crops) <= 500
+
+# scenario constraints
+for j in range(len(scenarios)):
+    for i in range(len(crops)):
+        m += (yields[j][i] * land[crops[i]]
+            + purchase[scenarios[j]][crops[i]]
+            - sold[scenarios[j]][crops[i]]
+            >= rhs[i])
+
+# objective
+m += (pulp.lpSum(
+        selling_profit[j] * yields_prop[k] * sold[scenarios[k]][crops[j]]
+        for j in range(len(crops))
+        for k in range(len(scenarios)))
+    - pulp.lpSum(plant_cost[j] * land[crops[j]] for j in range(len(crops)))
+    - pulp.lpSum(
+        purchase_cost[j] * yields_prop[k] * purchase[scenarios[k]][crops[j]]
+        for j in range(len(crops))
+        for k in range(len(scenarios))))
+
+# solve with CBC
+m.solve(pulp.PULP_CBC_CMD())
+
+# print results
+print("land allocation:")
+for j in crops:
+    if land[j].varValue > 0:
+        print(j, round(land[j].varValue,2))
+
+print("\npurchases:")
+for s in scenarios:
+    for j in crops:
+        if purchase[s][j].varValue > 0:
+            print(s, j, round(purchase[s][j].varValue,2))
+
+print("\nsold:")
+for s in scenarios:
+    for j in crops:
+        if sold[s][j].varValue > 0:
+            print(s, j, round(sold[s][j].varValue,2))
+
+print("\nprofit:", round(pulp.value(m.objective),2))
+</code></pre>
+<h2>4. Giải bằng AMPL</h2>
+<h3>File mô hình cho AMPL (model.mod)</h3>
+<p>Dưới đây là hướng dẫn tạo lập mô hình bằng ngôn ngữ AMPL. Để mô hình hóa bài toán này trong AMPL, chúng ta cần làm theo các bước cơ bản: định nghĩa tập hợp và tham số, khai báo biến quyết định, 
+  xây dựng ràng buộc và cuối cùng là định nghĩa hàm mục tiêu.</p>
+<h4>Định nghĩa tập hợp và tham số</h4>
+<p>Trước tiên, chúng ta xác định các tập hợp (sets) và tham số (parameters) của bài toán.</p>
+<pre><code class="language-python"># sets
+set crops;      # loại cây trồng
+set scenarios;  # các kịch bản mùa vụ
+
+# parameters
+param yield {scenarios, crops};       # năng suất theo kịch bản
+param prob {scenarios};               # xác suất mỗi kịch bản
+
+param selling_profit {crops};         # lợi nhuận bán mỗi loại cây
+param purchase_cost {crops};          # chi phí mua thêm
+param plant_cost {crops};             # chi phí trồng
+param rhs {crops};                    # nhu cầu tối thiểu
+param total_land;                     # tổng diện tích đất</code></pre>
+<p>Trong đó:</p>
+<ul>
+  <li><strong>set</strong> là tập hợp các đối tượng, tương tự danh sách trong Python. Ở đây, chúng ta có các loại cây và các kịch bản mùa vụ.</li>
+  <li><strong>param</strong> là tham số số liệu, ví dụ năng suất theo kịch bản (yield), chi phí và lợi nhuận.</li>
+</ul>
+<p class="alignment"> Việc gắn kịch bản và loại cây giúp mô hình biết cách tính toán cho từng tình huống cụ thể.</p>
+<h4>Khai báo biến quyết định</h4>
+<p class="alignment">Tiếp theo, chúng ta xác định các <strong>biến quyết định</strong>, tức là những gì mô hình sẽ tối ưu:</p>
+
+<pre><code class="language-python">var land {crops} >= 0;                     # diện tích trồng mỗi cây
+var purchase {scenarios, crops} >= 0;      # mua thêm theo kịch bản
+var sold {scenarios, crops} >= 0;          # bán theo kịch bản</code></pre>
+<p>Trong đó:</p>
+<ul>
+  <li><code>land[j]</code> đại diện cho diện tích trồng cây <code>j</code>.</li>
+  <li><code>purchase[s,j]</code> và <code>sold[s,j]</code> đại diện cho lượng mua và bán của loại cây <code>j</code> trong kịch bản <code>s</code>.</li>
+  <li>Tất cả các biến đều ≥ 0 vì không thể trồng, mua hay bán số âm.</li>
+</ul>
+<h4>Xây dựng các ràng buộc</h4>
+
+<p class="alignment"><strong>a) Ràng buộc tổng diện tích đất</strong></p>
+
+<pre><code class="language-python">s.t. total_land_constraint:
+    sum {j in crops} land[j] <= total_land;</code></pre>
+
+<p class="alignment">Tổng diện tích trồng không vượt quá tổng diện tích đất sẵn có.</p>
+<p class="alignment">sum {j in crops} land[j] tương đương với tổng diện tích của từng loại cây cộng lại.</p>
+
+<p class="alignment"><strong>b) Ràng buộc cân bằng sản lượng theo kịch bản</strong></p>
+
+<pre><code class="language-python">s.t. balance {s in scenarios, j in crops}:
+    yield[s,j] * land[j] + purchase[s,j] - sold[s,j] >= rhs[j];</code></pre>
+
+<p class="alignment">Mỗi loại cây trong từng kịch bản phải đáp ứng nhu cầu tối thiểu (<code>rhs[j]</code>).</p>
+<p class="alignment">Công thức giải thích: sản lượng tự trồng (<code>yield[s,j] * land[j]</code>) cộng lượng mua thêm (<code>purchase[s,j]</code>), trừ lượng bán (<code>sold[s,j]</code>) phải lớn hơn hoặc bằng nhu cầu tối thiểu.</p>
+
+<h4>Xây dựng hàm mục tiêu</h4>
+
+<p class="alignment">Cuối cùng, chúng ta xác định hàm mục tiêu, là lợi nhuận kỳ vọng cần tối đa hóa:</p>
+
+<pre><code class="language-python">maximize expected_profit:
+    sum {s in scenarios, j in crops}
+        prob[s] * selling_profit[j] * sold[s,j]
+    - sum {j in crops}
+        plant_cost[j] * land[j]
+    - sum {s in scenarios, j in crops}
+        prob[s] * purchase_cost[j] * purchase[s,j];</code></pre>
+
+<p class="alignment">Lợi nhuận bán hàng kỳ vọng: tổng lợi nhuận từ bán từng loại cây trong mỗi kịch bản, nhân với xác suất xảy ra kịch bản (<code>prob[s]</code>).</p>
+<p class="alignment">Chi phí trồng: trừ đi chi phí trồng mỗi loại cây (<code>plant_cost[j] * land[j]</code>).</p>
+<p class="alignment">Chi phí mua thêm: trừ đi chi phí mua thêm trong từng kịch bản (<code>prob[s] * purchase_cost[j] * purchase[s,j]</code>).</p>
+<p>Từ các thông tin trên, ta có file model.dat như sau:
+ <pre><code class="language-python">
+  # sets
+set crops;
+set scenarios;
+
+# parameters
+param yield {scenarios, crops};
+param prob {scenarios};
+
+param selling_profit {crops};
+param purchase_cost {crops};
+param plant_cost {crops};
+param rhs {crops};
+
+param total_land;
+
+# variables
+var land {crops} >= 0;
+var purchase {scenarios, crops} >= 0;
+var sold {scenarios, crops} >= 0;
+
+# constraints
+
+# total land constraint
+s.t. total_land_constraint:
+    sum {j in crops} land[j] <= total_land;
+
+# scenario constraints
+s.t. balance {s in scenarios, j in crops}:
+    yield[s,j] * land[j] + purchase[s,j] - sold[s,j] >= rhs[j];
+
+# objective
+maximize expected_profit:
+    sum {s in scenarios, j in crops}
+        prob[s] * selling_profit[j] * sold[s,j]
+    - sum {j in crops}
+        plant_cost[j] * land[j]
+    - sum {s in scenarios, j in crops}
+        prob[s] * purchase_cost[j] * purchase[s,j];
+ </code></pre> 
+</p>
+<h3>File dữ liệu cho AMPL (data.dat)</h3>
+<p class="alignment">Đây là phần dữ liệu mà mô hình sẽ dùng, bao gồm tập hợp, tham số, xác suất và năng suất theo từng kịch bản.</p>
+
+<pre><code class="language-python">
+# tập hợp
+set crops := wheat corn beet;      # các loại cây trồng
+set scenarios := s1 s2 s3;         # các kịch bản mùa vụ
+
+# tham số 
+param total_land := 500;           # tổng diện tích đất
+
+# xác suất mỗi kịch bản
+param prob :=
+s1 0.25   # kịch bản tốt
+s2 0.4    # kịch bản trung bình
+s3 0.35;  # kịch bản xấu
+
+# lợi nhuận bán mỗi cây
+param selling_profit :=
+wheat 170
+corn 150
+beet 36;
+
+# chi phí mua thêm mỗi cây
+param purchase_cost :=
+wheat 238
+corn 210
+beet 1000000;
+
+# chi phí trồng mỗi cây
+param plant_cost :=
+wheat 150
+corn 230
+beet 260;
+
+# nhu cầu tối thiểu
+param rhs :=
+wheat 200
+corn 240
+beet 0;
+
+# năng suất từng cây theo từng kịch bản
+param yield:
+        wheat   corn   beet :=
+s1      3       3.6    20
+s2      2.5     3      15
+s3      2       2.4    10;
+
+</code></pre>
+<h3>Chạy thực nghiệm</h3>
+<p>Sau khi build xong mô hình và dữ liệu, ta tiến hành chạy mô hình trong Console. Dòng lệnh để chạy mô hình được mô tả như sau:</p>
+<pre><code class="language-python">
+model "model.mod";        # nạp file mô hình
+data "data.dat";          # nạp file dữ liệu
+
+solve option gurobi;      # giải bài toán, có thể chọn các solver khác như cplex, highs, cbc,...
+
+display land;             # hiển thị diện tích trồng mỗi cây
+display purchase;         # hiển thị lượng mua theo từng scenario
+display sold;             # hiển thị lượng bán theo từng scenario
+display expected_profit;  # hiển thị lợi nhuận kỳ vọng
+</code></pre>
+
+<p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+
+</body>
+</html>

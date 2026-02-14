@@ -90,3 +90,71 @@ blockquote {
   text-align: justify;    
   line-height: 1.5;
   margin-top: 0.5rem;}
+.scenario-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.scenario-table th,
+.scenario-table td {
+    border: 1px solid black;
+    padding: 6px;
+    text-align: center;
+}
+
+.scenario-table th {
+    font-weight: bold;
+    background-color: #f2f2f2;
+}
+/* ===== CODE BLOCK ===== */
+pre code.hljs {
+    display: block;
+    padding: 20px;
+    background: #ffffff;
+    color: #000000; 
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "Fira Code", monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    border: 1px solid #e5e5e5;
+}
+
+/* ===== KEYWORD (for, if, import...) ===== */
+.hljs-keyword {
+    color: #8B0000; /* đỏ đô */
+    font-weight: 600;
+}
+
+/* ===== BUILT-IN (range, print...) ===== */
+.hljs-built_in {
+    color: #6A0DAD; /* tím */
+}
+
+/* ===== VARIABLE ===== */
+.hljs-variable,
+.hljs-attr,
+.hljs-attribute {
+    color: #D2691E; /* cam */
+}
+
+/* ===== STRING ===== */
+.hljs-string {
+    color: #1a7f37;
+}
+
+/* ===== COMMENT ===== */
+.hljs-comment {
+    color: #228B22; /* xanh lá */
+    font-style: italic;
+}
+
+/* ===== NUMBER ===== */
+.hljs-number {
+    color: #005cc5;
+}
+
+/* ===== FUNCTION NAME ===== */
+.hljs-title {
+    color: #6A0DAD;
+}
