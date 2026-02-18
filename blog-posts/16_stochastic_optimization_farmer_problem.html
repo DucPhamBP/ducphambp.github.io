@@ -33,7 +33,7 @@
   <!-- Main content -->
   <main class="content">
     <h1>Stochastic Optimization: bài toán người nông dân (The farmer’s problem)</h1>
-    <p class="date">Posted: 26/12/2025</p>
+    <p class="date">Posted: 18/02/2026</p>
 
     <p class="alignment">Bài toán người nông dân (Farmer’s problem) là một ví dụ kinh điển trong stochastic optimization , 
     được sử dụng trong sách "Introduction to Stochastic Programming" của Birge và Louveaux, dùng để minh họa cách mô hình hóa (modelling) và giải (solve) các bài toán ra quyết định dưới điều kiện không chắc chắn (uncertainty). 
@@ -94,13 +94,13 @@
                 <td>20</td>
                 <td>260</td>
                 <td>36</td>
-                <td>–</td>
-                <td>–</td>
+                <td>-</td>
+                <td>-</td>
             </tr>
         </tbody>
     </table>
 
-    <p class="alignment">Giả sử bây giờ chúng ta muốn mô hình hóa bài toán với việc xét đến yếu tố năng suất cây trồng là không chắc chắn, phụ thuộc vào điều kiện thời tiết, như được tóm tắt trong bảng dưới đây.</p>
+    <p class="alignment">Giả sử bây giờ ta muốn mô hình hóa bài toán với việc xét đến yếu tố năng suất cây trồng là không chắc chắn, phụ thuộc vào điều kiện thời tiết, như được tóm tắt trong bảng dưới đây.</p>
 
     <table class="scenario-table">
       <caption>Bảng 2: Kịch bản và năng suất dự kiến</caption>
@@ -272,7 +272,7 @@ $s \in S = \{1,2,3\}$.</p>
 $$
 x = (x_w, x_c, x_b)
 $$
-<p class="alignment">là diện tích đất phân bổ cho lúa mì, bắp và củ cải đường. Các quyết định này được đưa ra trước khi biết năng suất thực tế.</p>
+<p class="alignment">là diện tích đất phân bổ cho lúa mì ($w$), bắp ($c$) và củ cải đường ($b$). Các quyết định này được đưa ra trước khi biết năng suất thực tế.</p>
 
 <p>Biến giai đoạn hai: với mỗi kịch bản $s$, ta có</p>
 $$
@@ -396,7 +396,7 @@ $$
 </div>
 
 <p class="alignment">
-Nếu bạn nhìn vào giá trị của hàm mục tiêu, chúng ta không thể đơn giản tính nó bằng cách lấy kỳ vọng (expectation) 
+Nếu bạn nhìn vào giá trị của hàm mục tiêu, ta không thể tính nó bằng cách lấy kỳ vọng (expectation) 
 của các giá trị hàm mục tiêu thu được khi giải riêng từng kịch bản:
 </p>
 $$
@@ -404,13 +404,13 @@ $$
 $$
 <p class="alignment">
 Nếu giải từng kịch bản riêng lẻ, ta đang vô tình giả định rằng người nông dân biết trước 
-điều kiện thời tiết – tức là có <em>perfect information</em>. 
+điều kiện thời tiết - tức là có <em>perfect information</em>. 
 Trong thực tế, điều này là không thể. Một phương án tối ưu cho năm tốt hoàn toàn có thể trở nên không khả thi 
 nếu năm đó lại là tệ.
 </p>
 
 <p class="alignment">
-Ngược lại, mô hình <em>two-stage stochastic</em> buộc chúng ta 
+Ngược lại, mô hình <em>two-stage stochastic</em> buộc ta 
 phải chọn quyết định diện tích trồng sao cho tối ưu trên toàn bộ các kịch bản có thể xảy ra. 
 Nói cách khác, đây là một chiến lược ra quyết định có tính đến rủi ro,  thay vì dựa trên giả định biết trước tương lai.
 </p>
@@ -489,10 +489,10 @@ print("\nprofit:", round(pulp.value(m.objective),2))
 </code></pre>
 <h2>4. Giải bằng AMPL</h2>
 <h3>File mô hình cho AMPL (model.mod)</h3>
-<p>Dưới đây là hướng dẫn tạo lập mô hình bằng ngôn ngữ AMPL. Để mô hình hóa bài toán này trong AMPL, chúng ta cần làm theo các bước cơ bản: định nghĩa tập hợp và tham số, khai báo biến quyết định, 
+<p>Dưới đây là hướng dẫn tạo lập mô hình bằng ngôn ngữ AMPL. Để mô hình hóa bài toán này trong AMPL, ta cần làm theo các bước cơ bản: định nghĩa tập hợp và tham số, khai báo biến quyết định, 
   xây dựng ràng buộc và cuối cùng là định nghĩa hàm mục tiêu.</p>
 <h4>Định nghĩa tập hợp và tham số</h4>
-<p>Trước tiên, chúng ta xác định các tập hợp (sets) và tham số (parameters) của bài toán.</p>
+<p>Trước tiên, ta xác định các tập hợp (sets) và tham số (parameters) của bài toán.</p>
 <pre><code class="language-python"># sets
 set crops;      # loại cây trồng
 set scenarios;  # các kịch bản mùa vụ
@@ -508,12 +508,12 @@ param rhs {crops};                    # nhu cầu tối thiểu
 param total_land;                     # tổng diện tích đất</code></pre>
 <p>Trong đó:</p>
 <ul>
-  <li><strong>set</strong> là tập hợp các đối tượng, tương tự danh sách trong Python. Ở đây, chúng ta có các loại cây và các kịch bản mùa vụ.</li>
+  <li><strong>set</strong> là tập hợp các đối tượng, tương tự danh sách trong Python. Ở đây, ta có các loại cây và các kịch bản mùa vụ.</li>
   <li><strong>param</strong> là tham số số liệu, ví dụ năng suất theo kịch bản (yield), chi phí và lợi nhuận.</li>
 </ul>
 <p class="alignment"> Việc gắn kịch bản và loại cây giúp mô hình biết cách tính toán cho từng tình huống cụ thể.</p>
 <h4>Khai báo biến quyết định</h4>
-<p class="alignment">Tiếp theo, chúng ta xác định các <strong>biến quyết định</strong>, tức là những gì mô hình sẽ tối ưu:</p>
+<p class="alignment">Tiếp theo, ta xác định các <strong>biến quyết định</strong>, tức là những gì mô hình sẽ tối ưu:</p>
 
 <pre><code class="language-python">var land {crops} >= 0;                     # diện tích trồng mỗi cây
 var purchase {scenarios, crops} >= 0;      # mua thêm theo kịch bản
@@ -544,7 +544,7 @@ var sold {scenarios, crops} >= 0;          # bán theo kịch bản</code></pre>
 
 <h4>Xây dựng hàm mục tiêu</h4>
 
-<p class="alignment">Cuối cùng, chúng ta xác định hàm mục tiêu, là lợi nhuận kỳ vọng cần tối đa hóa:</p>
+<p class="alignment">Cuối cùng, ta xác định hàm mục tiêu, là lợi nhuận kỳ vọng cần tối đa hóa:</p>
 
 <pre><code class="language-python">maximize expected_profit:
     sum {s in scenarios, j in crops}
