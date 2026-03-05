@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stochastic Optimization</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Khám phá sự tương đồng giữa AI và Operation Research</h1>
+    <p class="date">Posted: 05/03/2026</p>
+<p class="alignment">
+Artificial Intelligence (AI) và Operations Research (OR): Hai lĩnh vực này có thể khác nhau về chi tiết, nhưng nếu nhìn tổng thể, chúng ta sẽ thấy chúng chia sẻ một stack chung:
+</p>
+
+<ul class="alignment">
+  <li>Level 1: Toán học (Mathematics)</li>
+  <li>Level 2: Thuật toán (Algorithms)</li>
+  <li>Level 3: Phương pháp và mô hình (Methods)</li>
+  <li>Level 4: Các thư viện và framework (Libraries and frameworks)</li>
+  <li>Level 5: Ứng dụng và nền tảng (Applications & Platforms)</li>
+</ul>
+<p class="alignment">
+Mỗi level được xây dựng trên nền tảng của level trước, tăng dần mức độ trừu tượng và hướng đến mục tiêu cụ thể của người dùng. Càng lên cao, bạn càng dễ áp dụng nhưng giảm khả năng tùy chỉnh.
+</p>
+
+<ul>
+  <li>Level thấp: Kiểm soát chi tiết, tối ưu hóa theo ý muốn.</li>
+  <li>Level cao: Dùng được “ngay và luôn” nhưng phụ thuộc vào công cụ có sẵn.</li>
+</ul>
+
+<figure style="text-align:center;">
+  <img src="photo/Level of Maturity.png" style="width:110%;">
+  <figcaption>Các cấp độ trong AI và Operation Research</figcaption>
+</figure>
+
+<p>
+Phần tiếp theo sẽ phân tích cụ thể từng phần theo bảng trên:
+</p>
+
+<h2>Level 1: Toán học</h2>
+
+<p class="alignment">Toán là nền tảng cơ bản cho hầu hết các lĩnh vực khoa học và kỹ thuật. Nó cung cấp ngôn ngữ và công cụ để mô tả vấn đề, xây dựng mô hình và phát triển các phương pháp suy luận một cách chặt chẽ.</p>
+<h3>AI:</h3>
+<ul>
+  <li class="alignment">
+    <strong>Linear Algebra:</strong> học cách biểu diễn dữ liệu dưới dạng vector và ma trận, là nền tảng cho các phép toán trong Machine Learning và mạng neural.
+  </li>
+  <li class="alignment">
+    <strong>Calculus:</strong> học về đạo hàm, gradient và các phép tối ưu, giúp huấn luyện mô hình bằng cách giảm loss function.
+  </li>
+  <li class="alignment">
+    <strong>Statistics:</strong> học về các phương pháp ước lượng tham số của mô hình, kiểm định giả thuyết và đánh giá hiệu suất của thuật toán. 
+    Những khái niệm như phân phối dữ liệu (distribution), phương sai (variance), kỳ vọng (expectation) hay độ tin cậy (reliability) của mô hình đều bắt nguồn từ các phương pháp thống kê.
+  </li>
+</ul>
+
+<h3>Operation Research:</h3>
+<ul>
+  <li class="alignment">
+    <strong>Convex Optimization:</strong> nghiên cứu vào các bài toán mà hàm mục tiêu và miền nghiệm có tính chất lồi. 
+    Điểm đặc biệt của các bài toán lồi là nếu tồn tại nghiệm tối ưu thì nghiệm đó cũng là nghiệm tối ưu toàn cục, không bị mắc kẹt ở các nghiệm cục bộ. 
+    Nhờ tính chất này, nhiều thuật toán có thể tìm ra nghiệm tối ưu một cách hiệu quả và ổn định.
+  </li>
+  <li class="alignment">
+    <strong>Mathematical Programming:</strong> môn này chủ yếu nghiên cứu việc lập mô hình các bài toán liên quan đến việc tối đa (maximize) hoặc tối thiểu (minimize) hàm mục tiêu (objective function), cùng với các ràng buộc (constraints) mô tả giới hạn của hệ thống. 
+    Tùy theo dạng của biến và ràng buộc, ta có các mô hình quen thuộc như Linear Programming (LP), Integer Programming (IP), mixed-integer Programming (MIP).
+  </li>
+  <li class="alignment">
+    <strong>Discrete Mathematics:</strong> học về cấu trúc có tính rời rạc như Sets, Functions, Sequences, Number Theory, Counting, Relations, Graphs,... 
+    Môn này là môn nền tảng cho các sinh viên khối ngành Computer Science, Data Science, Mathematics.
+  </li>
+  <li class="alignment">
+    <strong>Graph Theory:</strong> nghiên cứu các cấu trúc gồm đỉnh (nodes) và cạnh (edges), thường được dùng để biểu diễn các hệ thống có dạng mạng. 
+    Ví dụ, trong logistics ta có thể mô hình hóa các thành phố như các đỉnh và các tuyến vận chuyển như các cạnh; trong mạng máy tính, các thiết bị được kết nối với nhau theo một cấu trúc tương tự. 
+    Nhờ cách biểu diễn này, nhiều bài toán như tìm đường đi ngắn nhất, tối ưu luồng mạng hay thiết kế hệ thống phân phối có thể được giải một cách hiệu quả.
+  </li>
+</ul>
+
+<h2>Level 2: Thuật toán</h2>
+
+<p class="alignment">Thuật toán là công cụ để biến các ý tưởng toán học và mô hình thành các bước hành động cụ thể. Chúng giúp giải quyết các bài toán tối ưu, phân tích dữ liệu và học máy một cách hiệu quả. Dưới đây là một số thuật toán tiêu biểu của AI và Operation Research.</p>
+<h3>AI:</h3>
+<ul class="alignment">
+  <li>
+    <strong>Classification:</strong> thuật toán phân loại dữ liệu vào các nhóm đã biết, ví dụ Logistic Regression, Decision Tree, Naive Bayes,...
+  </li>
+  <li class="alignment">
+    <strong>Clustering:</strong> thuật toán nhóm dữ liệu chưa biết nhãn thành các cluster dựa trên đặc điểm, ví dụ K-means, DBSCAN, Hierarchical Clustering,...
+  </li>
+  <li class="alignment">
+    <strong>Pattern Mining:</strong> khai thác các mẫu, mối quan hệ hoặc quy luật trong dữ liệu, ví dụ Apriori, FP-Growth,...
+  </li>
+  <li class="alignment">
+    <strong>Dimensional Reduction:</strong> giảm số lượng biến và trường dữ liệu đầu vào để đơn giản hóa dữ liệu, ví dụ PCA, t-SNE,...
+  </li>
+  <li class="alignment">
+    <strong>Outliers Detection:</strong> phát hiện các điểm dữ liệu bất thường, ví dụ Isolation Forest, Z-score, COF, HBOS, DBSCAN based,...
+  </li>
+</ul>
+
+<h3>Operation Research:</h3>
+<ul class="alignment">
+  <li>
+    <strong>Heuristics:</strong> các phương pháp tìm lời giải gần đúng cho bài toán phức tạp, không cần nghiệm tối ưu tuyệt đối. 
+  </li>
+  <li class="alignment">
+    <strong>Exact Algorithms:</strong> thuật toán tìm nghiệm tối ưu chính xác, ví dụ Simplex cho Linear Programming hoặc Branch & Bound cho Integer Programming.
+  </li>
+  <li class="alignment">
+    <strong>Local Search:</strong> thuật toán cải thiện nghiệm bằng cách bắt đầu từ một nghiệm và di chuyển từng bước để tìm giải pháp tốt hơn.
+  </li>
+</ul>
+
+<h2>Level 3: Phương pháp và mô hình</h2>
+
+<p class="alignment">Tập trung vào các phương pháp và mô hình giúp giải quyết bài toán, đồng thời mô phỏng cấu trúc, mối quan hệ và hành vi của hệ thống.</p>
+
+<h3>AI:</h3>
+<ul class="alignment">
+  <li><strong>Machine Learning:</strong> SVM, K-means, Decision Tree, KNN, Gradient Boosting, …</li>
+  <li><strong>Deep Learning:</strong> Neural Network, RNN, LSTM, CNN, Transformer, BERT, GPT, …</li>
+  <li><strong>Reinforcement Learning:</strong> Q-Learning, Deep Q-Network (DQN), Policy Gradient, Actor-Critic, PPO, …</li>
+</ul>
+
+<h3>Operation Research:</h3>
+<ul class="alignment">
+  <li><strong>Mathematical Programming:</strong> Linear Programming, Integer Programming, Mixed-Integer Programming, Mixed-Integer Linear Programming, ...</li>
+  <li><strong>Exact Algorithms:</strong> Lagrangian Relaxation, Branch & Bound, Branch & Cut, Interior Point Method, ...</li>
+  <li><strong>Heuristics:</strong> Tabu Search Algorithm, Genetic Algorithm, Ant Colony Optimization, …</li>
+  <li><strong>Simulation:</strong> Monte Carlo, Markov Chain, …</li>
+  <li><strong>Stochastic:</strong> Two-stage stochastic, Multi-stage stochastic, Chance-Constrained Stochastic, ...</li>
+  <li><strong>Real-world Business Problems:</strong> Knapsack Problem, Traveling Salesman Problem, Capacitated Facility Location Problem, Farmer Problem, Assignment Resource Problem, Scheduling Problem, …</li>
+</ul>
+
+<h2>Level 4: Các Thư viện và Framework</h2>
+
+<p class="alignment">Bao gồm các thư viện tích hợp sẵn các công cụ hỗ trợ tính toán và triển khai thuật toán, ta không cần phải code từ đầu, mà chỉ cần gọi hàm theo cú pháp là có thể sử dụng dễ dàng.</p>
+
+<h3>AI:</h3>
+<ul class="alignment">
+  <li><strong>Machine Learning:</strong> Scikit-learn, PySpark,...</li>
+  <li><strong>Deep Learning:</strong> PyTorch, TensorFlow, Keras, MXNet, JAX,...</li>
+  <li><strong>Pre-trained Models / NLP:</strong> BERT, GPT, FastText, Transformer, HuggingFace Transformers, RoBERTa, T5,...</li>
+  <li><strong>Reinforcement Learning:</strong> OpenAI Gym, Stable Baselines3, RLlib, Dopamine,...</li>
+</ul>
+<h3>Operation Research:</h3>
+<ul class="alignment">
+  <li><strong>Modelling System:</strong> là các công cụ này giúp ta lập mô hình bài toán, mô tả biến, ràng buộc và hàm mục tiêu một cách trực quan trước khi chọn solver để giải.
+    Một số modelling system phổ biến như Pyomo, PuLP (Python), JuMP (Julia), YALMIP (MATLAB), SMS++ (C++),...</li>
+  <li><strong>Solvers:</strong> là các phần mềm/thuật toán dùng để giải các bài toán tối ưu dựa trên mô hình đã xây dựng, tìm nghiệm tối ưu nhanh và chính xác. Đa phần đã có API để tích hợp với modelling system. Một số solvers phổ biến là
+     CPLEX, Gurobi, HiGHS, CBC/COIN-OR, GLPK, SCIP, MOSEK,...</li>
+  <li><strong>Algebraic Modeling Language:</strong> là ngôn ngữ mô hình hóa đại số cho phép biểu diễn bài toán tối ưu dưới dạng toán học, tách biệt việc mô hình hóa và việc giải bài toán. Được dùng nhiều nhất là AMPL, GAMS,...</li>
+</ul>
+
+<h2>Level 5: Ứng dụng và nền tảng</h2>
+
+<p class="alignment">Đây là giải pháp “all-in-one”. Tích hợp nhiều giải pháp và được triển khai với các gói giải pháp cụ thể khác nhau. Bao gồm cả triển khai phần mềm, hạ tầng và hỗ trợ chuyên gia.</p>
+
+<p class="alignment"><strong>AI:</strong> Amazon SageMaker (ML platform), H2O.ai (AutoML), Google Vertex AI,...</p>
+<p class="alignment"><strong>Operation Research:</strong> Nextmv, NextBillion.ai, WeaveServices (Supply Chain),...</p>
+
+<h2>Kết luận</h2>
+
+<p>
+Nếu bạn muốn thực sự thành công trong một lĩnh vực, bạn cần thành thạo hầu hết các cấp độ. Nhưng nếu bạn chỉ muốn giải quyết một vấn đề cụ thể, bạn có thể tập trung vào một mảng nhất định.
+</p>
+
+
+
+<p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>
