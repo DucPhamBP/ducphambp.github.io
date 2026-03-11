@@ -33,80 +33,109 @@
 
   <!-- Main content -->
   <main class="content">
-    <h1>Quy hoạch toán học</h1>
-    <p class="date">Posted: 14/02/2026</p>
+    <h1>Tổng quan về Quy hoạch toán học (Mathematical Programming)</h1>
+    <p class="date">Posted: 11/03/2026</p>
 <p class="alignment">Khi đi sâu hơn vào Vận trù học (Operations Research - OR), chúng ta sẽ thấy rằng phần kỹ thuật cốt 
   lõi và được sử dụng rộng rãi nhất chính là Quy hoạch toán học (Mathematical Programming - MP).
 Thực tế, trong nhiều trường hợp, khi nhắc đến OR, người ta đang nói đến MP. Điều này không phải ngẫu nhiên. 
-Quy hoạch toán học là một nhánh kỹ thuật được phát triển từ rất sớm trong lịch sử Vận trù học và đóng vai trò trung tâm trong việc giải quyết các bài toán tối ưu.
-Nói một cách bản chất, Quy hoạch toán học tập trung vào việc tìm giá trị lớn nhất hoặc nhỏ nhất của một hàm số, trong khi phải thỏa mãn một hệ các điều kiện ràng buộc.</p>
-  <h2>Hai nhóm thuật toán chính trong Quy hoạch toán học</h2>
+Quy hoạch toán học là một nhánh kỹ thuật được phát triển từ rất sớm trong Operation Research và đóng vai trò trung tâm trong việc giải quyết các bài toán tối ưu.
+Mảng này tập trung vào việc tìm giá trị lớn nhất hoặc nhỏ nhất của một hàm số, trong khi vẫn phải thỏa mãn một tập các điều kiện ràng buộc.
+Trong bài viết này, tôi sẽ giới thiệu những phần khái quát về các kỹ thuật thường được sử dụng phổ biến trong Quy hoạch toán học.</p>
+  <h2>Lập Mô hình tối ưu</h2>
+<p class="alignment"> Trước khi áp dụng các thuật toán để tìm nghiệm tối ưu, bước quan trọng đầu tiên là chuyển đổi bài toán thực tế thành một mô hình tối ưu. Quá trình này được gọi là <em>mô hình hóa</em>, trong đó ta xác định các biến quyết định, 
+  xây dựng hàm mục tiêu và thiết lập các ràng buộc phản ánh những điều kiện hoặc giới hạn của bài toán. 
+  Khi mô hình tối ưu đã được thiết lập, các thuật toán tối ưu sẽ được sử dụng để tìm ra nghiệm tốt nhất thỏa mãn các ràng buộc đó. </p> 
+<p class="alignment"> Xét một ví dụ đơn giản trong bài toán sản xuất: một doanh nghiệp sản xuất nhiều loại sản phẩm khác nhau, mỗi loại có giá bán và chi phí sản xuất riêng. 
+    Doanh nghiệp muốn xác định số lượng sản xuất của từng loại sản phẩm sao cho <strong>tổng lợi nhuận đạt mức tối đa</strong>, trong khi <strong>tổng chi phí không vượt quá ngân sách cho phép</strong>. 
+    Để giải bài toán này, ta đặt các biến đại diện cho số lượng của từng sản phẩm, xây dựng hàm mục tiêu là tổng lợi nhuận cần tối đa hóa, đồng thời thiết lập các ràng buộc về ngân sách và các điều kiện sản xuất liên quan. 
+    Sau đó, các phương pháp tối ưu sẽ được áp dụng để tìm ra phương án sản xuất tối ưu. Dưới đây là mô hình toán học của bài toán trên:</p> 
 
+<p class="alignment">
+$$
+\begin{align*}
+\text{Maximize } & Z = \sum_{j \in J} (p_j - c_j) x_j \\
+\text{s.t. } & \sum_{j \in J} c_j x_j \le B \\
+& \sum_{j \in J} a_{ij} x_j \le b_i \quad \forall i \in I \\
+& x_j \ge 0, \quad x_j \in \mathbb{Z}^+ \text{ (nếu cần nguyên)}
+\end{align*}
+$$
+</p>
+
+<p class="alignment">
+Trong đó:
+</p>
+
+<ul>
+  <li><em>x<sub>j</sub></em> : số lượng sản phẩm <em>j</em> được sản xuất</li>
+  <li><em>p<sub>j</sub></em> : giá bán mỗi đơn vị sản phẩm <em>j</em></li>
+  <li><em>c<sub>j</sub></em> : chi phí sản xuất mỗi đơn vị sản phẩm <em>j</em></li>
+  <li><em>B</em> : tổng ngân sách cho phép</li>
+  <li><em>a<sub>ij</sub></em> : lượng tài nguyên <em>i</em> cần cho một đơn vị sản phẩm <em>j</em></li>
+  <li><em>b<sub>i</sub></em> : tổng tài nguyên <em>i</em> sẵn có</li>
+  <li><em>J</em> : tập các loại sản phẩm</li>
+  <li><em>I</em> : tập các loại tài nguyên</li>
+</ul>
+
+
+    <p> Tùy vào đặc điểm của mô hình tối ưu, các bài toán trong quy hoạch toán học có thể được phân loại thành nhiều dạng khác nhau, chẳng hạn như: </p> 
+    <ul> 
+      <li>Quy hoạch tuyến tính (Linear Programming)</li> 
+      <li>Quy hoạch nguyên (Integer Programming)</li> 
+      <li>Quy hoạch hỗn hợp nguyên (Mixed-Integer Programming)</li> 
+      <li>Quy hoạch phi tuyến (Nonlinear Programming)</li> <li>Quy hoạch ngẫu nhiên (Stochastic Programming)</li> 
+      <li>Quy hoạch robust (Robust Programming)</li> </ul>
   <p class="alignment">
     Trong phạm trù Quy hoạch toán học, có hai nhóm phương pháp/thuật toán lớn
-    được sử dụng để giải các mô hình tối ưu:
+    được sử dụng để giải các mô hình tối ưu là:
   </p>
 
   <ul>
-    <li><strong>Thuật toán chính xác (Exact Algorithms)</strong></li>
-    <li><strong>Thuật toán xấp xỉ (Approximation Algorithms)</strong></li>
+    <li>Thuật toán chính xác (Exact Algorithms)</li>
+    <li>Thuật toán xấp xỉ (Approximation Algorithms)</li>
   </ul>
+<figure style="text-align:center;">
+  <img src="photo/algorithm.png" style="width:110%;">
+  <figcaption>Một số phương pháp phổ biến của Exact Algorithms và Approximation Algorithms</figcaption>
+</figure>
+  <h2>Thuật toán chính xác (Exact Algorithms)</h2>
 
-  <p class="alignment">Hai phần cuối của chuỗi bài về Vận trù học tập trung vào nội dung này.
-    Phần này giới thiệu về các thuật toán chính xác, còn phần tiếp theo sẽ trình
-    bày về các thuật toán xấp xỉ. Ở đây, các thuật toán chủ yếu được liệt kê và
-    định hướng tổng quan; chi tiết chuyên sâu sẽ được đề cập trong các bài viết
-    tiếp theo hoặc bạn đọc có thể tham khảo thêm từ các tài liệu chuyên ngành.
-    Các thuật ngữ tiếng Anh được sử dụng song song để thuận tiện cho việc tra cứu.
-  </p>
-  <h3>Thuật toán chính xác (Exact Algorithms)</h3>
-
-  <p >Các thuật toán chính xác luôn đi liền với các mô hình toán học. Một khi vấn đề
+  <p class="alignment" >Các thuật toán chính xác luôn đi liền với các mô hình tối ưu. Một khi vấn đề
     đã được biểu diễn dưới dạng biến số, hàm mục tiêu và ràng buộc, Exact Algorithms
     sẽ tìm nghiệm tối ưu cho mô hình đó.
   </p>
 
-  <p class="alignment"><strong>Điểm quan trọng nhất của nhóm phương pháp này là:</strong></p>
+  <p class="alignment">Điểm quan trọng nhất của nhóm phương pháp này là:</p>
 
-  <blockquote>Nếu thuật toán kết thúc thành công, nghiệm tìm được là tối ưu – tức không tồn tạilời giải nào tốt hơn.
+  <blockquote>Nếu thuật toán kết thúc thành công, nghiệm tìm được là tối ưu – tức không tồn tại lời giải nào tốt hơn.
  </blockquote>
 
-  <p class="alignment">Ví dụ, trong một bài toán sản xuất: Cho giá bán và chi phí của nhiều loại sản phẩm,
-    doanh nghiệp muốn xác định số lượng sản xuất sao cho lợi nhuận tối đa, trong khi
-    tổng chi phí không vượt quá ngân sách cho phép.
-  </p>
+  
+<p class="alignment">Một số phương pháp phổ biến trong nhóm này bao gồm:</p>
 
-  <p class="alignment">
-    Ta đặt biến đại diện cho số lượng từng sản phẩm, xây dựng hàm mục tiêu là tổng
-    lợi nhuận, và thiết lập các ràng buộc ngân sách. Sau đó, Exact Algorithms sẽ
-    tìm ra phương án sản xuất tối ưu.
-  </p>
-
-  <p class="alignment"><strong>Một số phương pháp phổ biến trong nhóm này bao gồm:</strong></p>
-
-  <ul>
-    <li>Simplex Method</li>
-    <li>Branch-and-Bound</li>
-    <li>Branch-and-Cut</li>
-    <li>Lagrangian Relaxation</li>
-    <li>Interior-Point Method</li>
-    <li>Column Generation</li>
-    <li>Benders Decomposition</li>
-    <li>Robust Optimisation</li>
-    <li>Stochastic Optimisation</li>
+  <ul class="alignment">
+    <li><strong>Simplex Method (Đơn hình)</strong>: Phương pháp cơ bản để giải các bài toán Linear Programming (LP). 
+      Thường được dạy trong môn Quy hoạch Tuyến tính tại các trường Đại học tại Việt Nam. 
+      Nó di chuyển theo các cạnh của feasible region từ một corner-point đến corner-point khác, tối ưu dần hàm mục tiêu. 
+      Phù hợp với các bài toán LP kích thước vừa và nhỏ, và là cơ sở cho nhiều phương pháp nâng cao.</li>
+    <li><strong>Branch and Bound</strong>: Một kỹ thuật giải Integer Programming (IP) và Mixed-Integer Programming (MIP), sử dụng phân tách không gian nghiệm thành các nhánh nhỏ hơn (branching) và sử dụng các giới hạn trên/dưới (bounds) để loại bỏ các nhánh không/ít liên quan. 
+      Thuật toán đảm bảo tìm global optimum, nhưng computation cost có thể tăng theo số biến.</li>
+    <li><strong>Branch and Cut</strong>: Thuật toán vừa phân nhánh không gian nghiệm, vừa thêm các cuts để loại bỏ các nghiệm không nguyên, giúp cải thiện hiệu quả so với Branch and Bound thuần túy.</li>
+    <li><strong>Lagrangian Relaxation</strong>: Phương pháp giải quyết các bài toán IP/LP phức tạp bằng cách thả lỏng một số ràng buộc vào hàm mục tiêu thông qua các multiplier (Lagrange multipliers). 
+      Nó giúp tạo ra bài toán dễ giải hơn trong khi vẫn cung cấp upper/lower bounds cho nghiệm tối ưu.</li>
+    <li><strong>Interior Point Method</strong>: Thuật toán giải LP bằng cách di chuyển trong vùng khả thi (interior) thay vì đi theo các cạnh như Simplex. 
+      Phương pháp này thường hiệu quả với LP kích thước lớn và có tính ổn định cao khi số biến và ràng buộc nhiều.</li>
+    <li><strong>Column Generation</strong>: Kỹ thuật giải LP hoặc Large-scale LP bằng cách chỉ xét một tập con các biến ban đầu và từ từ thêm các cột mới nếu chúng có tiềm năng cải thiện hàm mục tiêu. 
+      Thường dùng trong các bài toán logistics, routing và cutting stock problems.</li>
+    <li><strong>Benders Decomposition</strong>: Phương pháp tách một bài toán lớn thành 1 problem lớn và các subproblem nhỏ hơn. Giải pháp được cải thiện lặp đi lặp lại bằng cách truyền thông tin giữa problem lớn đó và các subproblem, 
+      thường được sử dụng cho Mixed-Integer Programming và các bài toán có cấu trúc block.</li>
   </ul>
 
   <p class="alignment"> Những phương pháp này có nền tảng lý thuyết chặt chẽ và đảm bảo tính tối ưu.
-    Tuy nhiên, nhược điểm của chúng là tốn nhiều thời gian và tài nguyên tính toán,
-    đặc biệt với các bài toán có quy mô lớn (nhiều biến số và ràng buộc).
+    Tuy nhiên, nhược điểm của chúng là tốn nhiều thời gian và tài nguyên tính toán, đặc biệt với các bài toán có quy mô lớn (nhiều biến số và ràng buộc).
+    Chính vì vậy, trong thực tế, Exact Algorithms thường phù hợp với các bài toán quy mô nhỏ hoặc trung bình.
   </p>
 
-  <p class="alignment">
-    Chính vì vậy, trong thực tế, Exact Algorithms thường phù hợp với các bài toán
-    quy mô nhỏ hoặc trung bình.
-  </p>
-
-  <h3>Thuật toán xấp xỉ (Approximation Algorithms / Heuristics)</h3>
+  <h2>Thuật toán xấp xỉ (Approximation Algorithms / Heuristics)</h2>
 
   <p class ="alignment">
     Khi bài toán trở nên quá lớn và phức tạp, việc tìm nghiệm tối ưu tuyệt đối có thể mất rất nhiều thời gian – đôi khi là không khả thi trong điều kiện thực tế.
@@ -124,45 +153,41 @@ Nói một cách bản chất, Quy hoạch toán học tập trung vào việc t
 
   <p class="alignment">
     Trong nhiều tài liệu, Approximation Algorithms và Heuristics có sự phân biệt về mặt lý thuyết.
-    Tuy nhiên, trong bối cảnh Vận trù học, hai thuật ngữ này thường được sử dụng thay thế nhau
-    để chỉ các phương pháp giải nhanh, chấp nhận nghiệm gần tối ưu (near-optimal).
+    Tuy nhiên, đối với Operation Research, nhiều tài liệu sử dụng 2 thuật ngữ này thay thế nhau, cùng để chỉ các phương pháp giải “nhanh” với nguồn lực có hạn, 
+    chấp nhận kết quả “đủ tốt” thay vì kết quả tốt nhất.
+  </p>
+<p class="alignment">
+    
+Các thuật toán này không đòi hỏi các kỹ thuật toán học phức tạp, 
+đặc điểm của chúng là xuất phát từ hướng tư duy “cảm tính” của con người. 
+Bản thân từ “heuristics” cũng mang nghĩa là “xuất phát từ kinh nghiệm” trong tiếng Anh, và có thể dịch ra tiếng Việt là “suy nghiệm”.
+Điều thú vị là chúng ta sử dụng tư duy heuristics mỗi ngày một cách vô thức. Một số phương pháp Heuristics phổ biến trong Operation Research bao gồm:
   </p>
 
-  <p class="alignment">
-    Điều thú vị là chúng ta sử dụng tư duy heuristics mỗi ngày một cách vô thức.
-  </p>
-
-  <p class="alignment">
-    Ví dụ, với bài toán tìm đường đi qua nhiều địa điểm, một cách “bản năng” là tại mỗi điểm,
-    ta chọn đi đến địa điểm gần nhất chưa từng ghé qua. Đây chính là một minh họa cho
-    Greedy Algorithm - một phương pháp thuộc nhóm Heuristics.
-  </p>
-
-  <p><strong>Ngoài Greedy, còn nhiều phương pháp nổi bật khác như:</strong></p>
-
-  <ul>
-    <li>Local Search</li>
-    <li>Tabu Search</li>
-    <li>Simulated Annealing</li>
-    <li>Variable Neighbourhood Search</li>
-    <li>Ant Colony Optimisation</li>
-    <li>Genetic Algorithm</li>
+  <ul class="alignment">
+    <li><strong>Greedy :</strong> Là phương pháp chọn lựa tốt nhất tại mỗi bước, không xem xét ảnh hưởng về sau. Ưu điểm là đơn giản và nhanh chóng, nhưng có thể dẫn đến nghiệm không tối ưu.</li>
+    <li><strong>Local Search:</strong> Là phương pháp tập trung vào việc cải thiện nghiệm hiện tại từng bước một bằng cách di chuyển tới các nghiệm lân cận tốt hơn. 
+      Ưu điểm là đơn giản, nhanh chóng, nhưng dễ mắc kẹt tại nghiệm tối ưu cục bộ (local optimum).</li>
+    <li><strong>Tabu Search:</strong> Là mở rộng của Local Search, Tabu Search sử dụng một danh sách cấm (tabu list) để tránh quay lại những nghiệm đã thăm trước đó. 
+      Điều này giúp vượt qua các điểm tối ưu cục bộ và khám phá không gian nghiệm rộng hơn</li>
+    <li><strong>Simulated Annealing:</strong> Thuật toán lấy cảm hứng từ quá trình làm lạnh kim loại trong vật lý, cho phép chấp nhận những bước đi “tệ hơn” với một xác suất giảm dần theo thời gian. 
+      Cơ chế này giúp thoát khỏi cực trị cục bộ (local optimum) và tiến dần tới nghiệm tối ưu toàn cục (global optimum).</li>
+    <li><strong>Variable Neighbourhood Search:</strong> Thuật toán này thay đổi kích thước hoặc kiểu tập nghiệm xung quanh (neighbourhood) trong quá trình tìm kiếm, nhằm tìm kiếm nhiều hơn các giải pháp trong không gian nghiệm. </li>
+    <li><strong>Ant Colony Optimization:</strong> Lấy cảm hứng từ hành vi tìm đường của kiến, mỗi “con kiến” để lại pheromone đánh dấu các đường đi tốt, từ đó hướng dẫn các con kiến khác. 
+      Thuật toán này đặc biệt mạnh trong các bài toán tối ưu lộ trình, vận tải và mạng (network design).</li>
+    <li><strong>Genetic Algorithm:</strong> Lấy cảm hứng từ quá trình tiến hóa trong sinh học, Genetic Algorithm sử dụng các khái niệm như sinh sản, đột biến và chọn lọc để tìm kiếm nghiệm tối ưu. 
+      Phương pháp này thường hiệu quả trong việc giải các bài toán phức tạp với không gian nghiệm lớn.</li>
   </ul>
 
-  <p class="alignment">
-    Đặc điểm chung của các phương pháp này là thường được “lấy cảm hứng” từ tự nhiên
-    hoặc hành vi con người, và không đòi hỏi cấu trúc toán học quá phức tạp như các
-    phương pháp chính xác.
   </p>
-
-  <h3>Sự phát triển mở rộng của Vận trù học</h3>
+<p class="alignment">Sự phức tạp của các bài toán tối ưu trong thực tế đòi hỏi sự phát triển của các phương pháp, với xu hướng là kết hợp các giải thuật khác nhau. 
+  Vài năm gần đây, dựa vào ưu điểm của 2 loại thuật toán chính xác và xấp xỉ, một nhóm thuật toán mới đã được phát triển và mang lại hiệu quả cao trong việc giải các bài toán Operation Research, mang tên Matheuristics (math-heuristics). 
+Thậm chí Heuristics còn được kết hợp với các kỹ thuật khác như Mô phỏng (Simulation), Machine Learning,...</p>
+  <h2>Sự phát triển mở rộng của Operation Research</h2>
 
   <p class="alignment">
-    Mặc dù Quy hoạch toán học là nền tảng cốt lõi của OR, trong những thập niên gần đây,
-    nhiều nhánh kỹ thuật khác cũng được tích hợp vào lĩnh vực này.
-  </p>
-
-  <p class="alignment"><strong>Có thể kể đến:</strong></p>
+    Mặc dù Quy hoạch toán học là nền tảng cốt lõi của OR, trong những năm gần đây,
+    nhiều nhánh kỹ thuật khác cũng được tích hợp vào lĩnh vực này:</p>
 
   <ul>
     <li>Simulation</li>
@@ -173,23 +198,24 @@ Nói một cách bản chất, Quy hoạch toán học tập trung vào việc t
   </ul>
 
   <p class="alignment">
-    Điều này cho thấy Vận trù học không phải là một lĩnh vực khép kín, mà là một hệ sinh thái
+    Điều này cho thấy Operation research không phải là một lĩnh vực khép kín, mà là một hệ sinh thái
     các phương pháp định lượng, liên tục mở rộng và kết nối với Thống kê, Khoa học dữ liệu
     và Trí tuệ nhân tạo.
   </p>
 
-  <h3>Kết lại</h3>
+  <h2>Kết lại</h2>
 
   <p class="alignment">
-    Tóm lại, Quy hoạch toán học là trụ cột kỹ thuật của Vận trù học. Nó cung cấp cấu trúc
-    để mô hình hóa vấn đề và hệ thống thuật toán để giải chúng. Hai nhóm phương pháp chính –
-    Exact Algorithms và Heuristics – đại diện cho hai cách tiếp cận khác nhau: một bên đảm bảo
-    tối ưu tuyệt đối, một bên ưu tiên tốc độ và tính khả thi.
+    Tóm lại, Quy hoạch toán học là trụ cột kỹ thuật của Operation Research. Nó cung cấp cấu trúc
+    để mô hình hóa vấn đề và hệ thống thuật toán để giải chúng. Hai nhóm phương pháp chính là
+    Exact Algorithms và Heuristics, đại diện cho hai cách tiếp cận khác nhau: một bên đảm bảo
+    tối ưu tuyệt đối, một bên ưu tiên tốc độ tính toán và tính khả thi.
   </p>
 
   <p class="alignment">
-    Việc lựa chọn phương pháp nào phụ thuộc vào quy mô bài toán, mục tiêu và nguồn lực của tổ chức.
-    Và chính sự linh hoạt đó làm nên sức mạnh của Vận trù học trong thực tiễn.
+    Theo thời gian, chúng ta chứng kiến sự phát triển mạnh mẽ của các thuật toán trong Operation Research. 
+    Các thuật toán và sự kết hợp mới vẫn đang tiếp tục được nghiên cứu để giải quyết nhiều vấn đề phức tạp trong đời sống một cách hiệu quả. 
+    Tất nhiên, việc sử dụng phương pháp nào phụ thuộc vào đặc điểm của bài toán, cũng như mục tiêu và nguồn lực của nhà quản lý, doanh nghiệp và tổ chức.
   </p>
 
 
