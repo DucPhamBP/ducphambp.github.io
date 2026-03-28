@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Optimization Problems</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Những thành phần cơ bản trong mô hình Tối ưu hóa</h1>
+    <p class="date">Posted: 28/03/2026</p>
+    <p class="alignment">Bài viết này sẽ cung cấp cho bạn kiến thức về các thành phần 
+      cơ bản của một mô hình tối ưu hóa (optimization model). Sau khi đọc xong, bạn sẽ hiểu các định nghĩa và vai trò 
+      của (1) objectives (mục tiêu), (2) constraints (ràng buộc), (3) decision variables 
+      (biến quyết định), (4) solution space (không gian nghiệm) và (5) solutions (nghiệm) trong các mô hình tối ưu. 
+      Đây là phần giới thiệu các khái niệm trong tối ưu hóa, nó không bao gồm các phương pháp hay các kỹ thuật giải cụ thể.
+      Tôi sẽ viết những điều đó trong các bài viết sau.</p>
+
+<p class="alignment">Về cơ bản, tối ưu hóa là việc cố gắng đạt được <strong>nhiều thứ tốt nhất</strong> 
+  hoặc <strong>ít thứ xấu nhất</strong> dựa trên các giới hạn tài nguyên mà ta có. Nói cách khác, đó là mong 
+  muốn có <strong>kết quả tốt nhất trong hoàn cảnh hiện tại</strong>. Bài viết này, mình sẽ đi qua các thành phần chính 
+  của mô hình tối ưu hóa , theo ví dụ về việc chọn "tuyến đường đi làm ngắn nhất" mà ta hay làm hằng ngày. 
+  Ngoài ra, còn rất nhiều cách khác mà tối ưu hóa xuất hiện trong cuộc sống. Dưới đây là một vài ví dụ</p>
+
+<ul class="alignment">
+    <li>
+    Giám đốc Sản xuất (production manager) sắp xếp máy móc và công nhân để tối đa hóa sản lượng (Production planning)
+  </li>
+  <li>
+    Một trường đại học tìm cách xếp lịch học để tránh trùng lịch cho sinh viên và quá tải cho giảng viên (Timetabling problem)</li>
+  <li>
+    Một nhà quy hoạch giao thông đô thị thiết kế tuyến xe buýt phục vụ được nhiều người nhất, mà không chạy xe rỗng suốt cả ngày
+</li>
+</ul>
+<h2>Objectives (Mục tiêu)</h2>
+
+<p class="alignment">Objectivelà mục đích của việc tối ưu hóa. Nó trả lời câu hỏi: “Mục tiêu của chúng ta là gì?” Mỗi bài toán tối ưu hóa đều có một objective, và nó thuộc một trong hai dạng:</p>
+
+<ul class="alignment">
+    <li><strong>Maximization</strong> – tối đa hóa (khi bạn muốn có nhiều nhất một thứ tốt, ví dụ: lợi nhuận)</li>
+    <li><strong>Minimization</strong> – tối thiểu hóa (khi bạn muốn giảm thiểu một thứ xấu, ví dụ: chi phí)</li>
+</ul>
+
+<table class="scenario-table">
+  <caption>Bảng: Phân loại các bài toán tối ưu hóa trong thực tế</caption>
+  <thead>
+    <tr>
+      <th>Tình huống</th>
+      <th>Loại bài toán (Type)</th>
+      <th>Optimization Phrase</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Lên kế hoạch sản xuất </td>
+      <td>Maximization</td>
+      <td>Maximize sản lượng (output)</td>
+    </tr>
+    <tr>
+      <td>Sắp xếp lịch học và dạy cho giảng viên và sinh viên </td>
+      <td>Minimization</td>
+      <td>Minimize xung đột lịch học (scheduling conflicts)</td>
+    </tr>
+    <tr>
+      <td>Thiết kế quãng đường di chuyển cho xe bus</td>
+      <td>Maximization + Minimization</td>
+      <td>Maximize số lượng hành khách, minimize công suất nhàn rỗi (idle capacity)</td>
+    </tr>
+  </tbody>
+</table>
+<p class="alignment">Sau khi xác định loại bài toán, chúng ta cần tạo hàm mục tiêu (objective function) cho mô hình tối ưu đó. 
+  Objective function là một công thức toán học dùng để tính giá trị của mục tiêu. Trong ví dụ chọn tuyến đường đi làm ngắn nhất, 
+  objective function của nó có thể nhận một tuyến đường cụ thể và trả về số km của tuyến đường đó. 
+  Việc tạo objective function đòi hỏi chúng ta phải xác định rất rõ về đối tượng (objective) cần được tối ưu
+  Chúng ta nên dành thời gian để thiết lập đối tượng cẩn thận. Nó giống như việc định hướng một con 
+  thuyền đi đúng hướng trước khi bắt đầu một chuyến đi dài. Việc thiết lập chính xác ngay từ đầu rất quan trọng, 
+  nếu không kết quả cuối cùng có thể không như mong đợi.</p>
+
+<p class="alignment">Hãy cùng xem xét kỹ hơn việc tạo objective function cho ví dụ tìm 
+  "tuyến đường đi làm ngắn nhất". “Ngắn nhất” nghĩa là gì? Ngắn nhất về thời gian? Ngắn 
+  nhất về quãng đường? Hai điều này chưa chắc đã giống nhau. Chúng ta cũng nên tạm dừng và đảm bảo rằng 
+  “shortest” thực sự là yếu tố chúng ta muốn tối ưu. Có thể còn có các tiêu chí khác tốt hơn: ví dụ, 
+  tuyến đường có chi phí thấp nhất (xăng, phí cầu đường) hoặc ít vấn đề nhất
+  (ít kẹt xe hoặc ít vấn đề trong suốt lộ trình di chuyển). Ở đây, chúng ta sẽ giữ objective “shortest”, 
+  định nghĩa là số km ít nhất cho phần còn lại của bài viết. Qua ví dụ này, mình muốn nhấn mạnh 
+  rằng chúng ta nên luôn cẩn thận và chính xác khi quyết định objective function.</p>
+
+<p class="alignment">Vậy nên, objective của chúng ta là quảng đường di chuyển ngắn nhất (số km). Nếu chỉ chạy tối ưu hóa dựa trên mục tiêu này, kết quả sẽ là một đường thẳng từ nhà đến văn 
+  phòng, điều này hoàn toàn vô dụng vì không thể lái xe xuyên qua cây cối hay tòa nhà. Các constraints
+  được thiết lập chính xác (mình sẽ giải thích ở phần sau) sẽ đảm bảo rằng kết quả tối ưu của chúng ta vừa khả thi vừa hữu dụng.</p>
+
+<h2>Constraints (Ràng buộc)</h2>
+
+<p class="alignment">Hầu hết các bài toán tối ưu đều có constraints, đặc biệt là trong “thế giới thực”. 
+  Constraints cung cấp kết quả hợp lý và có thể thực hiện được. Không có constraints, kết quả tối ưu
+  có thể vô dụng vì không thể thực hiện được.</p>
+
+<p class="alignment">Một số constraints cần thiết để có nghiệm khả thi, một số được thêm vào để có giải
+   pháp tốt hơn. Ví dụ:</p>
+<ul class="alignment">
+    <li>Ràng buộc tuyến đường phải đi qua mốt số địa điểm nhất định giúp kết quả khả thi</li>
+    <li>Các constraints khác có thể cân bằng các yếu tố khác với objective function để cải thiện kết quả</li>
+</ul>
+
+<p class="alignment">Lưu ý: Thêm quá nhiều constraints làm bài toán phức tạp hơn, tốn nhiều tài nguyên 
+  tính toán, và thường làm giảm giá trị tối ưu của objective function.
+   Nếu quá nhiều constraints, có thể không có nghiệm nào thỏa mãn. Trong ví dụ về “tìm tuyến đường đi làm ngắn nhất”, một số
+  ràng buộc có thể được thêm vào để tăng tính thực tế của bài toán như sau:</p>
+  <ul>
+    <li>Ràng buộc về thời gian: thời gian di chuyển không quá 30 phút.</li>
+    <li>Ràng buộc về đèn giao thông: khi đi làm, chỉ được đi qua không quá 3 đèn giao thông</li>
+    <li>Ràng buộc về địa điểm: không được đi qua trường học</li>
+    <li>Ràng buộc về giới hạn tốc độ khi di chuyển cho phép: giới hạn tốc độ di chuyển phép của đường > 60 km/h </li>
+  </ul>
+
+<p class="alignment">Một ràng buộc không làm thay đổi kết quả tối ưu được gọi là non-binding constraint. 
+  Nó chỉ tăng chi phí tính toán mà không giảm chất lượng kết quả.</p>
+
+<h2>Decision Variables & Parameters (Biến quyết định và tham số)</h2>
+
+<p class="alignment">Decision variables là những thứ mà chúng ta có quyền quyết định trong bài toán tối ưu. 
+Nói đơn giản, đó là các lựa chọn mà chúng ta có thể thay đổi để tìm ra phương án tốt nhất.Ngược lại, parameters là những dữ liệu đã
+cho sẵn của bài toán. Chúng mô tả tình huống thực tế mà chúng ta đang đối mặt và không thể thay đổi trong quá trình tối ưu hóa.</p>
+
+<p class="alignment">Trong ví dụ về “tìm tuyến đường đi làm ngắn nhất”, decision variables chính là việc chúng ta chọn 
+  tuyến đường nào để đi. Nói cách khác, tối ưu hóa sẽ “thử” các lựa chọn khác nhau (các tuyến đường khác nhau) để tìm ra phương án tốt 
+  nhất, nhưng vẫn phải tuân theo các constraints. Còn parameters là những thông tin đã có sẵn của 
+  từng tuyến đường, ví dụ như số km hay số đèn giao thông. Những giá trị này được cho trước và không
+   thể thay đổi, tối ưu hóa chỉ có thể “dựa vào đó” để đưa ra quyết định. Thông thường, objective function sẽ sử 
+   dụng cả decision variables và parameters, quá trình tối ưu hóa sẽ thử nghiệm các decision variables khác nhau
+    thông qua objective function, kết hợp với các parameters để tính giá trị objective của các giải pháp khả thi mà nó khảo sát.</p>
+
+<p class="alignment">Hầu hết các bài toán tối ưu hóa đều có rất nhiều nghiệm khả thi 
+để xem xét. Quá trình tối ưu hóa sẽ phải “duyệt” qua các khả năng này để tìm ra nghiệm tốt nhất. 
+Trong đó, objective function đóng vai trò đánh giá từng nghiệm. Nó sử dụng cả decision variables và parameters để 
+tính ra objective value cho mỗi giải pháp. Ở phần tiếp theo, chúng ta sẽ cùng tìm hiểu các thuật ngữ 
+quan trọng liên quan đến nghiệm và không gian nghiệm, để hiểu rõ hơn quá trình tối ưu hóa thực sự diễn ra như thế nào.</p>
+
+<h2>Feasible Region & Solution Space (Không gian nghiệm và miền nghiệm khả thi)</h2>
+
+<p class="alignment">Solution space của một bài toán tối ưu hóa là tập hợp tất cả các giải pháp có thể có. 
+  Trong ví dụ về “tìm tuyến đường đi làm ngắn nhất”, solution space bao gồm tất cả các tuyến đường 
+  có thể đi từ nhà đến nơi làm việc. Feasible region là một tập con của solution space. Nó là những giải 
+  pháp khả thi còn lại sau khi các constraints của bài toán tối ưu hóa được áp dụng.</p>
+
+<p class="alignment">Một vấn đề phổ biến trong tối ưu hóa là solution space và feasible region có 
+  thể cực kỳ lớn. Với một số loại bài toán, solution space gần như vô hạn. Trong ví dụ của chúng ta 
+  (dù chúng ta đã đơn giản hóa ở trên), hãy tưởng tượng tất cả các tuyến đường duy nhất có thể đi từ
+  điểm A đến điểm B. Có nhiều kỹ thuật để giải quyết vấn đề này, nhưng các kỹ thuật đó nằm ngoài
+  phạm vi bài viết này và sẽ được đề cập trong các bài viết tối ưu hóa sau.</p>
+
+<p class="alignment">Hãy cùng tìm hiểu thêm vì sao solution space và feasible region có thể 
+  tăng nhanh như vậy. Giả sử bạn có 3 ngã rẽ phải đi để đến chỗ làm. Ở mỗi ngã rẽ, bạn có 
+  thể đi trái hoặc phải. Vậy bạn có bao nhiêu tuyến đường khả thi? (Chúng ta giả sử đơn 
+  giản rằng bất kỳ kết hợp nào cũng dẫn đến nơi làm việc.)</p>
+
+<ul class="alignment">
+    <li>Ngã rẽ đầu tiên: 2 lựa chọn (trái hoặc phải)</li>
+    <li>Ngã rẽ thứ hai: 2 lựa chọn</li>
+    <li>Ngã rẽ thứ ba: 2 lựa chọn</li>
+</ul>
+
+<p class="alignment">Vì mỗi ngã rẽ có 2 lựa chọn, nên tổng số tuyến đường khả thi là 2³ = 8. 
+  Nghe có vẻ không nhiều, đúng không? Với một bài toán nhỏ như vậy, mọi thứ vẫn khá dễ kiểm soát.
+  Nhưng vấn đề nằm ở tốc độ tăng của solution space khi số ngã rẽ tăng lên. Giả sử bạn phải đi qua 10 ngã rẽ để đến chỗ 
+  làm, số lựa chọn lúc này đã tăng lên 1024. Và chưa dừng lại ở đó! Chỉ cần thêm một 
+  ngã rẽ nữa (từ 10 lên 11), số lựa chọn sẽ tăng gấp đôi, từ 1024 lên 2048. Điều này cho thấy rằng,
+ khi số lượng quyết định tăng lên (ở đây là các ngã rẽ), solution space có thể tăng rất nhanh. Đây cũng chính 
+ là lý do khiến nhiều bài toán tối ưu hóa trở nên phức tạp và khó giải trong thực tế.</p>
+
+<h2>Solutions (Nghiệm)</h2>
+
+<p class="alignment">Mình đã dùng thuật ngữ solution nhiều lần trong bài viết này, 
+  nhưng vẫn chưa định nghĩa nó. Mình nghĩ định nghĩa này khá dễ hiểu, nên có lẽ mọi người 
+  cũng đoán được, nhưng để chắc chắn, hãy định nghĩa ở đây.</p>
+
+<p class="alignment">Solution của một bài toán tối ưu hóa là tập hợp các hướng dẫn về cách đạt được 
+  kết quả tối ưu. Trong ví dụ về “tìm tuyến đường đi làm ngắn nhất”, solution là một tuyến đường 
+  cụ thể để đi làm. Mình liệt kê dưới đây các thành phần mà một solution có thể gồm trong các ví dụ tối ưu hóa trước đó:</p>
+<p class="alignment">Dưới đây là một sơ đồ minh họa các thuật ngữ liên quan đến solution mà chúng ta đã đề cập. 
+  Tùy vào bài toán mục tiêu và số biến quyết định, thì ta có số lượng nghiệm tương ứng</p>
+<table class="scenario-table">
+  <caption>Bảng: Nghiệm cụ thể của các bài toán tối ưu hóa</caption>
+  <thead>
+    <tr>
+      <th>Problem</th>
+      <th>Nghiệm cụ thể (Solution)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Lên kế hoạch sản xuất</td>
+      <td>
+        Số lượng sản phẩm cần sản xuất (ví dụ: 1000 A, 500 B), 
+        phân bổ máy móc và nhân công cho từng công đoạn
+      </td>
+    </tr>
+    <tr>
+      <td>Sắp xếp lịch học (Timetabling)</td>
+      <td>
+        Thời khóa biểu cụ thể: môn học, thời gian (thứ, tiết), phòng học, 
+        đảm bảo không trùng lịch giảng viên và sinh viên
+      </td>
+    </tr>
+    <tr>
+      <td>Thiết kế tuyến xe buýt</td>
+      <td>
+        Lộ trình các tuyến xe (ví dụ: A → B → C), số lượng xe, 
+        tần suất chạy (ví dụ: mỗi 10 phút/chuyến)
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p class="alignment">Solutions nằm trong solution space, và nếu đó là feasible solutions (những nghiệm khả thi mà chúng ta quan tâm), chúng cũng thuộc feasible region.
+Tất nhiên, không phải tất cả các solutions đều giống nhau, nếu không, sẽ chẳng có lý do gì để 
+  tối ưu hóa cả. Chúng ta muốn tìm solution tốt nhất có thể. Chúng ta đánh giá các 
+  solution với nhau dựa trên objective values của chúng. Mỗi solution có 
+  một objective value, đây là giá trị thu được khi bạn đưa solution đó vào 
+  objective function. Trong ví dụ “tìm tuyến đường đi làm ngắn nhất”, số km tương ứng với mỗi tuyến 
+  đường chính là objective value của các solution.</p>
+
+<p class="alignment">Optimal solution là giải pháp có objective 
+  value tốt nhất (nhỏ nhất nếu là bài toán minimization, lớn nhất nếu là bài toán 
+  maximization).</p>
+
+<p class="alignment">Một số thuật toán đảm bảo rằng solution tìm được là tối ưu, trong 
+  khi những thuật toán khác chỉ tìm gần tối ưu. Tại sao không luôn dùng 
+  thuật toán đảm bảo tìm ra optimal solution? Tùy thuộc vào bài toán tối ưu, việc tìm 
+  optimal solution có thể rất khó. Thường thì các thuật toán đảm bảo tối ưu tốn nhiều 
+  tài nguyên tính toán và thời gian. Nói chung, việc tìm giải pháp gần tối ưu 
+  dễ hơn nhiều và đủ tốt cho nhiều bài toán tối ưu hóa.</p>
+
+  <figure style="text-align:center;">
+  <img src="photo/1_ljCHgdd8vYLzsXI3wwPeFQ.webp" style="width:80%;">
+  <figcaption>Mối liên hệ giữa Solution Space, Feasible Region, Solutions và Optimal Solution</figcaption>
+</figure>
+
+   <h2>Kết lại</h2>
+<p class="alignment">Quá trình xây dựng một mô hình tối ưu hóa được gọi chung là Mathematical modelling hoặc modelling.
+  Bao gồm các hoạt đồng xây dựng các biến, hàm và ràng buộc từ một đề bài thô. 
+  Đây là bước quan trọng để chuyển vấn đề thực tế thành dạng có thể giải bằng toán học.</p>
+
+<p class="alignment">Một mô hình tối ưu hóa gồm ba thành phần chính:</p>
+
+<ul class="alignment">
+  <li><strong>Decision Variables (Biến quyết định)</strong>: Những thứ chúng ta có thể kiểm soát và chọn.</li>
+  <li><strong>Objective Function (Hàm mục tiêu)</strong>: Thước đo mà chúng ta muốn tối ưu hóa (tối đa hóa hoặc tối thiểu hóa).</li>
+  <li><strong>Constraints (Ràng buộc)</strong>: Các giới hạn hoặc điều kiện mà các biến phải thỏa mãn.</li>
+</ul>
+
+<p class= "alignment">Sau khi giải bài toán tối ưu hóa, ta tìm được các optimal solutions liên quan.</p>
+<p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>

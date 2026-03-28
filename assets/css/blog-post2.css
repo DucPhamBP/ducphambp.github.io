@@ -135,4 +135,5 @@ figcaption::before {
 .scenario-table th {
     font-weight: bold;
     background-color: #f2f2f2;
+    margin-bottom: 20px;
 }

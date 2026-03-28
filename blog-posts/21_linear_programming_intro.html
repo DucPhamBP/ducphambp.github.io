@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Linear Programming</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Linear Programming (Lập trình tuyến tính)</h1>
+    <p class="date">Posted: 21/03/2026</p>
+    <p class="alignment">Linear programming là một kỹ thuật tối ưu hóa rất mạnh, 
+      được sử dụng để cải thiện việc ra quyết định trong nhiều lĩnh vực khác nhau. 
+      Đây là phần đầu tiên trong một chuỗi bài viết nhiều phần, sẽ đề cập đến những 
+      chủ đề quan trọng liên quan đến linear programming. Bài viết đầu tiên này sẽ 
+      là phần đơn giản nhất, nhằm giúp bạn nắm được những kiến thức cơ bản trước 
+      khi đi vào các nội dung nâng cao hơn. Để tiện cho việc theo dõi, mình sẽ giữ nguyên các thuật ngữ tiếng anh quan trọng và
+    dịch theo nghĩa tiếng Việt đối với một số từ đã được chuẩn hóa (sử dụng phổ biến) trong các giáo trình tiếng Việt hiện này 
+    (mình vẫn sẽ chú thích nghĩa tiếng anh đê tiện tra cứu).</p>
+<p>Trong bài viết này, chúng ta sẽ:</p>
+
+<ul>
+    <li>Tìm hiểu điều gì tạo nên một bài toán linear programming</li>
+    <li>Xem qua cách linear programming hoạt động và vì sao nó lại mạnh mẽ</li>
+    <li>Chạy một ví dụ về linear programming bằng Python</li>
+</ul>
+<h2>Lý thuyết</h2>
+<p>Cá nhân mình thấy rằng ví dụ thực tế là một cách rất hiệu quả để học các chủ đề kỹ 
+  thuật. Vì vậy, xuyên suốt bài viết này, chúng ta sẽ cùng đi theo một ví dụ đơn 
+  giản. Mình sẽ giới thiệu ví dụ đó ở phần tiếp theo.</p>
+
+<p>Trước khi bắt đầu, nếu bạn chưa quen với các khái niệm và 
+  thuật ngữ cơ bản trong tối ưu hóa, mình đã có một bài viết nhập 
+  môn về optimization. Mình khuyến khích bạn đọc qua trước khi tiếp tục 
+  (vì trong bài này sẽ có nhiều thuật ngữ chung mà mình sẽ không giải thích lại).</p>
+
+<p class="alignment">Linear programming, tên tiếng Việt là Lập trình Tuyến tính, là một kỹ thuật tối ưu hóa nhằm tối thiểu hóa (minimize)
+  hoặc tối đa hóa (mazimize) một hàm mục tiêu (objective function) tuyến tính, với các ràng buộc (constraints) được biểu 
+  diễn dưới dạng các phương trình hoặc bất phương trình tuyến tính (nghe 
+  có vẻ hơi nhiều thuật ngữ nên mình sẽ sớm đưa vào ví dụ trực quan để bạn dễ hiểu hơn).</p>
+
+<p class="alignment">Cái tên “<em>linear programming</em>” thực ra có từ trước khi chúng ta 
+  nghĩ đến <em>"programming”</em> như lập trình máy tính ngày nay. Linear programming được phát 
+  triển và sử dụng từ thời kỳ Thế chiến thứ hai. Khi đó, nó được dùng rộng rãi để quản 
+  lý các chương trình vận hành, ví dụ như vận chuyển hàng hóa từ nhà máy ra tiền tuyến. 
+  Vì vậy, <em>"programming”</em> ở đây mang nghĩa là lập kế hoạch hoặc sắp xếp, chứ không phải viết code. 
+  Một chút bối cảnh lịch sử để bạn khỏi thắc mắc mãi là phần <em>"programming”</em>  nằm ở đâu!</p>
+
+<p class="alignment">Mặc dù ban đầu được phát triển để giải các bài toán operation và 
+  logistics, nhưng có rất nhiều cách sáng tạo để áp dụng linear programming vào nhiều loại bài toán khác nhau.
+Một bài toán linear programming thường có 3 thành phần chính:</p>
+
+<ul>
+    <li><strong>Biến quyết định (Decision Variables)</strong>: các biến quyết định mà mô hình cần tìm ra, có thể được biểu diễn dưới dạng số thực (continuous), 
+      số nguyên (integer) hoặc nhị phân (binary).</li>
+    <li><strong>Ràng buộc (Constraints)</strong>: các ràng buộc hoặc điều kiện thực tế cần phải thỏa mãn, thường mô tả mối quan 
+      hệ giữa các biến quyết định.</li>
+    <li><strong>Hàm mục tiêu (Objective Function)</strong>: mục tiêu cuối cùng của bài toán, ví dụ như tối đa 
+      hóa lợi nhuận (maximize), tối thiểu hóa (minimize) chi phí, hoặc phân bổ nguồn lực một cách hiệu quả.</li>
+</ul>
+
+<p>Việc biểu diễn một bài toán dưới dạng mô hình toán học không chỉ giúp làm rõ vấn 
+  đề, mà còn cung cấp một khuôn khổ có cấu trúc để tìm ra lời giải. Khi mô hình 
+  đã được xây dựng, chúng ta có thể sử dụng các công cụ giải (solver) chuyên dụng để tìm ra nghiệm tối ưu.</p>
+
+<p>Một trong những ưu điểm lớn nhất của mô hình hóa toán học (mathematical modelling) là 
+  tính linh hoạt. Khi nhu cầu kinh doanh thay đổi, chúng ta 
+  có thể thêm các ràng buộc mới, điều chỉnh lại ưu tiên, và 
+  cập nhật mô hình mà không cần phải xây dựng lại từ đầu.</p>
+
+<p class="alignment">Để hiểu rõ hơn, mình mượn một ví dụ cơ bản về bài toán người nông dân (tham khảo từ bài viết của anh Vũ Hữu Tiệp ở blog <a href="https://machinelearningcoban.com/2017/03/19/convexopt/"> Machine Leaning cơ bản</a>):"</p>
+<blockquote>
+  Một người nông dân có nông trại với tổng diện tích 10 hecta. Anh dự tính trồng cà phê và tiêu 
+  trên số đất này với tổng chi phí cho việc trồng này là không quá 16T (triệu đồng). Chi phí để 
+  trồng cà phê là 2T/hecta, để trồng tiêu là 1T/hecta. Thời gian trồng cà phê là 1 ngày/hecta và 
+  tiêu là 4 ngày/hecta, trong khi anh chỉ có thời gian tổng cộng là 32 ngày. Sau khi trừ tất cả 
+  các chi phí (bao gồm chi phí trồng cây), mỗi hecta cà phê mang lại lợi nhuận 5T, mỗi hecta tiêu 
+  mang lại lợi nhuận 3T. Hỏi anh phải trồng như thế nào để tối đa lợi nhuận?
+</blockquote>
+<p>Ta giả sử \(x\) và \(y\) lần lượt là diện tích (tính theo hecta) trồng cà phê và tiêu mà người 
+  nông dân lựa chọn. Khi đó, lợi nhuận thu được có thể được viết dưới dạng:</p>
+
+<div style="text-align: center;">
+  Maximize \( Z = 5x + 3y \quad (\text{triệu đồng}) \)
+</div>
+<p>Bài toán này sẽ đi kèm với một số ràng buộc thực tế như sau:</p>
+
+<ul>
+    <li>Tổng diện tích canh tác không vượt quá 10 ha: <span>\(x + y \leq 10\)</span></li>
+    <li>Tổng chi phí trồng không vượt quá 16 triệu đồng: <span>\(2x + y \leq 16\)</span></li>
+    <li>Tổng thời gian canh tác không vượt quá 32 ngày: <span>\(x + 4y \leq 32\)</span></li>
+    <li>Diện tích trồng cà phê và hồ tiêu đều không âm: <span>\(x, y \geq 0\)</span></li>
+</ul>
+
+
+<p>Ta có mô hình được xây dựng như sau:</p>
+
+<div style="text-align: center; margin-top: 10px;">
+\[
+\begin{align*}
+\text{Maximize } & Z = 5x + 3y \\
+\text{s.t. } & x + y \le 10 \\
+& 2x + y \le 16 \\
+& x + 4y \le 32 \\
+& x, y \ge 0
+\end{align*}
+\]
+</div>
+<p>Tóm lại, chúng ta đã mô hình hóa được một bài toán tối ưu khá quen thuộc mà người nông dân đang phải đối mặt.</p>
+<p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>
