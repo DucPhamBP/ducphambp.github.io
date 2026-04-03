@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Linear Programming</title>
+  <!-- Include MathJax -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Phân loại các dạng Mô hình Tối ưu hóa</h1>
+    <p class="date">Posted: 03/04/2026</p>
+    <p class="alignment">Khi mới bắt đầu tìm hiểu Machine Learning, 
+AI hay Operations Research, chúng ta ít nhiều sẽ bắt gặp khái niệm optimization (tối ưu hóa). Tuy nhiên, 
+điều khiến nhiều người dễ rối không phải là định nghĩa của nó, mà là 
+số lượng lớn các thuật ngữ đi kèm: nào là convex, non-convex, 
+discrete, continous, ... Trong bài viết này, mình sẽ giúp bạn xâu chuỗi các khái niệm tối ưu hóa một cách logic nhất qua những ví 
+dụ thực tiễn. Không chỉ là định nghĩa, đây là lộ trình giúp bạn hiểu sâu, nhớ lâu và biết 
+cách áp dụng chúng vào bài toán thực tế của mình.</p>
+
+<h2 class="alignment">1. Phân loại theo tính chất biến (Variable types): Continuous vs Discrete Optimization</h2>
+<p class="alignment">
+    Đầu tiên là phân loại dựa trên <strong>tính chất của biến quyết định có thể nhận</strong>. 
+    Theo đó, các bài toán được chia thành hai nhóm chính: <strong>continuous optimization</strong> và <strong>discrete optimization</strong>
+  </p>
+
+  <p class="alignment">
+    Trong <strong>continuous optimization</strong> (tối ưu liên tục), các decision variables được giả định là nhận giá 
+    trị trong một không gian liên tục, thường là ℝ<sup>n</sup>. Điều này cho phép tồn tại vô số giá trị trung gian giữa hai điểm bất kỳ, tạo tiền đề để
+     áp dụng các công cụ giải tích như đạo hàm và gradient. Nhờ đó, thuật toán có thể khai thác thông tin về hướng và tốc độ thay đổi của 
+     hàm mục tiêu nhằm tìm kiếm nghiệm tối ưu một cách hiệu quả.
+  </p>
+
+  <p class="alignment">
+    Một ví dụ thường thấy của continuous optimization là bài toán hồi quy tuyến tính (linear regression), 
+    trong đó ta cần tìm vector tham số w ∈ ℝ<sup>n</sup> sao cho MSE (Mean Squared Error) giữa giá trị dự đoán và giá trị
+    thực tế là nhỏ nhất. Do hàm mục tiêu này liên tục và khả vi (differentiable), ta có thể áp dụng các thuật toán dựa trên gradient 
+    như Gradient Descent hay SGD. Trong một số trường hợp, nghiệm tối ưu còn có thể tìm được trực tiếp 
+    dưới dạng closed-form (phương trình chuẩn - Normal Equation) thông qua đại số tuyến tính. Tương tự, 
+    quá trình thực hiện Neural Network thực chất là giải một bài toán tối ưu liên tục trên không gian tham số cực kỳ lớn.
+
+  </p>
+
+  <p class="alignment">
+    Ngược lại, <strong>discrete optimization</strong> (tối ưu rời rạc) xét các bài toán mà biến quyết định chỉ có thể nhận giá trị 
+    trong một tập rời rạc, ví dụ số nguyên, nhị phân (0/1), hoặc các cấu hình tổ hợp. Giữa hai giá trị hợp lệ 
+    của biến không tồn tại giá trị trung gian. Điều này dẫn đến một solution space (không gian nghiệm) có cấu trúc rời rạc, 
+    thường là hữu hạn (finite) hoặc đếm được (countable), nhưng có thể rất lớn về mặt kích thước.
+  </p>
+<figure style="text-align:center;">
+  <img src="photo/1745096134759.png" style="width:80%;">
+  <figcaption>Continuous Optimization vs Discrete Optimization</figcaption>
+</figure>
+  <p class="alignment">
+    Ví dụ cơ bản là bài toán knapsack, trong đó mỗi item chỉ có thể được chọn (1) hoặc không chọn (0). 
+    Một ví dụ khác là bài toán Traveling Salesman Problem (TSP), nơi nghiệm là một hoán vị của các thành phố. 
+    Trong các bài toán này, không tồn tại khái niệm “di chuyển liên tục” từ một nghiệm này sang nghiệm khác, 
+    và do đó các phương pháp dựa trên gradient không thể áp dụng trực tiếp.
+  </p>
+
+  <p class="alignment">
+  Sự khác biệt về bản chất của biến dẫn đến sự khác biệt về thuật toán. Trong continuous optimization, 
+   phương pháp chủ yếu là các iterative methods dựa trên đạo hàm, như Gradient Descent, Newton’s Method, hay 
+   Interior Point Methods. Các thuật toán này khai thác cấu trúc trơn (smoothness) của hàm mục tiêu để nhanh 
+   chóng hội tụ đến nghiệm tối ưu. Trong khi đó, discrete optimization thường phải 
+   dựa vào các phương pháp tìm kiếm trên không gian nghiệm và các kỹ thuật tổ hợp, như Branch and Bound, Dynamic Programming.
+   Các phương pháp này thường đảm bảo tìm được nghiệm chính xác (exact solution), nhưng có thể gặp vấn đề về tốc độ tính toán
+   khi kích thước bài toán tăng lên. Trong thực tế, đối với các bài toán lớn, người ta thường sử dụng các phương pháp 
+   heuristic để tìm nghiệm đủ tốt trong thời gian hợp lý.
+  </p>
+
+  <p class="alignment">
+    Một điểm đáng chú ý là ranh giới giữa discrete và continuous không phải lúc nào cũng tuyệt đối. 
+    Trong nhiều trường hợp, người ta sử dụng kỹ thuật <strong>relaxation</strong> để chuyển một bài 
+    toán rời rạc sang dạng liên tục, nhằm tận dụng các thuật toán hiệu quả hơn. Ví dụ, trong integer 
+    programming, các ràng buộc nguyên có thể được nới lỏng để tạo thành một bài toán linear programming. 
+    Nghiệm của bài toán relaxed sau đó có thể được sử dụng để xây dựng hoặc ước lượng nghiệm nguyên cho bài toán ban đầu.
+  </p>
+
+  <h2 class="alignment">2. Phân loại theo cấu trúc: Convex Optimization vs Non-Convex Optimization</h2>
+
+  <p class="alignment">
+  Trong continuous optimization, một tiêu chí quan trọng khác là tính convex của bài toán. Một bài toán được gọi là 
+  <strong>convex optimization</strong> khi cả hàm mục tiêu f(x) và feasible set X đều là lồi (convex). 
+  Về trực quan, đồ thị hàm mục tiêu không có “vùng lõm”: nếu nối hai điểm bất kỳ trong tập nghiệm bằng một đoạn thẳng, 
+  toàn bộ đoạn thẳng nằm trong feasible set. Điểm đặc biệt quan trọng của convex optimization là mọi <em>local optimum</em> đều là
+  <em>global optimum</em>. Điều này có nghĩa là nếu thuật toán tìm ra một điểm mà tại đó giá trị hàm mục tiêu không thể 
+  giảm thêm, thì đó chắc chắn là optimal solution trên toàn bộ solution space.
+  </p>
+
+  <p class="alignment">
+    Ngược lại, <strong>non-convex optimization</strong> bao gồm tất cả các bài toán mà hàm mục tiêu hoặc 
+    tập khả thi có thể chứa “vùng lõm” hay nhiều cực trị. Trong trường hợp này, bài toán có thể tồn tại nhiều 
+    <em>local minima</em> và <em>saddle points</em>, khiến thuật toán dễ bị “mắc kẹt” tại một nghiệm cục bộ 
+    (<em>local optimum</em>) và không đảm bảo tìm được nghiệm toàn cục (<em>global optimum</em>).
+  </p>
+<figure style="text-align:center;">
+  <img src="photo/Convex-and-non-convex-optimization-problems.webp" style="width:80%;">
+  <figcaption>Convex và non-convex optimization</figcaption>
+</figure>
+  <p class="alignment">
+    Để minh họa, hãy xét hai ví dụ đơn giản. Với trường hợp convex, hàm f(x) = x<sup>2</sup> có dạng hình chữ U, 
+    và dù khởi tạo từ đâu, các thuật toán tối ưu đều hội tụ về x = 0, là <em>global optimum</em>. Ngược lại, với hàm non-convex 
+    f(x) = x<sup>4</sup> − 3x<sup>2</sup>, tồn tại nhiều điểm cực trị, bao gồm hai <em>local minima</em> tại x = ±√(3/2) 
+    và một <em>local maximum</em> tại x = 0. Trong trường hợp này, nếu thuật toán được khởi tạo gần một <em>local minimum</em>, 
+    nó có thể hội tụ tại đó và không tìm được nghiệm tốt hơn ở các vùng khác của không gian nghiệm.
+  </p>
+<div style="display: flex; gap: 20px; justify-content: center;">
+
+  <figure style="text-align: center;">
+    <img src="photo/convex x2.png"  alt="Image 1" style="width: 300px; height: 200px; object-fit: cover;">
+    <figcaption>  f(x) = x<sup>2</sup></figcaption>
+  </figure>
+
+  <figure style="text-align: center;">
+    <img src="photo/x4-3x2.png"  style="width: 300px; height: 200px; object-fit: cover;">
+    <figcaption>f(x) = x<sup>4</sup> − 3x<sup>2</sup></figcaption>
+  </figure>
+
+</div>
+  <p class="alignment">
+    Sự khác biệt này dẫn đến các lựa chọn thuật toán khác nhau. Với convex optimization, 
+    có thể sử dụng các thuật toán gradient-based như Gradient Descent, Newton’s Method, 
+    hoặc các phương pháp cho bài toán có ràng buộc như Interior Point Methods. Trong khi đó, với non-convex optimization, 
+    các thuật toán gradient-based như Gradient Descent vẫn được sử dụng nhưng chỉ đảm bảo hội tụ đến một 
+    <em>local optimum</em>. Để cải thiện kết quả, người ta sử dụng các biến thể như Stochastic Gradient Descent (SGD), 
+    Momentum, hoặc các phương pháp heuristic nhằm tăng khả năng thoát khỏi các local minimum.</p>
+  
+  <p class="alignment">
+    Về mặt ứng dụng, convex optimization xuất hiện nhiều trong bài toán mà tính toàn cục (global) và độ ổn định (stability) 
+    rất quan trọng. Ví dụ, linear regression với hàm MSE là một bài toán convex, bài toán 
+    portfolio optimization thường là quadratic convex. Ngược lại, non-convex optimization xuất hiện phổ biến trong deep learning, 
+    nơi quá trình huấn luyện neural network tương đương với tối ưu một hàm loss phi lồi trong không gian tham số rất lớn.
+    Ngoài ra, các bài toán như matrix factorization, clustering, hay reinforcement learning cũng thường mang 
+    tính non-convex.
+  </p>
+
+  <p class="alignment">
+    Tóm lại, sự khác biệt giữa convex và non-convex optimization không chỉ là đặc điểm hình học của 
+    hàm mục tiêu, mà còn ảnh hưởng trực tiếp đến độ khó của bài toán, lựa chọn thuật toán và 
+    mức độ đảm bảo về nghiệm tìm được. Convex optimization mang lại tính ổn định và các đảm 
+    bảo lý thuyết mạnh, trong khi non-convex optimization phản ánh sự phức tạp của các bài toán 
+    thực tế, đòi hỏi các phương pháp linh hoạt và đôi khi phải chấp nhận approximate solution.
+  </p>
+<h2 class="alignment">3. Phân loại theo ràng buộc: Unconstrained vs Constrained Optimization</h2>
+<p class="alignment">
+    Một cách phân loại khác trong tối ưu hóa dựa trên sự tồn tại của ràng buộc trên biến quyết định 
+    là <strong>unconstrained optimization</strong> và <strong>constrained optimization</strong>. 
+    Sự khác biệt này ảnh hưởng đến mô hình bài toán, thuật toán và cách đánh giá nghiệm.
+  </p>
+
+  <p class="alignment">
+    <strong>Unconstrained Optimization</strong> là những bài toán mà biến quyết định có thể nhận bất kỳ giá trị 
+    nào trong solution space, mà không có ràng buộc nào. Nói cách khác, thuật toán có thể di chuyển tự do 
+    theo hướng giảm của hàm mục tiêu mà không lo vi phạm bất kỳ hạn chế nào. 
+    Đây là trường hợp đơn giản nhất, thường gặp trong các bài toán <em>continuous optimization</em> như 
+    linear regression hoặc neural networks. Trong trường hợp convex, việc tìm <em>global optimum</em> trở 
+    nên dễ hơn vì có thể dùng các phương pháp gradient-based kết hợp với step size phù hợp để hội tụ nhanh hơn.
+  </p>
+
+  <p class="alignment">
+    <strong>Constrained Optimization</strong> là những bài toán mà biến quyết định phải thỏa mãn 
+    một tập hợp các ràng buộc nhất định, có thể là <em>linear constraints</em> hoặc <em>non-linear constraints</em>, 
+    và đôi khi là ràng buộc nguyên (<em>integer constraints</em>). Các ràng buộc có thể được phân loại như sau:
+  </p>
+
+  <ul>
+    <li><strong>Hard constraints:</strong> bắt buộc phải thỏa, ví dụ như tổng số lượng hàng hóa trong bài toán logistics không vượt quá giới hạn kho.</li>
+    <li><strong>Soft constraints:</strong> cho phép vi phạm một chút, nhưng sẽ bị phạt trong hàm mục tiêu, ví dụ như chi phí trễ trong scheduling được thêm vào <em>loss function</em>.</li>
+  </ul>
+
+  <p class="alignment">
+    Trong nhiều bài toán, việc giải bài toán 
+    <em>relaxed</em> (nới lỏng các ràng buộc) trước rồi chuyển nghiệm sang bài toán gốc giúp tăng hiệu quả tính toán. 
+    Đối với non-convex constrained problems, thuật toán thường tìm <em>local optimum</em> 
+    hoặc <em>approximate solution</em>, và <em>convergence rate</em> phụ thuộc mạnh vào 
+    độ phức tạp của hàm mục tiêu và tập nghiệm khả thi.
+  </p>
+
+  <h2 class="alignment">4. Phân loại theo tính xác định (certainty): Deterministic vs Stochastic Optimization</h2>
+
+  <p class="alignment">
+    Trong <strong>deterministic optimization</strong>, tất cả các tham số đầu vào đều đã biết trước và cố định. 
+    Do đó, với cùng một input, thuật toán luôn trả về cùng một kết quả (output) duy nhất. 
+    Tính ổn định và tốc độ hội tụ (convergence rate) của thuật toán lúc này phụ thuộc hoàn toàn vào đặc điểm hình học của hàm mục tiêu (tính lồi, tính trơn).
+  Ví dụ, các bài toán <em>linear programming</em>, <em>quadratic programming</em> với dữ liệu cố định, hoặc các
+     bài toán <em>convex optimization</em> truyền thống đều thuộc dạng deterministic. Trong các bài toán này, 
+     các thuật toán lặp (iterative) có khả năng đảm bảo sự hội tụ với tốc độ có thể dự đoán được về mặt lý thuyết.
+
+  </p>
+<figure style="text-align:center;">
+  <img src="photo/deterministic_vs_stochastic.png" style="width:80%;">
+  <figcaption>Deterministic và Stochastic optimization</figcaption>
+</figure>
+  <p class="alignment">
+    Ngược lại, <strong>stochastic optimization</strong> giải quyết các bài toán chứa yếu tố ngẫu nhiên (randomness) hoặc nhiễu 
+    (noise) trong dữ liệu và ràng buộc. Do sự bất định (uncertainty) này, các lần chạy khác nhau 
+    với cùng một input có thể cho ra kết quả khác nhau. Nghiệm tìm được thường là nghiệm xấp xỉ 
+    (approximate solution) hoặc hội tụ quanh các vùng tối ưu (local/global optimum) thay vì một giá trị cố định duy nhất.
+  </p>
+
+
+  <p class="alignment">
+    Các ứng dụng khác <strong>stochastic optimization</strong> bao gồm:
+  </p>
+
+ <ul>
+    <li><strong>Supply/Demand trong Inverntory problem:</strong> nhu cầu sản phẩm (demand) thay đổi liên tục theo thời gian hoặc theo mùa, 
+      thuật toán phải tối ưu phân phối hàng hóa dựa trên dự đoán và rủi ro của biến động.</li>
+    <li><strong>Market Price Forecasting:</strong> giá chứng khoán hoặc hàng hóa biến động liên tục, chiến lược mua bán (trading) 
+      trở thành bài toán stochastic với dữ liệu ngẫu nhiên.</li>
+</ul>
+
+<h2> 5. Phân loại theo tính chất hàm (Functional Property): Linear vs Nonlinear Programming</h2>
+<p class="alignment">
+    Một phân loại khác trong tối ưu hóa dựa trên tính chất của hàm mục tiêu và các ràng buộc là 
+    <strong>Linear Programming (LP)</strong> và <strong>Non-Linear Programming (NLP)</strong>. 
+    Phân loại này rất quan trọng vì nó quyết định loại thuật toán, độ khó bài toán và khả năng tìm được global optimum.
+</p>
+
+<p class="alignment">
+    <strong>Linear Programming (LP)</strong> là các bài toán mà cả 
+    objective function và tất cả các ràng buộc đều là tuyến tính. 
+    Đặc điểm này làm cho feasible region là convex, và các thuật 
+    toán có thể đảm bảo tìm <em>global optimum</em> chính xác. 
+    Ví dụ cơ bản là bài toán portfolio, bài toán allocation resource với các ràng buộc tuyến tính 
+    về nguyên vật liệu. Các thuật toán phổ biến cho LP gồm Simplex Method, Interior Point Methods.
+</p>
+<figure style="text-align:center;">
+  <img src="photo/1745247198965.jpg" style="width:80%;">
+  <figcaption>Linear và Nonlinear Programming</figcaption>
+</figure>
+<p class="alignment">
+    <strong>Non-Linear Programming (NLP)</strong> bao gồm tất cả các bài toán mà hàm mục tiêu 
+    hoặc ràng buộc là phi tuyến, có thể convex hoặc non-convex. NLP thường phức tạp hơn LP vì 
+    có thể xuất hiện nhiều local optimum, saddle points, hoặc vùng lõm trong feasible region. 
+    Các thuật toán phổ biến cho NLP bao gồm Gradient Descent, Newton’s Method, Sequential Quadratic 
+    Programming (SQP), hoặc các heuristic cho non-convex NLP. Trong nhiều trường hợp, nghiệm tìm được là 
+    <em>approximate solution</em> và không đảm bảo global optimum, đặc biệt khi bài toán non-convex hoặc dữ liệu stochastic.
+</p>
+
+<p class="alignment">
+    Ứng dụng của NLP rất rộng: sử dụng trong <strong>neural network</strong> (deep learning), tối ưu hóa thiết kế kỹ thuật với ràng buộc phi tuyến, logistics, control systems, và portfolio optimization với rủi ro phi tuyến.
+</p>
+
+<h2 class="alignment">6. Phân loại theo cách thức hoạt động của thuật toán: Finite-Terminating, Iterative và Heuristic</h2>
+
+  <p class="alignment">
+    Trong tối ưu hóa, không chỉ bài toán mà loại thuật toán cũng ảnh hưởng lớn đến hiệu quả và kết quả cuối cùng. 
+    Thuật toán tối ưu thường được chia thành ba nhóm chính dựa trên cách chúng tìm nghiệm: <strong>finite-terminating algorithms</strong>,
+     <strong>iterative methods</strong>, và <strong>heuristic-based models</strong>. Mỗi nhóm có đặc điểm, 
+     ưu nhược điểm và ứng dụng riêng, và hiểu rõ các nhóm này giúp ta có thể lựa chọn giải pháp phù hợp với từng bài toán cụ thể.
+  </p>
+
+  <h3>6.1. Finite-Terminating Algorithms </h3>
+  <p class="alignment">
+    Nhóm này bao gồm các thuật toán đảm bảo tìm ra nghiệm chính xác (exact solution). 
+    Nghĩa là, sau khi thuật toán kết thúc, ta có thể chắc chắn rằng nghiệm tìm được là <em>global optimum</em> của bài toán.
+    Ví dụ, Branch and Bound thường dùng trong mô hình integer programming. Thuật toán chia không gian nghiệm thành các nhánh con, 
+    loại bỏ những nhánh chắc chắn không chứa nghiệm tốt, và dần tìm ra nghiệm tối ưu.
+  </ul>
+
+  <p class="alignment">
+    Ưu điểm của nhóm này là độ chính xác cao, đảm bảo nghiệm tối ưu. Nhược điểm là khi bài toán quá lớn hoặc không gian nghiệm 
+    quá rộng, thời gian tính toán có thể tăng lên rất nhanh.
+  </p>
+
+  <h3>6.2. Iterative Methods (Phương pháp lặp)</h3>
+  <p class="alignment">
+    Các phương pháp lặp sẽ không dừng sau một số bước nhất định, mà tạo ra một chuỗi nghiệm xấp xỉ (approximate solution) ngày càng tốt hơn. 
+    Thuật toán sẽ dừng khi thỏa mãn tiêu chí hội tụ (convergence condition), ví dụ khi hiệu của hàm mục tiêu hoặc 
+    nghiệm giữa hai step liên tiếp nhỏ hơn một ngưỡng <em>ε</em> nhất định. </p>
+    <p class="alignment">Ví dụ thường thấy là Gradient Descent hay được sử dụng đạo hàm để 
+    xác định hướng giảm nhanh nhất của hàm mục tiêu. Khi di chuyển theo hướng này nhiều lần, giá trị hàm mục tiêu sẽ giảm dần và hội tụ tới 
+    nghiệm cực tiểu (có thể là <em>local</em> hoặc <em>global</em> tùy bài toán). Một ví dụ khác là Newton’s Method, dùng thông tin về 
+    Hessian để khai thác độ cong của hàm mục tiêu, phương pháp này thường hội tụ nhanh hơn Gradient Descent.
+  </p>
+
+  <p class="alignment">
+    Ưu điểm của phương pháp lặp là thường hiệu quả với bài toán quy mô lớn và có thể đạt độ chính xác tùy ý (bằng cách giảm ngưỡng <em>ε</em>). 
+    Nhược điểm là không luôn đảm bảo tìm <em>global optimum</em> trong các bài toán non-convex hoặc rời rạc.
+  </p>
+
+  <h3>6.3. Thuật toán heuristic</h3>
+  <p class="alignment">
+    Các thuật toán heuristic không đảm bảo hội tụ đến nghiệm tối ưu, nhưng được thiết kế để khám phá không gian nghiệm một cách thông minh,
+     nhằm tìm nghiệm đủ tốt trong thời gian hợp lý. Những phương pháp này đặc biệt hữu ích khi bài toán phức tạp, 
+     không gian nghiệm lớn hoặc rời rạc, và các phương pháp exact hoặc iterative trở nên không khả thi.
+  </p>
+
+  <p class="alignment"><strong>Ví dụ:</strong></p>
+  <ul class="alignment">
+    <li><strong>Tabu Search:</strong> Sử dụng một danh sách cấm (tabu list) để tránh quay lại những nghiệm đã thăm trước đó. 
+      Điều này giúp vượt qua các điểm tối ưu cục bộ và khám phá không gian nghiệm rộng hơn</li>
+    <li><strong>Simulated Annealing:</strong> Thuật toán lấy cảm hứng từ quá trình làm lạnh kim loại trong vật lý, cho phép chấp nhận những bước đi “tệ hơn” với một xác suất giảm dần theo thời gian. 
+      Cơ chế này giúp thoát khỏi <em>local optimum</em> và tiến dần tới nghiệm <em>global optimum</em>.</li>
+    <li><strong>Variable Neighbourhood Search:</strong> Thuật toán này thay đổi kích thước hoặc kiểu tập nghiệm xung quanh (neighbourhood) trong quá trình tìm kiếm, nhằm tìm kiếm nhiều hơn các giải pháp trong không gian nghiệm. </li>
+    <li><strong>Ant Colony Optimization:</strong> Lấy cảm hứng từ hành vi tìm đường của kiến, mỗi “con kiến” để lại pheromone đánh dấu các đường đi tốt, từ đó hướng dẫn các con kiến khác. 
+      Thuật toán này đặc biệt mạnh trong các bài toán tối ưu lộ trình, vận tải và mạng (network design).</li>
+    <li><strong>Genetic Algorithm:</strong> Lấy cảm hứng từ quá trình tiến hóa trong sinh học, Genetic Algorithm sử dụng các khái niệm như sinh sản, đột biến và chọn lọc để tìm kiếm nghiệm tối ưu. 
+      Phương pháp này thường hiệu quả trong việc giải các bài toán phức tạp với không gian nghiệm lớn.</li>
+  </ul>
+
+  <p class="alignment">
+    Ưu điểm của heuristic là linh hoạt, có thể áp dụng cho các bài toán phức tạp, đặc biệt 
+    là non-convex hoặc discrete. Nhược điểm là không có đảm bảo về nghiệm toàn cục và kết 
+    quả có thể thay đổi giữa các lần chạy.
+  </p>
+
+  <h3 class="alignment">Tóm tắt về ba nhóm thuật toán:</h3>
+  <table class="scenario-table">
+    <tr>
+      <th>Nhóm thuật toán</th>
+      <th>Đặc điểm chính</th>
+      <th>Ưu điểm</th>
+      <th>Nhược điểm</th>
+    </tr>
+    <tr>
+      <td>Finite-Terminating</td>
+      <td>Dừng sau số bước hữu hạn, tìm nghiệm tối ưu chính xác</td>
+      <td>Đảm bảo global optimum</td>
+      <td>Tốn nhiều thời gian với bài toán lớn</td>
+    </tr>
+    <tr>
+      <td>Iterative</td>
+      <td>Lặp nhiều bước, hội tụ khi sai số &lt; ε</td>
+      <td>Hiệu quả cho bài toán lớn, có thể điều chỉnh độ chính xác</td>
+      <td>Không đảm bảo global optimum trong non-convex/discrete</td>
+    </tr>
+    <tr>
+      <td>Heuristic</td>
+      <td>Không đảm bảo hội tụ, khám phá thông minh</td>
+      <td>Linh hoạt, phù hợp bài toán phức tạp</td>
+      <td>Nghiệm chỉ xấp xỉ, kết quả thay đổi giữa lần chạy</td>
+    </tr>
+  </table>
+
+  <p class="alignment">
+    Như vậy, khi giải quyết một bài toán tối ưu, việc nhận diện loại bài toán 
+    (convex/non-convex, discrete/continuous) kết hợp với loại thuật toán 
+    (finite-terminating, iterative, heuristic) sẽ giúp lựa chọn phương pháp phù hợp, 
+    cân bằng giữa độ chính xác và thời gian tính toán, đồng thời định hình kỳ vọng về 
+    chất lượng nghiệm cuối cùng.
+  </p>
+<h2 class="alignment">7. Phân loại theo chất lượng và độ tin cậy của nghiệm: Exact và Approximation/Heuristic</h2>
+<p class="alignment">Trong Optimization nói chung và Operation Research nói riêng, ta còn có cách phân loại dựa trên "độ tốt" của nghiệm cuối cùng so với 
+nghiệm tối ưu thực tế. Cách phân loại này giúp ta giải bài toán xác định được mức độ đánh đổi giữa thời gian tính 
+toán và chất lượng kết quả. Chi tiết về cách phân loại này, mình đã trình bày trong bài viết về  <a href="17_mathematical_programming.html">Quy hoạch toán học</a>, bạn có thể 
+tìm đọc để hiểu rõ thêm. Ở đây, mình sẽ tóm tắt lại một số điểm chính về hai nhóm thuật toán này:</p>
+<ul class="alignment">
+    <li><strong>Exact algorithms:</strong> Nhóm thuật toán này cam kết tìm ra 
+      đúng nghiệm tối ưu nhất của bài toán. Một thuật toán được coi là <em>"exact"</em> 
+      khi nó có khả năng chứng minh toán học rằng không tồn tại nghiệm nào tốt hơn nghiệm mà nó vừa tìm được.
+    Đặc điểm của nhóm này thường trùng khớp với Finite-Terminating (như Simplex hay Branch and Bound). Tuy nhiên, 
+    cái giá phải trả là chi phí tính toán (computational cost) rất cao khi kích thước dữ liệu tăng theo hàm mũ.
+  Nó thường dùng cho các bài toán quy mô vừa và nhỏ, hoặc các bài toán mà sai số dù nhỏ nhất cũng gây thiệt hại lớn 
+  (job shop scheduling, portfolio optimization).</li>
+  <li><strong>Approximation/Heuristic algorithms:</strong> Được sử dụng khi bài toán quá phức tạp hoặc có không gian nghiệm quá lớn, khiến việc tìm ra nghiệm 
+    tối ưu chính xác trở nên không khả thi trong thời gian hợp lý. Trong đó, thuật toán xấp xỉ (approximation algorithm) có chứng minh toán học về khoảng 
+cách tới nghiệm tối ưu (optimality gap), nó đảm bảo nghiệm thu được không tệ hơn một tỷ lệ nhất định so với nghiệm tối ưu. Ngược lại, Heuristics 
+không đảm bảo nghiệm tìm được là tối ưu tuyệt đối. Thay vào đó, mục tiêu của chúng là
+tìm lời giải đủ tốt trong thời gian hợp lý. Heurisitc không có chứng minh toán học về khoảng cách tới nghiệm tối ưu (optimality gap). 
+Một thuật toán Heuristic có thể tìm ra nghiệm rất gần tối ưu cho bộ dữ liệu này, nhưng lại cho kết quả rất tệ với bộ dữ liệu khác.
+Trong nhiều tài liệu, 2 thuật toán này được sử dụng bổ sung đồng thời qua lại nhau nên tôi gộp nó chung vào một loại cho dễ hình dung.
+Nhóm thuật toán này thường được dùng trong các bài toán NP-hard lớn trong thực tế như điều hành cả một hệ thống logistics toàn cầu hoặc lập lịch cho hàng ngàn chuyến bay, 
+nơi mà việc chờ đợi để một thuật toán chính xác được giải là bất khả thi. </li>
+  </ul>
+<h2 class="alignment">8. Phân loại bậc đạo hàm: n-th Order Optimization Algorithms</h2>
+
+<p class="alignment">
+Các thuật toán tối ưu cũng có thể được phân loại dựa trên thông tin đạo hàm mà chúng sử dụng, gọi là n-th order algorithms. Sự phân loại này giúp xác định <em>step size</em>, <em>convergence rate</em>, và độ phức tạp tính toán của thuật toán.
+</p>
+
+<ul class="alignment">
+    <li>
+        <strong>Zero-order algorithms (Derivative-free):</strong> Không sử dụng đạo hàm, chỉ dựa trên giá trị hàm mục tiêu (function values). Phù hợp khi hàm là black-box, không biết explicit form. Ví dụ: Genetic Algorithms, Simulated Annealing, Nelder-Mead Method. Kết quả thường là <em>approximate solution</em>, <em>convergence rate</em> chậm, đặc biệt trong không gian lớn.
+    </li>
+    <li>
+        <strong>First-order algorithms:</strong> Sử dụng thông tin gradient để xác định hướng giảm nhanh nhất của hàm mục tiêu. Ví dụ: Gradient Descent, Stochastic Gradient Descent (SGD), Momentum, Adam. <em>Step size</em> (learning rate) ảnh hưởng trực tiếp đến <em>convergence rate</em> và khả năng hội tụ tới <em>local/global optimum</em>.
+    </li>
+    <li>
+        <strong>Second-order algorithms:</strong> Sử dụng thông tin Hessian (đạo hàm bậc hai) để khai thác curvature của hàm mục tiêu. Ví dụ: Newton’s Method, Quasi-Newton Methods (BFGS, L-BFGS). <em>Convergence rate</em> nhanh hơn first-order methods, nhưng chi phí tính toán cao hơn, đặc biệt với bài toán nhiều biến. Thường áp dụng trong convex optimization hoặc khi cần hội tụ nhanh tới <em>global optimum</em>.
+    </li>
+</ul>
+
+<p class="alignment">
+    Các thuật toán bậc cao hơn (n-th order, n ≥ 2) giúp tăng tốc độ hội tụ (<em>convergence rate</em>) và cải thiện chất lượng nghiệm, nhưng thường đi kèm chi phí tính toán lớn. Việc lựa chọn thuật toán phù hợp phụ thuộc vào loại bài toán (convex/non-convex, continuous/discrete), tính chất dữ liệu (deterministic/stochastic), và yêu cầu về <em>approximate solution</em> hoặc <em>exact global optimum</em>.
+</p>
+
+  </main>
+</body>
+</html>
