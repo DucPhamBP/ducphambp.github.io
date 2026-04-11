@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
 
-  <title>Linear Programming</title>
+  <title>Optimization type</title>
   <!-- Include MathJax -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script>
@@ -63,14 +63,14 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
     Trong <strong>continuous optimization</strong> (tối ưu liên tục), các decision variables được giả định là nhận giá 
     trị trong một không gian liên tục, thường là ℝ<sup>n</sup>. Điều này cho phép tồn tại vô số giá trị trung gian giữa hai điểm bất kỳ, tạo tiền đề để
      áp dụng các công cụ giải tích như đạo hàm và gradient. Nhờ đó, thuật toán có thể khai thác thông tin về hướng và tốc độ thay đổi của 
-     hàm mục tiêu nhằm tìm kiếm nghiệm tối ưu một cách hiệu quả.
+     hàm mục tiêu nhằm tìm kiếm nghiệm tối ưu (optimal solution) một cách hiệu quả.
   </p>
 
   <p class="alignment">
     Một ví dụ thường thấy của continuous optimization là bài toán hồi quy tuyến tính (linear regression), 
     trong đó ta cần tìm vector tham số w ∈ ℝ<sup>n</sup> sao cho MSE (Mean Squared Error) giữa giá trị dự đoán và giá trị
     thực tế là nhỏ nhất. Do hàm mục tiêu này liên tục và khả vi (differentiable), ta có thể áp dụng các thuật toán dựa trên gradient 
-    như Gradient Descent hay SGD. Trong một số trường hợp, nghiệm tối ưu còn có thể tìm được trực tiếp 
+    như Gradient Descent hay Stochastic Gradient Descent (SGD). Trong một số trường hợp, nghiệm tối ưu còn có thể tìm được trực tiếp 
     dưới dạng closed-form (phương trình chuẩn - Normal Equation) thông qua đại số tuyến tính. Tương tự, 
     quá trình thực hiện Neural Network thực chất là giải một bài toán tối ưu liên tục trên không gian tham số cực kỳ lớn.
 
@@ -79,7 +79,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
   <p class="alignment">
     Ngược lại, <strong>discrete optimization</strong> (tối ưu rời rạc) xét các bài toán mà biến quyết định chỉ có thể nhận giá trị 
     trong một tập rời rạc, ví dụ số nguyên, nhị phân (0/1), hoặc các cấu hình tổ hợp. Giữa hai giá trị hợp lệ 
-    của biến không tồn tại giá trị trung gian. Điều này dẫn đến một solution space (không gian nghiệm) có cấu trúc rời rạc, 
+    của biến không tồn tại giá trị trung gian. Điều này dẫn đến một không gian nghiệm (solution space) có cấu trúc rời rạc, 
     thường là hữu hạn (finite) hoặc đếm được (countable), nhưng có thể rất lớn về mặt kích thước.
   </p>
 <figure style="text-align:center;">
@@ -95,11 +95,11 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
 
   <p class="alignment">
   Sự khác biệt về bản chất của biến dẫn đến sự khác biệt về thuật toán. Trong continuous optimization, 
-   phương pháp chủ yếu là các iterative methods dựa trên đạo hàm, như Gradient Descent, Newton’s Method, hay 
+   phương pháp chủ yếu là các phương pháp lặp (iterative methods) dựa trên đạo hàm, như Gradient Descent, Newton’s Method, hay 
    Interior Point Methods. Các thuật toán này khai thác cấu trúc trơn (smoothness) của hàm mục tiêu để nhanh 
-   chóng hội tụ đến nghiệm tối ưu. Trong khi đó, discrete optimization thường phải 
+   chóng hội tụ (convergence) đến nghiệm tối ưu (optimal solution). Trong khi đó, discrete optimization thường phải 
    dựa vào các phương pháp tìm kiếm trên không gian nghiệm và các kỹ thuật tổ hợp, như Branch and Bound, Dynamic Programming.
-   Các phương pháp này thường đảm bảo tìm được nghiệm chính xác (exact solution), nhưng có thể gặp vấn đề về tốc độ tính toán
+   Các phương pháp này thường đảm bảo tìm được nghiệm chính xác (exact solution), nhưng có thể gặp vấn đề về tốc độ tính toán (computational cost)
    khi kích thước bài toán tăng lên. Trong thực tế, đối với các bài toán lớn, người ta thường sử dụng các phương pháp 
    heuristic để tìm nghiệm đủ tốt trong thời gian hợp lý.
   </p>
@@ -108,7 +108,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
     Một điểm đáng chú ý là ranh giới giữa discrete và continuous không phải lúc nào cũng tuyệt đối. 
     Trong nhiều trường hợp, người ta sử dụng kỹ thuật <strong>relaxation</strong> để chuyển một bài 
     toán rời rạc sang dạng liên tục, nhằm tận dụng các thuật toán hiệu quả hơn. Ví dụ, trong integer 
-    programming, các ràng buộc nguyên có thể được nới lỏng để tạo thành một bài toán linear programming. 
+    programming, các ràng buộc nguyên có thể được nới lỏng (relaxation) để tạo thành một bài toán linear programming. 
     Nghiệm của bài toán relaxed sau đó có thể được sử dụng để xây dựng hoặc ước lượng nghiệm nguyên cho bài toán ban đầu.
   </p>
 
@@ -116,18 +116,18 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
 
   <p class="alignment">
   Trong continuous optimization, một tiêu chí quan trọng khác là tính convex của bài toán. Một bài toán được gọi là 
-  <strong>convex optimization</strong> khi cả hàm mục tiêu f(x) và feasible set X đều là lồi (convex). 
+  <strong>convex optimization</strong> khi cả hàm mục tiêu f(x) và tập nghiệm khả thi (feasible set) X đều là lồi (convex). 
   Về trực quan, đồ thị hàm mục tiêu không có “vùng lõm”: nếu nối hai điểm bất kỳ trong tập nghiệm bằng một đoạn thẳng, 
-  toàn bộ đoạn thẳng nằm trong feasible set. Điểm đặc biệt quan trọng của convex optimization là mọi <em>local optimum</em> đều là
-  <em>global optimum</em>. Điều này có nghĩa là nếu thuật toán tìm ra một điểm mà tại đó giá trị hàm mục tiêu không thể 
+  toàn bộ đoạn thẳng nằm trong feasible set. Điểm đặc biệt quan trọng của convex optimization là mọi nghiệm cục bộ (local optimum) đều là nghiệm toàn cục
+  (global optimum). Điều này có nghĩa là nếu thuật toán tìm ra một điểm mà tại đó giá trị hàm mục tiêu không thể 
   giảm thêm, thì đó chắc chắn là optimal solution trên toàn bộ solution space.
   </p>
 
   <p class="alignment">
     Ngược lại, <strong>non-convex optimization</strong> bao gồm tất cả các bài toán mà hàm mục tiêu hoặc 
     tập khả thi có thể chứa “vùng lõm” hay nhiều cực trị. Trong trường hợp này, bài toán có thể tồn tại nhiều 
-    <em>local minima</em> và <em>saddle points</em>, khiến thuật toán dễ bị “mắc kẹt” tại một nghiệm cục bộ 
-    (<em>local optimum</em>) và không đảm bảo tìm được nghiệm toàn cục (<em>global optimum</em>).
+    <em>local minima</em> và <em>saddle points (điểm yên ngựa)</em>, khiến thuật toán dễ bị “mắc kẹt” tại một 
+    <em>local optimum</em> và không đảm bảo tìm được <em>global optimum</em>.
   </p>
 <figure style="text-align:center;">
   <img src="photo/Convex-and-non-convex-optimization-problems.webp" style="width:80%;">
@@ -159,7 +159,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
     hoặc các phương pháp cho bài toán có ràng buộc như Interior Point Methods. Trong khi đó, với non-convex optimization, 
     các thuật toán gradient-based như Gradient Descent vẫn được sử dụng nhưng chỉ đảm bảo hội tụ đến một 
     <em>local optimum</em>. Để cải thiện kết quả, người ta sử dụng các biến thể như Stochastic Gradient Descent (SGD), 
-    Momentum, hoặc các phương pháp heuristic nhằm tăng khả năng thoát khỏi các local minimum.</p>
+    Momentum, hoặc các phương pháp heuristic nhằm tăng khả năng thoát khỏi các <em>local minimum</em>.</p>
   
   <p class="alignment">
     Về mặt ứng dụng, convex optimization xuất hiện nhiều trong bài toán mà tính toàn cục (global) và độ ổn định (stability) 
@@ -187,9 +187,9 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
   <p class="alignment">
     <strong>Unconstrained Optimization</strong> là những bài toán mà biến quyết định có thể nhận bất kỳ giá trị 
     nào trong solution space, mà không có ràng buộc nào. Nói cách khác, thuật toán có thể di chuyển tự do 
-    theo hướng giảm của hàm mục tiêu mà không lo vi phạm bất kỳ hạn chế nào. 
+    theo hướng giảm của hàm mục tiêu mà không lo vi phạm bất kỳ giới hạn nào. 
     Đây là trường hợp đơn giản nhất, thường gặp trong các bài toán <em>continuous optimization</em> như 
-    linear regression hoặc neural networks. Trong trường hợp convex, việc tìm <em>global optimum</em> trở 
+    linear regressions hoặc neural networks. Trong trường hợp convex, việc tìm <em>global optimum</em> trở 
     nên dễ hơn vì có thể dùng các phương pháp gradient-based kết hợp với step size phù hợp để hội tụ nhanh hơn.
   </p>
 
@@ -212,41 +212,87 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
     độ phức tạp của hàm mục tiêu và tập nghiệm khả thi.
   </p>
 
-  <h2 class="alignment">4. Phân loại theo tính xác định (certainty): Deterministic vs Stochastic Optimization</h2>
+  <h2 class="alignment">4. Phân loại theo tính xác định (certainty): Deterministic vs Stochastic vs Robust Optimization</h2>
 
   <p class="alignment">
     Trong <strong>deterministic optimization</strong>, tất cả các tham số đầu vào đều đã biết trước và cố định. 
     Do đó, với cùng một input, thuật toán luôn trả về cùng một kết quả (output) duy nhất. 
     Tính ổn định và tốc độ hội tụ (convergence rate) của thuật toán lúc này phụ thuộc hoàn toàn vào đặc điểm hình học của hàm mục tiêu (tính lồi, tính trơn).
   Ví dụ, các bài toán <em>linear programming</em>, <em>quadratic programming</em> với dữ liệu cố định, hoặc các
-     bài toán <em>convex optimization</em> truyền thống đều thuộc dạng deterministic. Trong các bài toán này, 
-     các thuật toán lặp (iterative) có khả năng đảm bảo sự hội tụ với tốc độ có thể dự đoán được về mặt lý thuyết.
-
+bài toán <em>convex optimization</em> truyền thống đều thuộc dạng deterministic. Trong các bài toán này, 
+các thuật toán lặp (iterative) có khả năng đảm bảo sự hội tụ với tốc độ có thể dự đoán được về mặt lý thuyết.
+Một điểm quan trọng khác là trong deterministic optimization, ta đang giả định rằng mọi thông tin đều chính xác và không thay đổi. Điều này giúp bài toán dễ giải hơn, nhưng
+đôi khi lại kém linh hoạt khi áp dụng vào để giải quyết các vấn đề trong thực tế.
   </p>
 <figure style="text-align:center;">
   <img src="photo/deterministic_vs_stochastic.png" style="width:80%;">
   <figcaption>Deterministic và Stochastic optimization</figcaption>
 </figure>
-  <p class="alignment">
-    Ngược lại, <strong>stochastic optimization</strong> giải quyết các bài toán chứa yếu tố ngẫu nhiên (randomness) hoặc nhiễu 
-    (noise) trong dữ liệu và ràng buộc. Do sự bất định (uncertainty) này, các lần chạy khác nhau 
-    với cùng một input có thể cho ra kết quả khác nhau. Nghiệm tìm được thường là nghiệm xấp xỉ 
-    (approximate solution) hoặc hội tụ quanh các vùng tối ưu (local/global optimum) thay vì một giá trị cố định duy nhất.
-  </p>
+  <p class="alignment"> Ngược lại với deterministic optimization, <strong>stochastic optimization</strong> xử lý các bài toán 
+    có chứa yếu tố ngẫu nhiên (randomness) hoặc nhiễu (noise) trong dữ liệu, ràng buộc hoặc môi trường. 
+    Do tồn tại sự bất định (uncertainty), cùng một đầu vào nhưng các lần chạy khác nhau có thể cho ra 
+    kết quả khác nhau. Vì vậy, nghiệm thu được thường không phải là một giá trị cố định duy nhất, mà 
+    là nghiệm xấp xỉ (approximate solution) hoặc hội tụ quanh các vùng tối ưu (local/global optimum). </p> 
 
+  <p class="alignment"> Thay vì tối ưu một hàm mục tiêu cố định như trong deterministic optimization, 
+    stochastic optimization nhìn bài toán theo một góc độ thực tế hơn: tương lai không 
+    chắc chắn, nên kết quả cũng không thể chỉ dựa trên một kịch bản duy nhất.
+    Nói đơn giản, thay vì hỏi “phương án nào là tốt nhất nếu mọi thứ diễn ra đúng như dự đoán?”, ta 
+    chuyển sang hỏi: <em>“phương án nào sẽ hoạt động tốt nhất trong nhiều tình huống khác nhau?”</em> 
+    Vì vậy, mục tiêu không còn là tìm một nghiệm tối ưu cho một trường hợp 
+    cụ thể, mà là tìm một <strong>chiến lược (policy)</strong> đủ “ổn định” và hiệu quả trên 
+    toàn bộ các khả năng có thể xảy ra. Cách tiếp cận này giống như việc ta không đặt cược vào 
+    một kịch bản duy nhất, mà chuẩn bị cho nhiều kịch bản khác nhau cùng lúc. Nói cách khác, thay vì tối ưu 
+    một giá trị chắc chắn, ta tối ưu cho <em>kết quả trung bình</em> hoặc cố gắng <em>giảm thiểu 
+    rủi ro</em> khi mọi thứ không diễn ra như kỳ vọng. </p>
+    
+  <p class="alignment"> Để giải quyết các bài toán stochastic quy mô lớn, hai hướng tiếp cận phổ biến 
+  thường được sử dụng: </p> 
+  <ul class="alignment">
+    <li> <strong>Scenario Reduction:</strong> Đây là phương pháp tác động trực tiếp vào 
+    dữ liệu. Thay vì xử lý hàng triệu kịch bản (scenarios) có thể xảy ra, ta chọn ra một tập con nhỏ các kịch bản đại 
+    diện (representative scenario). Các kịch bản có tính chất giống nhau sẽ được gom cụm (clustering) lại, và mỗi nhóm được đại diện bởi một kịch bản duy nhất với trọng 
+    số phù hợp. Nhờ đó, kích thước bài toán giảm đáng kể trong khi vẫn giữ được các đặc trưng thống kê quan trọng. </li>
+  <li><strong>Benders Decomposition:</strong> Đây là phương pháp tác động vào cấu trúc của bài toán. Ý tưởng chính là tách bài 
+toán lớn thành hai phần: Master Problem (quyết định các biến chính) và Sub-problems (giải phần còn lại khi các biến này đã được cố định).
+Master Problem đề xuất một nghiệm, sau đó các sub-problems sẽ kiểm tra tính khả thi hoặc đánh giá chất lượng của nghiệm đó.
+Kết quả được phản hồi ngược lại dưới dạng các ràng buộc bổ sung (gọi là Benders cuts) để dần hoàn thiện nghiệm.
+Quá trình này lặp lại cho đến khi hội tụ về nghiệm tối ưu. Cách tiếp cận này hiệu quả cho các bài toán lớn,
+và có thể tận dụng tính toán song song nếu có nhiều sub-problems độc lập.
+</li>
+</ul> 
+<p class="alignment"> Trong thực tế, stochastic optimization được sử dụng trong nhiều lĩnh vực khác nhau. Trong Machine Learning (ML), 
+  Stochastic Gradient Descent (SGD) hay được dùng nhiều nhất. Thay vì tính đạo hàm trên toàn bộ hàng chục triệu mẫu dữ liệu 
+  (rất tốn kém), thuật toán chỉ bốc ngẫu nhiên một nhóm nhỏ (mini-batch) để ước lượng hướng đi. Dù ước 
+  lượng này có sai số, nhưng tính ngẫu nhiên lại giúp mô hình thoát khỏi các <em>local minima</em> và hội tụ nhanh hơn đến nghiệm tổng quát.</p> 
+<p class="alignment">Trong Operations Research (OR): Các bài toán thực tế trong quản lý tồn kho (Inventory Problem) hay 
+  điều phối lưới điện (Unit Commitment Problem) luôn đối mặt với nhu cầu (demand) biến động. Phương pháp stochastic optimization cho 
+  phép các nhà quản lý lập kế hoạch dự phòng nhiều giai đoạn: đưa ra quyết định ban đầu, sau đó hiệu chỉnh 
+  lại khi các yếu tố ngẫu nhiên dần lộ diện (recourse).</p>
+<p class="alignment">Trong nhánh uncertainty, ta còn một dạng mô hình khác là 
+  <strong>Robust Optimization</strong>. Trong khi stochastic dựa vào xác suất để tối ưu hóa giá trị kỳ vọng (trung bình), 
+  thì Robust Optimization lại dựa trên tập hợp (uncertainty set) để tối ưu hóa cho kịch bản tệ nhất 
+  (worst-case scenario). Nghĩa là, Ta không cần biết chính xác xác suất xảy ra biến cố là bao nhiêu phần trăm, ta chỉ 
+  cần xác định một "khoảng biến động" an toàn là đủ (ví dụ nhu cầu khách hàng nằm trong khoảng từ 80 đến 120 đơn vị).
+</p>
+<p class="alignment">Điểm nổi bật của Robust Optimization là tính bảo thủ (conservative). Một nghiệm được 
+  gọi là "<em>robust</em>" nếu nó đảm bảo tính khả thi cho mọi kịch bản có thể xảy ra trong uncertainty set đã 
+  xác định. Điều này cực kỳ quan trọng trong các hệ thống yêu cầu độ an toàn tuyệt đối như 
+  điều phối lưới điện hay y tế (Vaccince Cold Chain), nơi một sai sót nhỏ do biến động ngẫu nhiên cũng có thể dẫn đến hậu quả 
+  nghiêm trọng. Tuy nhiên, sự an toàn này luôn đi kèm với một sự đánh đổi: vì luôn chuẩn bị cho tình huống xấu nhất, 
+  chi phí vận hành của mô hình robust thường cao hơn so với stochastic.</p>
 
-  <p class="alignment">
-    Các ứng dụng khác <strong>stochastic optimization</strong> bao gồm:
-  </p>
+<p class="alignment">Tóm lại, sự khác biệt giữa các mô hình trên không chỉ là về mặt lý thuyết (tính certainty), mà còn phản ánh cách chúng ta nhìn nhận và giải quyết các bài toán trong thế giới thực.
+Nếu như deterministic là việc giải một mô hình trong phòng thí nghiệm với mọi thông số được kiểm soát, 
+thì stochastic optimization là cuộc chơi thực tế ngoài thị trường, nơi ta phải sẵn sàng chấp nhận rủi ro, học từ sai số để 
+tìm ra giải pháp có lợi nhất trên mức trung bình. Trong khi đó, Robust Optimization đại diện cho cách tiếp cận thận trọng, nó không đặt cược vào 
+những gì “có khả năng xảy ra”, mà chuẩn bị cho những gì <em>có thể xảy ra tệ nhất</em>. 
+Thay vì tìm phương án tốt nhất trong điều kiện lý tưởng, nó hướng tới một nghiệm đủ 
+tốt nhưng luôn đáng tin cậy trong mọi tình huống. Vì vậy, việc lựa chọn mô hình không chỉ phụ 
+thuộc vào dữ liệu, mà còn là bài toán đánh đổi giữa hiệu năng tối ưu và độ tin cậy. 
+Trong một thế giới đầy biến động, đôi khi nghiệm “an toàn” lại có giá trị không kém gì nghiệm “tối ưu”. </p>
 
- <ul>
-    <li><strong>Supply/Demand trong Inverntory problem:</strong> nhu cầu sản phẩm (demand) thay đổi liên tục theo thời gian hoặc theo mùa, 
-      thuật toán phải tối ưu phân phối hàng hóa dựa trên dự đoán và rủi ro của biến động.</li>
-    <li><strong>Market Price Forecasting:</strong> giá chứng khoán hoặc hàng hóa biến động liên tục, chiến lược mua bán (trading) 
-      trở thành bài toán stochastic với dữ liệu ngẫu nhiên.</li>
-</ul>
-
-<h2> 5. Phân loại theo tính chất hàm (Functional Property): Linear vs Nonlinear Programming</h2>
+  <h2> 5. Phân loại theo tính chất hàm (Functional Property): Linear vs Nonlinear Programming</h2>
 <p class="alignment">
     Một phân loại khác trong tối ưu hóa dựa trên tính chất của hàm mục tiêu và các ràng buộc là 
     <strong>Linear Programming (LP)</strong> và <strong>Non-Linear Programming (NLP)</strong>. 
@@ -268,10 +314,10 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
 <p class="alignment">
     <strong>Non-Linear Programming (NLP)</strong> bao gồm tất cả các bài toán mà hàm mục tiêu 
     hoặc ràng buộc là phi tuyến, có thể convex hoặc non-convex. NLP thường phức tạp hơn LP vì 
-    có thể xuất hiện nhiều local optimum, saddle points, hoặc vùng lõm trong feasible region. 
+    có thể xuất hiện nhiều <em>local optimum</em>, <em>saddle points</em>, hoặc vùng lõm trong feasible region. 
     Các thuật toán phổ biến cho NLP bao gồm Gradient Descent, Newton’s Method, Sequential Quadratic 
     Programming (SQP), hoặc các heuristic cho non-convex NLP. Trong nhiều trường hợp, nghiệm tìm được là 
-    <em>approximate solution</em> và không đảm bảo global optimum, đặc biệt khi bài toán non-convex hoặc dữ liệu stochastic.
+    <em>approximate solution</em> và không đảm bảo <em>global optimum</em>, đặc biệt khi bài toán non-convex hoặc dữ liệu stochastic.
 </p>
 
 <p class="alignment">
