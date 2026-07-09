@@ -60,9 +60,9 @@
  
     <p class="alignment">
       Năm 1984, Karmarkar công bố một
-      hướng tiếp cận hoàn toàn khác: thay vì đi dọc theo biêncủa feasible region qua
+      hướng tiếp cận hoàn toàn khác: thay vì đi dọc theo biên của feasible region qua
       các đỉnh, ông đề xuất xuất phát từ một điểm bên trong và di chuyển xuyên qua
-      lòng feasible region theo một đường cong mượt mà tiến dần đến nghiệm tối ưu. Đây chính
+      lòng feasible region theo một đường cong tiến dần đến nghiệm tối ưu. Đây chính
       là nền tảng của phương pháp Interior Point mà ta đang sử dụng ngày nay. Karmarkar chứng minh thuật toán của ông
       có độ phức tạp đa thức \(O(n^{3.5})\), nghĩa là số bước lặp tăng theo hàm đa thức của
       số biến chứ không phải hàm mũ, và quan trọng hơn, nó cũng chạy nhanh trong thực tế.
@@ -304,7 +304,7 @@
       <li>Ràng buộc (3): \(6 + 4(4) = 22 < 32\), không active \((s_3 = 10 > 0)\). Nhân tử \(\lambda_3 = 0\).</li>
     </ul>
  
-    <h3>3.5. Duality Gap: tiêu chí dừng của thuật toán</h3>
+    <h3>3.5. Duality Gap: Stopping criterion (tiêu chí dừng) của thuật toán</h3>
  
     <p class="alignment">
       Khi đã có 4 điều kiện KKT, một câu hỏi thực tế đặt ra:làm sao biết thuật toán đã
@@ -343,7 +343,7 @@
       <li><strong>Ý nghĩa thực tế:</strong> tại mỗi vòng lặp, nghiệm hiện tại cách giá trị
         tối ưu thực sự nhiều nhất \(5\mu\) đơn vị. Đây là đảm bảo định lượng, không chỉ là
         cảm tính.</li>
-      <li><strong>Tiêu chí dừng chuẩn:</strong> thay vì đo \(|\nabla\phi_\mu|\) (phụ thuộc
+      <li><strong>Stopping criterion:</strong> thay vì đo \(|\nabla\phi_\mu|\) (phụ thuộc
         vào đơn vị và scaling), các solver thực tế dừng khi
         \(\text{gap} = (m+n)\mu < \varepsilon\), tức là khi \(\mu < \varepsilon\,/\,(m+n)\).</li>
     </ul>
