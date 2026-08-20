@@ -54,37 +54,6 @@ Trong bài viết này, tôi sẽ giới thiệu những phần khái quát về
 <p class="alignment"> Trước khi áp dụng các thuật toán để tìm nghiệm tối ưu, bước quan trọng đầu tiên là chuyển đổi bài toán thực tế thành một mô hình tối ưu. Quá trình này được gọi là <em>mô hình hóa (modelling)</em>, 
   trong đó ta xác định các biến quyết định (decision variables), xây dựng hàm mục tiêu (objective functions) và thiết lập các ràng buộc (constraints) phản ánh những điều kiện hoặc giới hạn của bài toán. 
   Khi mô hình tối ưu đã được thiết lập, các thuật toán tối ưu sẽ được sử dụng để tìm ra nghiệm tốt nhất thỏa mãn các ràng buộc đó. </p> 
-<p class="alignment"> Xét một ví dụ đơn giản trong bài toán sản xuất: một doanh nghiệp sản xuất nhiều loại sản phẩm khác nhau, mỗi loại có giá bán và chi phí sản xuất riêng. 
-    Doanh nghiệp muốn xác định số lượng sản xuất của từng loại sản phẩm sao cho <strong>tổng lợi nhuận đạt mức tối đa</strong>, trong khi <strong>tổng chi phí không vượt quá ngân sách cho phép</strong>. 
-    Để giải bài toán này, ta đặt các biến đại diện cho số lượng của từng sản phẩm, xây dựng hàm mục tiêu là tổng lợi nhuận cần tối đa hóa, đồng thời thiết lập các ràng buộc về ngân sách và các điều kiện sản xuất liên quan. 
-    Sau đó, các phương pháp tối ưu sẽ được áp dụng để tìm ra phương án sản xuất tối ưu. Dưới đây là mô hình tối ưu hóa của bài toán trên:</p> 
-
-<p class="alignment">
-$$
-\begin{align*}
-\text{Maximize } & Z = \sum_{j \in J} (p_j - c_j) x_j \\
-\text{s.t. } & \sum_{j \in J} c_j x_j \le B \\
-& \sum_{j \in J} a_{ij} x_j \le b_i \quad \forall i \in I \\
-& x_j \ge 0, \quad x_j \in \mathbb{Z}^+ \text{ (nếu cần nguyên)}
-\end{align*}
-$$
-</p>
-
-<p class="alignment">
-Trong đó:
-</p>
-
-<ul>
-  <li><em>x<sub>j</sub></em> : số lượng sản phẩm <em>j</em> được sản xuất</li>
-  <li><em>p<sub>j</sub></em> : giá bán mỗi đơn vị sản phẩm <em>j</em></li>
-  <li><em>c<sub>j</sub></em> : chi phí sản xuất mỗi đơn vị sản phẩm <em>j</em></li>
-  <li><em>B</em> : tổng ngân sách cho phép</li>
-  <li><em>a<sub>ij</sub></em> : lượng tài nguyên <em>i</em> cần cho một đơn vị sản phẩm <em>j</em></li>
-  <li><em>b<sub>i</sub></em> : tổng tài nguyên <em>i</em> sẵn có</li>
-  <li><em>J</em> : tập các loại sản phẩm</li>
-  <li><em>I</em> : tập các loại tài nguyên</li>
-</ul>
-
 
     <p> Tùy vào đặc điểm của mô hình tối ưu, ta có thể phân loại các bài toán trong quy hoạch toán học thành nhiều dạng khác nhau, chẳng hạn như: </p> 
     <ul> 
@@ -144,14 +113,14 @@ Trong đó:
   </ul>
 
   <p class="alignment"> Những phương pháp này có nền tảng lý thuyết chặt chẽ và đảm bảo tính tối ưu.
-    Tuy nhiên, nhược điểm của chúng là tốn nhiều thời gian và tài nguyên tính toán, đặc biệt với các bài toán có quy mô lớn (nhiều biến số và ràng buộc).
+    Tuy nhiên, nhược điểm của chúng là tốn nhiều thời gian và tài nguyên tính toán. Đặc biệt với các bài toán có quy mô lớn (nhiều biến số và ràng buộc).
     Chính vì vậy, trong thực tế, Exact Algorithms thường phù hợp với các bài toán quy mô nhỏ hoặc trung bình.
   </p>
 
   <h2>Thuật toán xấp xỉ (Approximation Algorithms / Heuristics)</h2>
 
   <p class ="alignment">
-    Khi bài toán trở nên quá lớn và phức tạp, việc tìm nghiệm tối ưu tuyệt đối có thể mất rất nhiều thời gian – đôi khi là không khả thi trong điều kiện thực tế.
+    Khi bài toán trở nên quá lớn và phức tạp, việc tìm nghiệm tối ưu tuyệt đối có thể mất rất nhiều thời gian.
     Lúc này, một hướng tiếp cận khác được sử dụng: các thuật toán xấp xỉ, hay còn gọi là Heuristics.
   </p>
 
@@ -171,7 +140,7 @@ Trong đó:
   </p>
 <p class="alignment">
     
-Các thuật toán này không đòi hỏi các kỹ thuật toán học phức tạp, 
+Các thuật toán này không đòi hỏi các kỹ thuật toán phức tạp, 
 đặc điểm của chúng là xuất phát từ hướng tư duy “cảm tính” của con người. 
 Bản thân từ “heuristics” cũng mang nghĩa là “xuất phát từ kinh nghiệm” trong tiếng Anh, và có thể dịch ra tiếng Việt là “suy nghiệm”.
 Điều thú vị là chúng ta sử dụng tư duy heuristics mỗi ngày một cách vô thức. Một số phương pháp Heuristics phổ biến trong Operation Research bao gồm:
@@ -212,8 +181,8 @@ Thậm chí Heuristics còn được kết hợp với các kỹ thuật khác n
 
   <p class="alignment">
     Điều này cho thấy Operation research không phải là một lĩnh vực khép kín, mà là một hệ sinh thái
-    các phương pháp định lượng, liên tục mở rộng và kết nối với Thống kê, Khoa học dữ liệu
-    và Trí tuệ nhân tạo.
+    các phương pháp định lượng, liên tục mở rộng và kết nối với Thống kê (statistic), Khoa học dữ liệu (data science)
+    và AI.
   </p>
 
   <h2>Kết lại</h2>

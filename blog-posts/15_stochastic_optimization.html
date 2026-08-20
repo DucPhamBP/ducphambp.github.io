@@ -42,10 +42,10 @@
   <main class="content">
     <h1>Two-stage stochastic optimization</h1>
     <p class="date">Posted: 14/02/2026</p>
-<p class="alignment">Lập trình tuyến tính/số nguyên truyền thống được thiết kế cho các bài toán xác định (deterministic), giả định rằng tất cả các dữ liệu đều đã biết và cố định. 
+<p class="alignment">Lập trình tuyến tính/số nguyên truyền thống được thiết kế cho các bài toán xác định (deterministic). Giả định rằng tất cả các dữ liệu đều đã biết và cố định. 
     Mặc dù điều này giúp việc mô hình hóa trở nên đơn giản hơn, nhưng nó hiếm khi phản ánh đúng điều kiện thực tế. 
     Ví dụ, trong thị trường chứng khoán, việc dự đoán giá hoặc lợi nhuận trong tương lai thường chứa rất nhiều yếu tố khó đoán.</p>
-<p class="alignment">Một số phương pháp đã được đề xuất để xử lý các thách thức liên quan đến sự không chắc chắn (uncertainty) trong các tham số, bao gồm: sensitivity analysis, robust optimization, chance constraints, và two-stage stochastic programming with recourse. 
+<p class="alignment">Một số phương pháp đã được đề xuất để xử lý các thách thức liên quan đến sự không chắc chắn (uncertainty) trong các tham số. Bao gồm: sensitivity analysis, robust optimization, chance constraints, và two-stage stochastic programming with recourse. 
     Trong bài viết này, chúng ta sẽ tập trung vào phương pháp <strong>two-stage stochastic optimization</strong>.</p>
 <h2>1. Tổng quan</h2>
 <p class="alignment">Trong <strong>two-stage stochastic optimization</strong>, chúng ta chia các biến quyết định thành hai giai đoạn:</p>
@@ -60,7 +60,7 @@
 
   <ol>
     <li class="alignment">
-      <strong>Biến quyết định giai đoạn một (First-stage decision variables)</strong>: Đây là các quyết định phải được đưa ra trước khi sự không chắc chắn xảy ra. Chúng thường được gọi là các quyết định “here-and-now”, và những quyết định này thường không thể thay đổi hoặc rất tốn kém để điều chỉnh sau khi đã thực hiện. Ví dụ như mức sản xuất ban đầu hoặc quyết định vị trí xây dựng cơ sở lớn.
+      <strong>Biến quyết định giai đoạn một (First-stage decision variables)</strong>: Đây là các quyết định phải được đưa ra trước khi sự không chắc chắn xảy ra. Chúng thường được gọi là các quyết định “here-and-now”. Những quyết định này thường không thể thay đổi hoặc rất tốn kém để điều chỉnh sau khi đã thực hiện. Ví dụ như mức sản xuất ban đầu hoặc quyết định vị trí xây dựng cơ sở lớn.
     </li>
     <li class="alignment">
       <strong>Biến quyết định giai đoạn hai (Second-stage decision variables)</strong>: Đây là các quyết định được đưa ra sau khi sự không chắc chắn đã xảy ra. Chúng thường được gọi là ‘recourse decisions’ vì chúng ta đang phản ứng lại các tình huống xảy ra và các quyết định đã đưa ra ở giai đoạn một.
@@ -69,7 +69,7 @@
 
   <p class="alignment">Việc lựa chọn biến nào thuộc giai đoạn một hay giai đoạn hai là do người ra quyết định quyết định, và phụ thuộc vào bản chất của bài toán.</p>
 
-  <p class="alignment">Trong bài toán two-stage stochastic programming, sự không chắc chắn được mô tả bằng một tập các kịch bản (<em>scenarios</em>), mỗi kịch bản có xác suất xảy ra và giá trị tham số khác nhau. Ví dụ, nếu chúng ta có sự không chắc chắn về cả nhu cầu (<em>demand</em>) và khả năng hoạt động của máy móc (<em>machine availability</em>), thì chúng ta sẽ có một tập các kịch bản như sau.</p>
+  <p class="alignment">Trong bài toán two-stage stochastic programming, sự không chắc chắn được mô tả bằng một tập các kịch bản (<em>scenarios</em>). Mỗi kịch bản có xác suất xảy ra và giá trị tham số khác nhau. Ví dụ, nếu chúng ta có sự không chắc chắn về cả nhu cầu (<em>demand</em>) và khả năng hoạt động của máy móc (<em>machine availability</em>), thì chúng ta sẽ có một tập các kịch bản như sau.</p>
 <table class="scenario-table">
     <caption>Bảng 2: Xác suất, nhu cầu và khả năng hoạt động theo các kịch bản</caption>
     <thead>
@@ -128,7 +128,7 @@
 
   <p class="alignment">Lưu ý rằng tổng các xác suất của các kịch bản bằng 1.</p>
 
-  <p class="alignment">Mục tiêu của <strong>two-stage stochastic optimization</strong> là tối thiểu hóa hoặc tối đa hóa tổng giá trị kỳ vọng (<em>expected objective value</em>) của hàm mục tiêu, đồng thời xem xét cả biến quyết định giai đoạn một và giai đoạn hai. 
+  <p class="alignment">Mục tiêu của <strong>two-stage stochastic optimization</strong> là tối thiểu hóa hoặc tối đa hóa tổng giá trị kỳ vọng (<em>expected objective value</em>) của hàm mục tiêu. Đồng thời xem xét cả biến quyết định giai đoạn một và giai đoạn hai. 
     Trong một số tài liệu, bài toán này thường được viết dưới dạng sau:</p>
 $$
 \min_{x \in X} \; c^\top x + \mathbb{E}_{\xi}[ Q(x, \xi) ]
@@ -198,7 +198,7 @@ Hàm mục tiêu là tổng chi phí giai đoạn một và chi phí kỳ vọng
 <h3>Bài toán Network Design</h3>
 
 <p class="alignment">
-Bài toán network design là ví dụ kinh điển sử dụng 2 stage stochastic optimization, trong đó nhiều loại hàng hóa cần được vận chuyển qua một mạng lưới phải được thiết kế trước khi nhu cầu của các hàng hóa này được biết.
+Bài toán network design là ví dụ phổ biến trong việc sử dụng 2-stage stochastic programming. Trong đó nhiều loại hàng hóa cần được vận chuyển qua một mạng lưới phải được thiết kế trước khi nhu cầu của các hàng hóa này được biết.
 Mỗi tuyến đường nếu được mở sẽ phát sinh chi phí cố định. Sau khi mở, tuyến đó có một giới hạn công suất và mỗi đơn vị hàng vận chuyển qua sẽ phát sinh 
 chi phí biến đổi.
 </p>

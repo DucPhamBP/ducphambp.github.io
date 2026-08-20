@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Linear Programming: Lập mô hình một số bài toán cơ bản</title>
+  <!-- Include MathJax -->
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script>
+  hljs.highlightAll();
+</script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Linear Programming: Lập mô hình một số bài toán cơ bản</h1>
+    <p class="date">Posted: 14/07/2026</p>
+
+    <p class="alignment">Ở các bài trước, mình đã giới thiệu Linear Programming (LP) là gì, cùng một số phương pháp giải cơ bản. Trong
+      bài viết này, mình muốn tiếp cận theo hướng khác một chút. Thay vì tập trung vào phương pháp giải, ta
+      sẽ tập trung vào cách lập mô hình (modeling). Tức là làm sao để chuyển một bài toán thực
+      tế thành một mô hình toán học dưới dạng LP. Đây là một kỹ năng quan trọng trong tối ưu hóa.
+      Thực tế, thách thức lớn nhất không nằm ở việc giải mô
+      hình, mà nằm ở việc xây dựng một mô hình đúng và phản ánh chính xác bản chất của
+      bài toán.</p>
+
+    <h2>1. Bài toán production planning và định giá tồn kho nguyên vật liệu</h2>
+
+<h3>1.1. Bài toán production planning</h3>
+
+<p class="alignment">
+Hãy bắt đầu với bài toán production planning. Giả sử một công ty sản xuất nhiều loại sản
+phẩm khác nhau. Mỗi loại đều cần một số nguyên vật liệu nhất định để sản xuất. Ta có các
+thông tin sau:
+</p>
+
+<ul class="alignment">
+  <li>Công ty có $d$ loại sản phẩm khác nhau trong danh mục sản xuất, đánh số là sản phẩm 1, sản
+    phẩm 2, và tiếp tục như vậy.</li>
+  <li>Có $m$ loại nguyên vật liệu cần thiết để sản xuất các sản phẩm này, đánh số là nguyên liệu 1,
+    nguyên liệu 2, và tiếp tục như vậy.</li>
+  <li>Mỗi pc $j$ được bán với giá $p_j$, với $j \in [d]$.</li>
+  <li>Lượng tồn kho hiện tại của nguyên liệu $i$ là $b_i$, với $i \in [m]$. Ta giả sử $b_i > 0$
+    với mọi $i$ (nếu $b_i=0$, mọi sản phẩm cần nguyên liệu $i$ đều không thể được sản xuất).</li>
+  <li>Để sản xuất một pc $j$, cần $a_{ij}$ đơn vị nguyên liệu $i$, với mọi cặp
+    $(i,j) \in [m] \times [d]$. Ở đây, $[m] \times [d]$ ký hiệu cho tập hợp
+    $\{(i,j) : i \in [m], j \in [d]\}$.</li>
+  <li>Ta giả sử toàn bộ dữ liệu đều không âm, tức $p_j \ge 0$, $b_i \ge 0$, và $a_{ij} \ge 0$ với
+    mọi $i \in [m]$ và $j \in [d]$.</li>
+  <li>Ta giả sử mỗi sản phẩm đều <strong>chia nhỏ được</strong> (divisible), nghĩa là lượng sản
+    xuất có thể là bất kỳ số thực nào. Ví dụ, ta hoàn toàn có thể sản xuất 1,5 pcs sản phẩm 1</li>
+</ul>
+
+<p class="alignment">Với các thông tin trên, mục tiêu là xác định lượng sản xuất của mỗi sản phẩm.
+  Dựa trên tồn kho nguyên liệu hiện có, sao cho tổng doanh thu (revenue) là lớn nhất. Ở đây, doanh
+  thu là tổng thu nhập gộp thu được từ việc bán sản phẩm. Ta có thể giải quyết
+  câu hỏi này bằng cách viết một mô hình LP. Hãy nhớ lại 3 thành phần của một bài toán ra
+  quyết định: decisions, constraints, và objective.</p>
+
+<ol class="alignment">
+  <li><strong>Decisions</strong>: gọi $x_j$ là lượng sản phẩm $j$ mà ta sản xuất, với $j \in [d]$.</li>
+  <li><strong>Objective</strong>: mục tiêu là tối đa hóa tổng doanh thu. Ở đây, tổng doanh thu được
+    cho bởi $\sum_{j \in [d]} p_j x_j$.</li>
+  <li><strong>Constraints</strong>: tổng lượng tiêu thụ của nguyên liệu $i$ không được vượt quá tồn
+    kho hiện có. Tổng lượng tiêu thụ là $\sum_{j \in [d]} a_{ij} x_j$. Vì tồn kho hiện tại của
+    nguyên liệu $i$ là $b_i$, ta có thể viết constraint dưới dạng
+    $\sum_{j \in [d]} a_{ij} x_j \le b_i$. Hơn nữa, ta biết rằng lượng sản xuất của mỗi sản phẩm
+    không thể nhỏ hơn 0. Do đó, $x \ge 0$. Ở đây, $x \ge 0$ đơn giản có nghĩa là mọi thành phần của
+    $x$ đều không âm.</li>
+</ol>
+
+<p class="alignment">Tổng hợp lại, bài toán production planning có thể được mô hình hóa thành:</p>
+
+$$
+\begin{aligned}
+\max \quad & \sum_{j \in [d]} p_j x_j \\
+\text{s.t.} \quad & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad i \in [m], \\
+& x \ge 0.
+\end{aligned}
+$$
+
+<p class="alignment">Tiếp theo, hãy xét một mục tiêu khác. Giả sử mỗi đơn vị nguyên liệu $i$ tốn
+  một chi phí là $s_i$, với $i \in [m]$. Lợi nhuận (profit) được định nghĩa là thu nhập ròng sau khi
+  đã trừ chi phí khỏi doanh thu. Công ty có thể muốn tối đa hóa lợi nhuận, thay vì doanh thu. Vậy
+  làm sao ta có thể mô hình hóa mục tiêu mới này?</p>
+
+<p class="alignment">Để ý rằng, sản xuất một pc $j$ sẽ tốn một khoản chi phí là
+  $\sum_{i \in [m]} s_i a_{ij}$. Do đó, lợi nhuận thu được từ việc bán một pc $j$
+  là:</p>
+
+$$
+p_j - \sum_{i \in [m]} s_i a_{ij}
+$$
+
+<p class="alignment">Khi đó, mục tiêu mới là tối đa hóa:</p>
+
+$$
+\sum_{j \in [d]} \left( p_j - \sum_{i \in [m]} s_i a_{ij} \right) x_j
+$$
+
+<p class="alignment">LP tương ứng là:</p>
+
+$$
+\begin{aligned}
+\max \quad & \sum_{j \in [d]} \left( p_j - \sum_{i \in [m]} s_i a_{ij} \right) x_j \\
+\text{s.t.} \quad & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad i \in [m], \\
+& x \ge 0.
+\end{aligned}
+$$
+
+<h3>1.2. Bài toán định giá tồn kho nguyên vật liệu (Inventory valuation problem)</h3>
+
+<p class="alignment">
+Bây giờ, hãy xét một góc nhìn khác: thay vì sử dụng nguyên liệu để sản xuất, công ty
+có thể bán trực tiếp lượng nguyên liệu tồn kho ra ngoài thị trường. Giả sử giá thị trường
+của nguyên liệu $i$ là $r_i$ trên mỗi đơn vị. Khi đó, câu hỏi đặt ra là: giá trị hợp
+lý của mỗi đơn vị nguyên liệu nên được xác định như thế nào?
+</p>
+
+<p class="alignment">
+Câu hỏi này không đơn giản như việc lấy giá thị trường hiện tại. Bởi giá trị của nguyên
+liệu không chỉ nằm ở khả năng bán trực tiếp, mà còn nằm ở giá trị của các sản phẩm mà
+nó có thể tạo ra. Do đó, ta cần một cách định giá vừa nhất quán với thị trường, vừa phản
+ánh đúng tiềm năng sản xuất của nguồn nguyên liệu.
+</p>
+
+<p class="alignment">
+Gọi $\lambda_i$ là giá trị trên mỗi đơn vị nguyên liệu $i$ cần xác định. Đây chính là
+biến quyết định của bài toán. Để cách định giá này hợp lý, ta cần đảm bảo hai điều kiện.
+</p>
+
+<p class="alignment">
+<strong>Điều kiện thứ nhất:</strong> giá trị của nguyên liệu không thể thấp hơn giá bán
+trực tiếp trên thị trường. Vì công ty có thể lựa chọn bán nguyên liệu thay vì sử dụng
+nó cho sản xuất:
+</p>
+
+$$
+\lambda_i \ge r_i, \quad i \in [m].
+$$
+
+<p class="alignment">
+<strong>Điều kiện thứ hai:</strong> với mỗi sản phẩm $j$, tổng giá trị của các nguyên liệu
+cần thiết để sản xuất một pc $j$ phải không nhỏ hơn giá bán của sản phẩm đó.
+Nếu không, công ty có thể tạo ra sản phẩm để thu được giá trị cao hơn so với việc giữ
+nguyên liệu:
+</p>
+
+$$
+\sum_{i \in [m]} a_{ij}\lambda_i \ge p_j,
+\quad j \in [d].
+$$
+
+<p class="alignment">
+Hai điều kiện trên đảm bảo rằng cách định giá không mâu thuẫn với bất kỳ lựa chọn kinh
+tế nào của công ty. Trong số tất cả các cách định giá thỏa mãn hai điều kiện này, ta chọn
+cách có tổng giá trị kho nguyên liệu nhỏ nhất để thu được một mức định giá thận trọng nhất:
+</p>
+
+$$
+\begin{aligned}
+\min_{\lambda}\quad & \sum_{i\in[m]} b_i\lambda_i\\
+\text{s.t.}\quad
+& \sum_{i\in[m]} a_{ij}\lambda_i \ge p_j,
+\quad j\in[d],\\
+& \lambda_i \ge r_i,
+\quad i\in[m].
+\end{aligned}
+$$
+
+<p class="alignment">
+Nghiệm tối ưu $\lambda^*$ của bài toán này chính là cách định giá thấp nhất nhưng vẫn
+đảm bảo tính nhất quán với cả giá thị trường và giá trị sản xuất. Do đó,
+$\sum_i b_i\lambda_i^*$ biểu diễn một mức giá trị hợp lý cho toàn bộ kho nguyên liệu.
+Một điểm thú vị là mô hình này thực chất chính là bài toán <em>dual</em> (đối ngẫu)
+của bài toán production planning ban đầu. Khái niệm duality sẽ được trình bày chi tiết
+hơn trong bài viết tiếp theo.
+</p>
+    <h2>2. Vậy bài toán nào có thể lập mô hình thành LP?</h2>
+
+    <p class="alignment">Câu hỏi tiếp theo là: có phải những bài toán có objective function và
+      constraints hoàn toàn tuyến tính mới đưa được về LP hay không? Câu trả lời khá bất ngờ: <strong>không
+      hẳn</strong>. Có nhiều bài toán nhìn qua tưởng phi tuyến, nhưng thực chất vẫn có thể viết lại thành
+      một LP. Để thấy rõ điều này, hãy xét một ví dụ khác: bài toán tìm tâm của một cụm điểm.</p>
+
+    <p class="alignment">Giả sử ta có một tập $n$ điểm dữ liệu $v^1, \dots, v^n \in \mathbb{R}^d$, tạo
+      thành một cụm (cluster). Ta muốn tìm ra "tâm" của cụm này, tức một điểm $x$ sao cho khoảng cách từ
+      $x$ đến toàn bộ $n$ điểm trong cụm là nhỏ nhất. Tùy vào cách ta định nghĩa "khoảng cách", kết quả
+      tìm được có thể rất khác nhau.</p>
+    <figure style="text-align:center;">
+  <img src="photo/cluster_of_points.png" style="width:30%;">
+  <figcaption>Tập hợp các điểm trong cụm</figcaption>
+</figure>
+
+    <p class="alignment">Trước tiên, ta cần hai công cụ đo "độ lớn" của một vector, gọi là <em>norm</em>.
+      Với một vector $x \in \mathbb{R}^d$, ta định nghĩa:</p>
+
+    $$
+    \|x\|_1 = \sum_{j \in [d]} |x_j| \qquad \text{($\ell_1$-norm)}
+    $$
+
+    $$
+    \|x\|_\infty = \max_{j \in [d]} |x_j| \qquad \text{($\ell_\infty$-norm)}
+    $$
+    <p class="alignment">Bài toán tìm tâm của cụm điểm, ứng với mỗi cách đo khoảng cách trên, chính là:</p>
+
+    $$
+    \min_x \ d(x)
+    $$
+
+    <p class="alignment">Dựa trên hai norm này, ta có thể định nghĩa khoảng cách $d(x)$ từ một điểm $x$
+      đến toàn bộ tập $V$ theo 4 cách khác nhau:</p>
+      
+    <ul class="alignment">
+      <li><strong>Tổng khoảng cách $\ell_1$</strong>: $d(x) = \sum_{i \in [n]} \|x - v^i\|_1$</li>
+      <li><strong>Tổng khoảng cách $\ell_\infty$</strong>: $d(x) = \sum_{i \in [n]} \|x - v^i\|_\infty$</li>
+      <li><strong>Khoảng cách $\ell_1$ xa nhất</strong>: $d(x) = \max_{i \in [n]} \|x - v^i\|_1$</li>
+      <li><strong>Khoảng cách $\ell_\infty$ xa nhất</strong>: $d(x) = \max_{i \in [n]} \|x - v^i\|_\infty$</li>
+    </ul>
+    <figure style="text-align:center;">
+  <img src="photo/distance.png" style="width:30%;">
+  <figcaption>Khoảng cách từ điểm $x$ đến set $V$</figcaption>
+</figure>
+    <p class="alignment">
+    Vì các hàm norm ở trên vốn không phải là hàm tuyến tính (do chứa giá trị tuyệt đối
+    hoặc phép lấy giá trị lớn nhất), nhìn sơ qua cả bốn bài toán này dường như là các
+    bài toán phi tuyến. Vậy liệu chúng ta có thể sử dụng LP để giải chúng hay không?
+    Câu trả lời là có. Mặc dù biểu thức ban đầu không tuyến tính, mỗi bài toán vẫn có
+    thể được biến đổi tương đương về dạng LP. Điểm mấu chốt nằm ở một khái niệm
+    gọi là <em>linearly representable function</em> (tạm dịch: hàm có thể biểu diễn
+    tuyến tính).
+    </p>
+
+    <h3>2.1. Epigraph: một cách nhìn khác về hàm số</h3>
+
+    <p class="alignment">Trước khi nói đến khái niệm trên, ta cần làm quen với một khái niệm gọi là
+      epigraph. Cho một hàm số $f: \mathbb{R}^d \to \mathbb{R}$, epigraph của $f$ là
+      tập tất cả các điểm nằm phía trên đồ thị của hàm số đó:</p>
+
+    $$
+    \text{epi}(f) = \left\{ (x, t) \in \mathbb{R}^d \times \mathbb{R} : f(x) \le t \right\}
+    $$
+
+    <p class="alignment">Để dễ hình dung: nếu bạn vẽ đồ thị hàm $f$ lên mặt phẳng, thì
+      epigraph chính là toàn bộ "vùng trời" phía trên đường cong đó (bao gồm cả chính đường cong). Khái
+      niệm này nghe có vẻ trừu tượng, nhưng nó sẽ giúp ta có một cách rất gọn để nói "hàm này có phức
+      tạp hay không", bằng cách nhìn vào hình dạng của vùng phía trên nó.</p>
+
+    <p class="alignment">Ta nói một hàm $f$ là <strong>linearly representable</strong> nếu epigraph của
+      nó có thể được biểu diễn hoàn toàn bằng một hệ hữu hạn các bất phương trình tuyến tính, tức là:</p>
+
+    $$
+    \text{epi}(f) = \left\{ (x,t) \in \mathbb{R}^d \times \mathbb{R} : \exists\, y \in \mathbb{R}^p \text{ sao cho } Ax + Dy + ht \le r \right\}
+    $$
+
+    <p class="alignment">với một số ma trận $A, D$ và vector $h, r$ phù hợp. Ở đây, các biến $y$ được
+      gọi là <strong>biến phụ trợ</strong> (auxiliary variables). Ý tưởng cốt lõi là: dù bản thân hàm
+      $f$ không tuyến tính, ta vẫn có thể "vẽ" đúng hình dạng vùng phía trên nó chỉ bằng các đường thẳng,
+      miễn là ta cho phép mượn thêm vài biến phụ để hỗ trợ.</p>
+
+    <h3>2.2. Vì sao điều này quan trọng?</h3>
+
+    <p class="alignment">Giả sử ta muốn tối thiểu hóa $f(x)$. Thay
+      vì tối ưu trực tiếp trên $f(x)$, ta đưa vào một biến phụ $t$, và tối thiểu hóa $t$ với ràng buộc
+      thêm là $f(x) \le t$. Hai bài toán này hoàn toàn tương đương nhau, chỉ khác là bài toán mới có
+      dạng "đẹp" hơn để làm việc. Nếu $f$ là linearly representable, ràng buộc $f(x) \le t$ (tức điều
+      kiện $(x,t) \in \text{epi}(f)$) có thể thay bằng một hệ bất phương trình tuyến tính, có thêm một
+      vài biến phụ trợ. Áp dụng tương tự cho từng constraint function, cuối cùng ta thu được một bài
+      toán hoàn toàn tuyến tính, dù bài toán gốc nhìn qua không hề như vậy.</p>
+
+    <p class="alignment">Mọi hàm tuyến tính đều là linearly representable (vì bản thân nó đã
+      là một bất phương trình tuyến tính rồi, không cần biến phụ nào cả). Nhưng như ví dụ dưới đây cho
+      thấy, có rất nhiều hàm phi tuyến vẫn là linearly representable.</p>
+
+    <p class="alignment"><strong>Ví dụ.</strong> Xét hàm $f(x_1, x_2, x_3) = \max\{x_1,\ 2x_2 + x_3,\
+      2x_3 - x_1\}$. Nhìn qua, đây rõ ràng là một hàm phi tuyến vì có phép lấy max. Epigraph của nó là:</p>
+
+    $$
+    \left\{(x_1, x_2, x_3, t) : \max\{x_1,\ 2x_2 + x_3,\ 2x_3 - x_1\} \le t \right\}
+    $$
+
+    <p class="alignment">Nhưng để ý rằng, điều kiện "giá trị lớn nhất trong 3 số không vượt quá $t$"
+      hoàn toàn tương đương với việc <strong>cả 3 số đó đều không vượt quá $t$</strong>. Tức là:</p>
+
+    $$
+    x_1 \le t, \qquad 2x_2 + x_3 \le t, \qquad 2x_3 - x_1 \le t
+    $$
+
+    <p class="alignment">Vậy nên:</p>
+
+    $$
+    \text{epi}(f) = \{(x_1, x_2, x_3, t) : x_1 \le t,\ 2x_2 + x_3 \le t,\ 2x_3 - x_1 \le t\}
+    $$
+
+    <p class="alignment">Đây là một hệ hữu hạn các bất phương trình tuyến tính, không cần đến bất kỳ
+      biến phụ trợ nào cả. Vậy $f$ là linearly representable, dù bản thân nó không phải là hàm tuyến
+      tính. Đây chính xác là "mẹo" đứng sau việc 4 bài toán tìm tâm cụm điểm ở trên đều có thể viết lại
+      thành LP: phép lấy max và dấu giá trị tuyệt đối, tuy trông có vẻ phi tuyến, nhưng đều có thể "tháo
+      rời" thành một tập hợp các bất phương trình tuyến tính đơn giản hơn.</p>
+
+    <h3>2.3. Vậy biến phụ trợ $y$ thực chất là gì?</h3>
+
+    <p class="alignment">Ở phần trước, khi định nghĩa linearly representable, mình có nhắc đến các
+      "biến phụ trợ" (auxiliary variables) $y$ mà ta được phép mượn thêm để biểu diễn epigraph bằng
+      các bất phương trình tuyến tính. Nhưng $y$ thực sự đóng vai trò gì? Để trả lời câu hỏi này, ta
+      cần làm quen với một khái niệm gọi là <strong>projection</strong> (phép chiếu).</p>
+
+    <p class="alignment">Cho một tập $C \subseteq \mathbb{R}^d \times \mathbb{R}^p$, tức mỗi điểm
+      trong $C$ được viết dưới dạng $(x, y)$ với $x \in \mathbb{R}^d$ và $y \in \mathbb{R}^p$. Phép
+      chiếu của $C$ xuống không gian của $x$ được định nghĩa là:</p>
+
+    $$
+    \text{proj}_x(C) = \left\{ x \in \mathbb{R}^d : \exists\, y \in \mathbb{R}^p \text{ sao cho } (x,y) \in C \right\}
+    $$
+
+
+    <p class="alignment">Nói dễ hiểu hơn: hãy tưởng tượng $C$ là một cái bóng đổ trong không gian
+      $(x, y)$. Phép chiếu $\text{proj}_x(C)$ chính là "cái bóng" của $C$ khi ta chiếu nó thẳng xuống
+      trục $x$, bỏ hẳn chiều $y$ đi. Người ta cũng hay gọi thao tác này là "chiếu bỏ" (project out)
+      biến $y$.</p>
+    <figure style="text-align:center;">
+  <img src="photo/proj_object.png" style="width:60%;">
+  <figcaption>Phép chiếu (projection) của tập $R^2$ lên $R$</figcaption>
+</figure>
+    <p class="alignment">Quay lại với epigraph, nếu ta xét tập:</p>
+
+    $$
+    P = \left\{(x, y, t) \in \mathbb{R}^d \times \mathbb{R}^p \times \mathbb{R} : Ax + Dy + ht \le r \right\}
+    $$
+
+    <p class="alignment">thì $\text{epi}(f)$ chính xác là phép chiếu của $P$ xuống không gian $(x, t)$.
+      Nói cách khác, ý nghĩa thật sự của biến phụ trợ $y$ là: dù $\text{epi}(f)$ tự nó có hình dạng phức
+      tạp, cong queo, không thể mô tả chỉ bằng các bất phương trình tuyến tính trên $(x,t)$, ta vẫn có
+      thể "nhét" nó vào một không gian nhiều chiều hơn (thêm chiều $y$), sao cho trong không gian lớn
+      hơn đó, hình dạng của nó lại trở nên đơn giản, chỉ là một tập được tạo bởi các mặt phẳng. Sau đó,
+      ta chỉ cần chiếu ngược nó về lại không gian $(x,t)$ ban đầu để lấy đúng epigraph mình cần. Đây là
+      một mẹo rất hay gặp trong tối ưu hóa: đôi khi, một bài toán trông phức tạp ở không gian ít chiều
+      lại trở nên đơn giản hơn hẳn nếu ta chịu khó "nới" thêm vài chiều phụ.</p>
+
+    <h3>2.4. Một số hàm linearly representable thường gặp</h3>
+
+    <p class="alignment">Với nền tảng đó, giờ ta có thể quay lại "trả nợ" cho 4 bài toán tìm tâm cụm
+      điểm ở phần 2 mà mình chưa chứng minh chi tiết. Dưới đây là epigraph của một vài hàm rất hay gặp.</p>
+
+    <p class="alignment"><strong>Trị tuyệt đối.</strong> Với $f(x) = |x|$, $x \in \mathbb{R}$, ta để ý
+      rằng $|x| \le t$ khi và chỉ khi $-t \le x \le t$. Do đó:</p>
+
+    $$
+    \text{epi}(f) = \{(x,t) \in \mathbb{R} \times \mathbb{R} : -t \le x \le t\}
+    $$
+
+    <p class="alignment">Không cần biến phụ trợ nào cả, hàm trị tuyệt đối đã là linearly representable
+      rồi.</p>
+
+    <p class="alignment"><strong>Hàm tuyến tính từng khúc lồi (convex piecewise linear).</strong> Đây
+      chính là dạng tổng quát của ví dụ $\max\{x_1, 2x_2+x_3, 2x_3-x_1\}$ mà mình đã làm ở phần trước.
+      Với $f(x) = \max_{i \in [n]} (c_i^\top x + d_i)$, lý luận hoàn toàn tương tự: giá trị lớn nhất
+      trong $n$ hàm tuyến tính không vượt quá $t$ khi và chỉ khi từng hàm một không vượt quá $t$. Vậy:</p>
+
+    $$
+    \text{epi}(f) = \left\{(x,t) \in \mathbb{R}^d \times \mathbb{R} : c_i^\top x + d_i \le t,\ \forall i \in [n]\right\}
+    $$
+
+    <p class="alignment"><strong>$\ell_1$-norm.</strong> Với $f(x) = \|x\|_1 = \sum_{j \in [d]} |x_j|$,
+      lần này ta thực sự cần đến biến phụ trợ. Để ý rằng $\|x\|_1 \le t$ khi và chỉ khi tồn tại
+      $s_1, \dots, s_d \in \mathbb{R}$ sao cho:</p>
+
+    $$
+    |x_j| \le s_j,\ \forall j \in [d], \qquad \sum_{j \in [d]} s_j \le t
+    $$
+
+    <p class="alignment">tức mỗi $s_j$ đóng vai trò như một "chặn trên" cho $|x_j|$, và tổng các chặn
+      trên này không vượt quá $t$. Viết lại điều kiện $|x_j| \le s_j$ dưới dạng tuyến tính (giống hệt
+      trường hợp trị tuyệt đối ở trên), ta có:</p>
+
+    $$
+    -s_j \le x_j \le s_j,\ \forall j \in [d], \qquad \sum_{j \in [d]} s_j \le t
+    $$
+
+    <p class="alignment">Đây hoàn toàn là một hệ bất phương trình tuyến tính trên $(x, s, t)$, với $s$
+      đóng vai trò biến phụ trợ. Vậy $\ell_1$-norm là linearly representable.</p>
+
+    <p class="alignment"><strong>$\ell_\infty$-norm.</strong> Với $f(x) = \|x\|_\infty = \max_{j \in [d]} |x_j|$,
+      ta để ý $\|x\|_\infty \le t$ khi và chỉ khi $|x_j| \le t$ với mọi $j$, tương đương với:</p>
+
+    $$
+    -t \le x_j \le t,\ \forall j \in [d]
+    $$
+
+    <p class="alignment">Lần này thậm chí không cần biến phụ trợ nào. Vậy cả hai hàm norm mà ta dùng
+      để định nghĩa 4 bài toán tìm tâm cụm điểm ở phần trước đều đã được chứng minh là linearly
+      representable.</p>
+
+    <h3>2.5. Kết hợp các hàm linearly representable với nhau</h3>
+
+    <p class="alignment">Một tin vui nữa: tính linearly representable không chỉ dừng lại ở từng hàm
+      riêng lẻ, mà còn được <strong>bảo toàn</strong> qua một số phép toán. Cụ thể, nếu $f_1(x), \dots, f_n(x)$ đều là linearly
+      representable, thì:</p>
+
+    <ol class="alignment">
+      <li>Với các hệ số không âm $\alpha_1, \dots, \alpha_n$ bất kỳ, tổng có trọng số
+        $f(x) = \sum_{i \in [n]} \alpha_i f_i(x)$ cũng là linearly representable.</li>
+      <li>Hàm lấy giá trị lớn nhất theo từng điểm, $f(x) = \max_{i \in [n]} f_i(x)$, cũng là linearly
+        representable.</li>
+    </ol>
+
+    <p class="alignment">Ý tưởng đứng sau cả hai trường hợp khá giống nhau và khá trực quan. Với trường
+      hợp thứ hai (lấy max), ta chỉ cần để ý: $\max_i f_i(x) \le t$ khi và chỉ khi $f_i(x) \le t$ với
+      mọi $i$, tức $(x,t) \in \text{epi}(f_i)$ với mọi $i$. Do mỗi $\text{epi}(f_i)$ đã là một tập được
+      tạo bởi hữu hạn bất phương trình tuyến tính, phép giao của chúng cũng vậy. Với trường hợp thứ
+      nhất (tổng có trọng số), ta lại dùng đúng "mẹo" biến phụ trợ: đưa vào các biến $s_i$ đóng vai trò
+      chặn trên cho từng $f_i(x)$, sao cho $f_i(x) \le s_i$ và $\sum_i \alpha_i s_i \le t$, y hệt cách
+      ta đã làm với $\ell_1$-norm ở trên.</p>
+
+    <p class="alignment">Nhờ hai phép toán "lắp ráp" này, ta có một bộ công cụ khá mạnh: bắt đầu từ vài
+      hàm cơ bản (tuyến tính, trị tuyệt đối, norm), ta có thể tổ hợp chúng theo rất nhiều cách (cộng có
+      trọng số, lấy max) mà vẫn giữ được tính linearly representable, tức vẫn đưa được về LP. Ở phần
+      tiếp theo, ta sẽ thấy bộ công cụ này hữu dụng đến mức nào qua một bài toán thực tế phức tạp hơn
+      nhiều so với những gì ta đã gặp.</p>
+
+    <h2>3. Bài toán sản xuất có tính đến chi phí lưu kho</h2>
+
+    <p class="alignment">Quay lại bài toán production planning ban đầu, nhưng lần này thêm một
+      chi tiết thực tế hơn: chi phí lưu kho (holding cost). Giả sử công ty vẫn có $d$ loại sản phẩm và
+      $m$ loại nguyên vật liệu như trước, với các thông tin quen thuộc: giá bán $p_j$, tồn kho nguyên
+      liệu $b_i$, và định mức nguyên liệu $a_{ij}$. Nhưng lần này, mỗi sản phẩm $j$ còn có thêm:</p>
+
+    <ul class="alignment">
+      <li>Một mức nhu cầu (demand) xác định trước là $d_j$, tức công ty chỉ có thể <strong>bán</strong>
+        tối đa $d_j$ pcs $j$, dù có sản xuất nhiều hơn.</li>
+      <li>Nếu công ty sản xuất <strong>nhiều hơn</strong> $d_j$ đơn vị, phần dư ra phải tốn chi phí lưu
+        kho $c_j$ trên mỗi đơn vị dư.</li>
+      <li>Nếu công ty sản xuất <strong>ít hơn</strong> $d_j$ đơn vị, phần nhu cầu chưa đáp ứng được sẽ
+        bị phạt $h_j$ trên mỗi đơn vị thiếu hụt.</li>
+    </ul>
+
+    <p class="alignment">Ta vẫn dùng $x_j$ là lượng sản phẩm $j$ cần sản xuất, và các ràng buộc về
+      nguyên liệu vẫn giữ nguyên như bài toán gốc:</p>
+
+    $$
+    \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \qquad x_j \ge 0, \ \forall j \in [d]
+    $$
+
+    <p class="alignment">Điều thú vị nằm ở objective function. Ta cần xét 2 trường hợp cho mỗi sản
+      phẩm $j$:</p>
+
+    <p class="alignment"><strong>Trường hợp 1: $x_j \ge d_j$</strong> (sản xuất dư). Công ty chỉ bán
+      được đúng $d_j$ đơn vị, phần dư $x_j - d_j$ phải chịu chi phí lưu kho. Lợi nhuận từ sản phẩm $j$
+      lúc này là:</p>
+
+    $$
+    \underbrace{p_j d_j}_{\text{bán tối đa } d_j} - \underbrace{c_j (x_j - d_j)}_{\text{chi phí lưu kho}}
+    = -c_j x_j + (p_j + c_j) d_j
+    $$
+
+    <p class="alignment"><strong>Trường hợp 2: $x_j < d_j$</strong> (sản xuất thiếu). Công ty bán hết
+      toàn bộ $x_j$ đơn vị đã sản xuất, không tốn chi phí lưu kho, nhưng phải chịu phạt cho phần nhu
+      cầu chưa đáp ứng. Lợi nhuận từ sản phẩm $j$ lúc này là:</p>
+
+    $$
+    \underbrace{p_j x_j}_{\text{bán hết } x_j} - \underbrace{h_j (d_j - x_j)}_{\text{chi phí phạt}}
+    = (p_j + h_j) x_j - h_j d_j
+    $$
+
+    <p class="alignment">Nếu vẽ đồ thị lợi nhuận theo $x_j$, ta sẽ thấy một đường gấp khúc: lợi nhuận
+      tăng dần với tốc độ $(p_j + h_j)$ khi $x_j$ còn nhỏ hơn $d_j$ (mỗi đơn vị sản xuất thêm vừa bán
+      được vừa tránh được tiền phạt), nhưng ngay khi $x_j$ vượt qua $d_j$, lợi nhuận bắt đầu giảm dần
+      với tốc độ $c_j$ (mỗi đơn vị dư ra chỉ tổ tốn thêm chi phí lưu kho mà không bán được). Đỉnh của
+      đường gấp khúc này chính xác là tại $x_j = d_j$, và tại đó, giá trị của cả 2 công thức bên trên
+      đều bằng nhau. Nói cách khác, hàm lợi nhuận cho sản phẩm $j$ chính là:</p>
+
+    $$
+    \min\left\{ -c_j x_j + (p_j + c_j) d_j,\ \ (p_j + h_j) x_j - h_j d_j \right\}
+    $$
+
+    <p class="alignment">Lấy giá trị nhỏ hơn trong 2 công thức nghe có vẻ ngược đời
+      (ta đang muốn tối đa hóa lợi nhuận cơ mà?), nhưng thực ra rất hợp lý: hãy để ý rằng công thức thứ
+      nhất (trường hợp dư) chỉ đúng khi $x_j \ge d_j$, và lúc đó nó luôn nhỏ hơn hoặc bằng công thức thứ
+      hai; ngược lại, khi $x_j < d_j$, công thức thứ hai mới đúng và nó nhỏ hơn công thức thứ nhất. Việc
+      lấy $\min$ của cả hai chính là cách "tự động chọn đúng công thức" tương ứng với từng trường hợp,
+      mà không cần phải viết riêng biệt ràng buộc if-else. Đây là một mẹo mô hình hóa rất hay, và ta sẽ
+      còn gặp lại nó nhiều lần sau này.</p>
+
+    <p class="alignment">Vậy, tổng lợi nhuận công ty muốn tối đa hóa là tổng lợi nhuận của tất cả các
+      sản phẩm:</p>
+
+    $$
+    f(x) = \sum_{j \in [d]} \min\left\{ -c_j x_j + (p_j + c_j) d_j,\ (p_j + h_j) x_j - h_j d_j \right\}
+    $$
+
+    <p class="alignment">Và bài toán tối ưu hoàn chỉnh là:</p>
+
+    $$
+    \begin{aligned}
+    \max_x \quad & \sum_{j \in [d]} \min\left\{ -c_j x_j + (p_j + c_j) d_j,\ (p_j + h_j) x_j - h_j d_j \right\} \\
+    \text{s.t.} \quad & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \\
+    & x_j \ge 0, \quad \forall j \in [d]
+    \end{aligned}
+    $$
+
+    <p class="alignment">Nhìn objective function, ta thấy nó là tổng của các hàm $\min$ giữa hai hàm
+      tuyến tính, trông có vẻ khá phức tạp và chắc chắn không tuyến tính. Nhưng đây chính lúc bộ công cụ
+      linearly representable mà ta xây dựng ở phần 2 phát huy tác dụng.</p>
+
+    <h3>Đưa bài toán về dạng Linear Programming</h3>
+
+    <p class="alignment">Trước tiên,
+      ta đổi bài toán maximization trên thành minimization tương đương (đổi dấu objective):</p>
+
+    $$
+    \begin{aligned}
+    \min_x \quad & \sum_{j \in [d]} \max\left\{ c_j x_j - (p_j + c_j) d_j,\ -(p_j + h_j) x_j + h_j d_j \right\} \\
+    \text{s.t.} \quad & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \\
+    & x_j \ge 0, \quad \forall j \in [d]
+    \end{aligned}
+    $$
+
+    <p class="alignment">(lưu ý: đổi $\min$ thành $\max$ của các hàm đối dấu bên trong, đây chỉ là một
+      phép biến đổi đại số đơn giản). Giờ thì objective chính là tổng của các hàm "tuyến tính từng khúc
+      lồi" mà ta đã chứng minh là linearly representable ở phần 2.4. Áp dụng đúng kỹ thuật ở đó (thêm
+      biến phụ trợ $s_j$ đóng vai trò chặn trên cho từng số hạng, và biến $t$ đóng vai trò chặn trên cho
+      cả tổng), ta thu được:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & t \\
+    \text{s.t.} \quad & \sum_{j \in [d]} s_j \le t, \\
+    & c_j x_j - (p_j + c_j) d_j \le s_j, \quad \forall j \in [d], \\
+    & -(p_j + h_j) x_j + h_j d_j \le s_j, \quad \forall j \in [d], \\
+    & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \\
+    & x_j \ge 0, \quad \forall j \in [d]
+    \end{aligned}
+    $$
+
+    <p class="alignment">Đây chính xác là một LP hoàn chỉnh: objective chỉ còn là biến $t$
+      đơn giản, và mọi ràng buộc đều là bất phương trình tuyến tính trên các biến $(x, s, t)$. Không
+      còn dấu $\min$ hay $\max$ nào sót lại cả.</p>
+
+    <p class="alignment">Có một cách tiếp cận thứ hai, trực tiếp hơn, không cần đổi bài toán sang dạng
+      minimization trước. Ta để ý: tối đa hóa $f(x)$ tương đương với việc tối đa hóa một biến phụ trợ
+      $t$, với ràng buộc $f(x) \ge t$ (ngược dấu so với cách làm quen thuộc $f(x) \le t$, vì đây là
+      maximization). Lý luận tương tự như trước (chỉ đảo chiều bất đẳng thức), ta thu được một
+      mô hình khác:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & t \\
+    \text{s.t.} \quad & t \le \sum_{j \in [d]} s_j, \\
+    & s_j \le -c_j x_j + (p_j + c_j) d_j, \quad \forall j \in [d], \\
+    & s_j \le (p_j + h_j) x_j - h_j d_j, \quad \forall j \in [d], \\
+    & \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \\
+    & x_j \ge 0, \quad \forall j \in [d]
+    \end{aligned}
+    $$
+
+    <p class="alignment">Hai mô hình này thực ra hoàn toàn tương đương nhau, chỉ khác nhau ở cách
+      đặt tên biến (đổi $t \to -t$ và $s_j \to -s_j$ sẽ biến mô hình này thành mô hình kia).
+      Điều thú vị là: dù xuất phát từ hai hướng suy luận khác nhau (một hướng đi qua bước đổi sang
+      minimization trước, một hướng làm trực tiếp trên maximization), ta vẫn đi đến cùng một bản chất
+      toán học. Trong việc lập mô hình, thường có nhiều con đường
+      khác nhau dẫn đến cùng một đích. Việc thử nhiều cách tiếp cận đôi khi giúp ta hiểu bài toán sâu
+      hơn.</p>
+
+    <h2>Kết lại</h2>
+
+    <p class="alignment">
+Nhìn lại, cả ba phần trong bài viết này thực chất đều xoay quanh một chủ đề chung:
+làm thế nào để xây dựng mô hình cho một bài toán thực tế, kể cả khi bài toán ban
+đầu không phải là tuyến tính. Ở bài toán định giá tồn kho, ta thấy cách chuyển một 
+câu hỏi khá trừu tượng ("nguyên liệu này đáng giá bao nhiêu?") thành một mô hình 
+LP rất cụ thể, chỉ bằng cách suy luận từ những lựa chọn hợp lý mà công ty có thể đưa ra.
+</p>
+
+<p class="alignment">
+Ở phần thứ hai, ta nhận ra rằng ranh giới giữa "tuyến tính" và "phi tuyến" không
+phải lúc nào cũng rõ ràng. hiều hàm nhìn có vẻ phi tuyến, ẫn có thể được biểu diễn dưới dạng LP thông qua việc đưa vào các 
+biến phụ trợ phù hợp. Khái niệm epigraph và phép chiếu (projection) cho 
+ta một cách nhìn khá thú vị: một hàm trông phức tạp ở không gian ít chiều đôi 
+khi lại trở nên đơn giản hơn hẳn nếu ta chịu "nới" thêm vài chiều phụ. Nhờ hai phép toán cơ bản là cộng có trọng 
+số và lấy giá trị lớn nhất, ta có thể
+kết hợp các hàm đơn giản này để xây dựng những hàm phức tạp hơn, trong khi vẫn
+duy trì được tính linearly representable.
+</p>
+
+<p class="alignment">
+Đến phần thứ ba, ta thấy những ý tưởng trên không chỉ mang tính lý thuyết. Một bài
+toán sản xuất có xét đến chi phí lưu kho, với objective function chứa cả phép
+$\min$ và $\max$ của các hàm tuyến tính, vẫn có thể được mô hình hóa bằng LP nhờ
+các quy tắc của linearly representable function. Đây cũng là một bài học quan trọng
+trong modeling: những khái niệm có vẻ trừu tượng như epigraph
+không chỉ tồn tại để phục vụ lý thuyết, mà chính là công cụ giúp giải quyết các
+bài toán thực tế phức tạp hơn.
+</p>
+
+<p class="alignment">
+Trong các bài viết tiếp theo, mình sẽ tiếp tục chuỗi bài về modeling với một số
+mô hình kinh điển khác như bài toán vận tải và bài toán phân công công việc. Đồng
+thời, mình sẽ quay lại chủ đề duality đã được nhắc đến ở phần đầu, bởi đây là một
+trong những khái niệm quan trọng và có nhiều ý nghĩa nhất trong Linear Programming.
+</p>
+
+    <p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>

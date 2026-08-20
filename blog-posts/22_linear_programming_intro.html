@@ -62,20 +62,19 @@
     <li>Cách tìm ra lời giải tối ưu bằng Graphical Method và thuật toán Simplex, thông qua một ví dụ cụ thể.</li>
     <li>Giải quyết bài toán về linear programming bằng Python và AMPL</li>
 </ul>
-<h2>1. Lý thuyết</h2>
-<p>Cá nhân mình thấy rằng ví dụ thực tế là một cách rất hiệu quả để học các chủ đề kỹ 
+<h2>1. Linear Programming là gì?</h2>
+<p class="alignment">Cá nhân mình thấy rằng ví dụ thực tế là một cách rất hiệu quả để học các chủ đề kỹ 
   thuật. Vì vậy, xuyên suốt bài viết này, chúng ta sẽ cùng đi theo một ví dụ đơn 
   giản. Mình sẽ giới thiệu ví dụ đó ở phần tiếp theo.</p>
 
-<p>Trước khi bắt đầu, nếu bạn chưa quen với các khái niệm và 
-  thuật ngữ cơ bản trong tối ưu hóa, mình đã có một bài viết về các thành phần trong mô hình tối ưu hóa. 
+<p class="alignment">Trước khi bắt đầu, nếu bạn chưa quen với các khái niệm và 
+  thuật ngữ cơ bản trong tối ưu hóa, mình đã có một bài viết về các vấn đề này <a href="20_optimization_problems.html">tại đây</a>. 
   Mình khuyến khích bạn đọc qua trước khi tiếp tục 
   (vì trong bài này sẽ có nhiều thuật ngữ chung mà mình sẽ không giải thích lại).</p>
 
 <p class="alignment">Linear programming, tên tiếng Việt là Lập trình Tuyến tính, là một mô hình giúp chúng ta tính toán tối ưu, 
   có thể là tối thiểu hóa (minimize) hoặc tối đa hóa (mazimize) một hàm mục tiêu (objective function) tuyến tính, 
-  với các ràng buộc (constraints) được biểu diễn dưới dạng các phương trình hoặc bất phương trình tuyến tính (nghe 
-  có vẻ hơi nhiều thuật ngữ nên mình sẽ sớm đưa vào ví dụ cụ thể để bạn dễ hiểu hơn).</p>
+  với các ràng buộc (constraints) được biểu diễn dưới dạng các phương trình hoặc bất phương trình tuyến tính.</p>
 
 <p class="alignment">Cái tên “<em>linear programming</em>” thực ra có từ trước khi chúng ta 
   nghĩ đến <em>"programming”</em> như lập trình máy tính ngày nay. Linear programming được phát 
@@ -84,28 +83,69 @@
   Vì vậy, <em>"programming”</em> ở đây mang nghĩa là lập kế hoạch hoặc sắp xếp, chứ không phải viết code. Ở một sồ trường 
   đại học tại Việt Nam, môn này thường được biết đến với cái tên là "Quy hoạch tuyến tính". 
 
-<p class="alignment">Mặc dù ban đầu được phát triển để giải các bài toán operation và 
-  logistics, nhưng có rất nhiều cách sáng tạo để áp dụng linear programming vào nhiều loại bài toán khác nhau.
-Một bài toán linear programming thường có 3 thành phần chính:</p>
 
-<ul>
-    <li><strong>Biến quyết định (Decision Variables)</strong>: các biến quyết định mà mô hình cần tìm ra, có thể được biểu diễn dưới dạng số thực (continuous), 
-      số nguyên (integer) hoặc nhị phân (binary).</li>
-    <li><strong>Ràng buộc (Constraints)</strong>: các ràng buộc hoặc điều kiện thực tế cần phải thỏa mãn, thường mô tả mối quan 
-      hệ giữa các biến quyết định.</li>
-    <li><strong>Hàm mục tiêu (Objective Function)</strong>: mục tiêu cuối cùng của bài toán, ví dụ như tối đa 
-      hóa lợi nhuận (maximize), tối thiểu hóa (minimize) chi phí, hoặc phân bổ nguồn lực một cách hiệu quả.</li>
-</ul>
+<p class="alignment"> Về tính chất, một mô hình được xem là "linear" khi cả hàm mục tiêu lẫn các 
+  constraints đều phải là các <strong>hàm tuyến tính</strong> (linear function). 
+  Cụ thể, ta nói một hàm $f: \mathbb{R}^d \to \mathbb{R}$ là linear
+  nếu với mọi $x, y \in \mathbb{R}^d$ và mọi $\alpha, \beta \in \mathbb{R}$, ta luôn có:</p>
 
-<p>Việc biểu diễn một bài toán dưới dạng mô hình tối ưu không chỉ giúp làm rõ vấn 
+$$
+f(\alpha x + \beta y) = \alpha f(x) + \beta f(y)
+$$
+
+<p class="alignment">Nói cách khác, hàm $f$ phải thỏa đồng thời hai tính chất. Thứ nhất là tính chất 
+  cộng tính: nếu tách $x$, $y$ ra riêng rồi cộng lại thì kết quả không đổi. Thứ hai là tính chất đồng 
+  nhất bậc nhất: nhân biến với một hằng số thì kết quả cũng nhân theo đúng hằng số đó.
+  Hàm $f$ là linear khi và chỉ khi tồn 
+  tại một vector $c \in \mathbb{R}^d$ sao cho $f$ có thể được viết dưới dạng:</p>
+
+$$
+f(x) = c^\top x = c_1 x_1 + c_2 x_2 + \cdots + c_d x_d = \sum_{j=1}^{d} c_j x_j
+$$
+
+<p class="alignment">Nói đơn giản, một hàm là tuyến tính nếu nó chỉ là tổng của các biến, mỗi biến 
+  nhân với một hệ số cố định. Không có biến nào bị nhân với chính nó hay nhân chéo với biến khác.</p>
+
+<p class="alignment"><strong>Ví dụ 1.</strong> Xét $x \in \mathbb{R}^3$. Khi đó $x_1 + x_2 + x_3$, 
+  $x_1 + 2x_3$, $x_2$, và $-x_1 - x_2 + 3x_3$ đều là các hàm linear.</p>
+
+<p class="alignment"><strong>Ví dụ 2.</strong> Xét $x \in \mathbb{R}^3$. Khi đó $x_1 x_3$ và 
+  $x_1^2 + 2x_1 x_2 + x_2^2$ là các hàm nonlinear (phi tuyến), vì chúng chứa tích 
+  của các biến hoặc biến bị nâng lên lũy thừa.</p>
+
+<p class="alignment">Từ đây, ta có thể định nghĩa một cách tổng quát một mô hình linear programming
+  (LP) có dạng như sau:</p>
+
+$$
+\begin{aligned}
+\min_{x} \quad & c^\top x \\
+\text{s.t.} \quad & a_i^\top x \le b_i, \ i \in [m], \\
+& x \in \mathbb{R}^d
+\end{aligned}
+$$
+
+<p class="alignment">Trong đó $c \in \mathbb{R}^d$ và $a_1, \dots, a_m \in \mathbb{R}^d$. Ở đây, hàm 
+  mục tiêu $c^\top x$ chính là $c_1 x_1 + c_2 x_2 + \cdots + c_d x_d$. Mỗi ràng buộc $a_i^\top x \le b_i$ 
+  tương đương với $a_{i1} x_1 + a_{i2} x_2 + \cdots + a_{id} x_d \le b_i$.</p>
+
+<p class="alignment">Nói tóm lại, một bài toán được gọi là linear programming khi cả <em>objective 
+  function</em> lẫn tất cả các <em>constraints</em> đều được biểu diễn dưới dạng tổ hợp tuyến tính 
+  của các <em>decision variables</em>. Không có bậc hai, không có tích chéo giữa các biến. Chính nhờ 
+  tính chất tuyến tính hoàn toàn này mà LP có cấu trúc hình học rất đẹp: miền nghiệm luôn là một đa 
+  diện lồi (convex polyhedron). Đây cũng là lý do vì sao ta có thể giải nó bằng các phương pháp trực 
+  quan như Graphical Method hay hiệu quả như Simplex, mà mình sẽ trình bày trong bài viết này.
+
+
+<p class="alignment">Trong thực tế, ngoài việc hiểu được định nghĩa và cấu trúc toán học của từng loại mô hình, ta còn phải học cách làm thế nào để xây dựng nó.
+  Việc biểu diễn một bài toán dưới dạng mô hình tối ưu không chỉ giúp làm rõ vấn 
   đề, mà còn cung cấp một framework có cấu trúc để tìm ra lời giải. Khi mô hình 
-  đã được xây dựng, chúng ta có thể sử dụng các công cụ giải (solvers) để tìm ra nghiệm tối ưu (optimal solution).
+  đã được xây dựng, chúng ta có thể sử dụng các solvers để tìm ra nghiệm tối ưu (optimal solution).
   Một trong những ưu điểm lớn nhất của mô hình hóa là 
   tính linh hoạt. Khi nhu cầu kinh doanh thay đổi, chúng ta 
   có thể thêm các ràng buộc mới, điều chỉnh lại thứ tự ưu tiên, và 
   cập nhật mô hình mà không cần phải xây dựng lại từ đầu.</p>
 
-<p class="alignment">Để hiểu rõ hơn, mình mượn một ví dụ cơ bản về bài toán người nông dân (tham khảo từ bài viết của anh Vũ Hữu Tiệp ở blog <a href="https://machinelearningcoban.com/2017/03/19/convexopt/"> Machine Leaning cơ bản</a>):"</p>
+<p class="alignment">Để hiểu rõ hơn về cách lập mô hình LP, mình mượn một ví dụ cơ bản về bài toán người nông dân (tham khảo từ bài viết của anh Vũ Hữu Tiệp ở blog <a href="https://machinelearningcoban.com/2017/03/19/convexopt/"> Machine Leaning cơ bản</a>):"</p>
 <blockquote>
   Một người nông dân có nông trại với tổng diện tích 10 hecta. Anh dự tính trồng cà phê và tiêu 
   trên số đất này với tổng chi phí cho việc trồng này là không quá 16T (triệu đồng). Chi phí để 
@@ -149,7 +189,7 @@ Một bài toán linear programming thường có 3 thành phần chính:</p>
 <h2>2. Phương pháp đồ thị</h2>
 <p class="alignment">Đối với bài toán có hai biến quyết định như ví dụ trên, chúng ta có thể sử dụng phương pháp đồ thị để tìm ra nghiệm tối ưu. 
   Phương pháp này rất trực quan và giúp chúng ta hiểu rõ hơn về cách các ràng buộc ảnh hưởng đến không gian nghiệm.
-  Đầu tiên, ta xét từng ràng buộc của mô hình. Đồ thị của mỗi ràng buộc sẽ là một đường thẳng trong mặt phẳng \(xy\). 
+  Đầu tiên, ta xét từng ràng buộc của mô hình. Đồ thị của mỗi ràng buộc sẽ là một đường thẳng trong mặt phẳng \(Oxy\). 
   Trước hết, ta chuyển đổi các bất phương trình thành phương trình bằng cách thay dấu \(\leq\) bằng dấu \(=\) để xác định đường biên.</p>
   
   <p class="alignment">Với ràng buộc đầu tiên \(x + y \leq 10\), ta xét đường thẳng \(x + y = 10\). Khi cho \(x = 0\) ta được \(y = 10\), 
@@ -231,7 +271,7 @@ Một bài toán linear programming thường có 3 thành phần chính:</p>
 
 <h2>3. Phương pháp Simplex</h2>
 <p class="alignment">Phương pháp Simplex là một trong những thuật toán cơ bản và phổ biến nhất để giải các bài toán quy hoạch tuyến 
-  tính. Tại Việt Nam, kỹ thuật này được biết đến rộng rãi với tên gọi Phương pháp Đơn hình, hoạt động bằng cách di chuyển có 
+  tính. Tại Việt Nam, phương pháp này được biết đến rộng rãi với tên gọi Phương pháp Đơn hình, hoạt động bằng cách di chuyển có 
   hệ thống dọc theo các cạnh (edge) của miền đa diện lồi để tìm kiếm giá trị tối ưu tại các đỉnh (vertex) của nó. Trong bài viết này,
 mình sẽ dùng chữ "simplex" để mọi người làm quen dần. Cách này giúp bạn không còn cảm thấy bỡ ngỡ khi bắt gặp nó trong các tài liệu chuyên ngành hay bài báo bằng tiếng Anh sau này. </p>
 <h3>3.1. Chuyển bài toán về dạng chuẩn</h3>
@@ -246,7 +286,7 @@ mình sẽ dùng chữ "simplex" để mọi người làm quen dần. Cách nà
     <li>Cả hàm mục tiêu và các ràng buộc đều là tuyến tính</li>
   </ul> 
 <p>
-  Ta thêm các <b>biến slack</b> \(s_1, s_2, s_3\) để biến các bất phương trình thành phương trình:
+  Ta thêm các biến slack \(s_1, s_2, s_3\) để biến các bất phương trình thành phương trình:
   \[
   \begin{cases} 
   x + y + s_1 = 10 \\
@@ -449,8 +489,12 @@ mình sẽ dùng chữ "simplex" để mọi người làm quen dần. Cách nà
           \(\left(0,\;\frac{7}{2},\;0,\;-\frac{1}{2},\;1,\;24\right)\)</li>
         <li><strong>Hàng \(Z\):</strong> lấy hàng cũ \((-5,-3,0,0,0,0)\) cộng với 5 lần hàng \(x\) mới (vì muốn triệt tiêu hệ số -5):
       \[
-      \left(-5+5\times1,\; -3+5\times\frac{1}{2},\; 0+0,\; 0+5\times\frac{1}{2},\; 0+0,\; 0+5\times8\right) = \left(0,\;-\frac{1}{2},\;0,\;\frac{5}{2},\;0,\;40\right)
-      \]
+\begin{aligned}
+&\left(-5+5\times1,\; -3+5\times\frac{1}{2},\; 0+0,\;
+0+5\times\frac{1}{2},\; 0+0,\; 0+5\times8\right) \\
+&= \left(0,\;-\frac{1}{2},\;0,\;\frac{5}{2},\;0,\;40\right)
+\end{aligned}
+\]
     </li>
     </ul>
     </li>

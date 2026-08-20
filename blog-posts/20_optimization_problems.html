@@ -65,7 +65,7 @@
 </ul>
 
 <table class="scenario-table">
-  <caption>Bảng: Phân loại các bài toán tối ưu hóa trong thực tế</caption>
+  <caption>Bảng 1: Một số ví dụ về các bài toán tối ưu trong thực tế</caption>
   <thead>
     <tr>
       <th>Tình huống</th>
@@ -74,6 +74,11 @@
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>Tìm quãng đường đi làm ngắn nhất</td>
+      <td>Minimization</td>
+      <td>Minimize khoảng cách (distance)</td>
+    </tr>
     <tr>
       <td>Lên kế hoạch sản xuất </td>
       <td>Maximization</td>
@@ -93,8 +98,8 @@
 </table>
 
 <p class="alignment">Sau khi xác định loại bài toán, bước tiếp theo là xây dựng <strong>objective function</strong> cho mô hình 
-  tối ưu. Đây là một biểu thức toán học dùng để định lượng mục tiêu cần tối ưu, chẳng hạn như tối thiểu hóa chi phí, thời gian
-   hoặc sai số, hoặc tối đa hóa lợi nhuận hay hiệu suất. Ví dụ, trong bài toán "tìm tuyến đường đi làm ngắn nhất", <em>objective function</em> có thể nhận một tuyến đường 
+  tối ưu. Đây là một biểu thức toán học (formulation) dùng để định lượng mục tiêu cần tối ưu. Chẳng hạn như tối thiểu hóa chi phí, thời gian
+   hoặc sai số, hoặc tối đa hóa lợi nhuận hay hiệu suất. Trong ví dụ đầu tiên của bảng 1, trong bài toán "tìm tuyến đường đi làm ngắn nhất". <em>Objective function</em> có thể nhận một tuyến đường 
 cụ thể làm đầu vào và trả về tổng khoảng cách (tính theo km) của tuyến đường đó. Khi đó, bài toán tối ưu trở 
 thành việc tìm tuyến đường có giá trị hàm mục tiêu nhỏ nhất.</p>
 
@@ -104,17 +109,16 @@ bảo rằng hàm này phản ánh đúng bản chất của bài toán thực t
  <em>objective function</em> ngay từ đầu là yếu tố then chốt quyết định chất lượng của toàn bộ mô hình.</p>
 
 <p class="alignment">Hãy cùng xem kỹ hơn việc tạo objective function cho ví dụ tìm 
-  "tuyến đường đi làm ngắn nhất". “Ngắn nhất” nghĩa là gì? Ngắn nhất về thời gian? Ngắn 
-  nhất về quãng đường? Hai điều này chưa chắc đã giống nhau. Chúng ta cũng nên tạm dừng và đảm bảo rằng 
-  “shortest” thực sự là yếu tố chúng ta muốn tối ưu. Có thể còn có các tiêu chí khác tốt hơn: ví dụ, 
+  "tuyến đường đi làm ngắn nhất". “Ngắn nhất” nghĩa là gì? Ngắn nhất về thời gian hay quãng đường? 
+  Có thể còn có các tiêu chí khác như 
   tuyến đường có chi phí thấp nhất (xăng, phí cầu đường) hoặc ít vấn đề nhất
   (ít kẹt xe hoặc ít vấn đề trong suốt lộ trình di chuyển). Ở đây, chúng ta sẽ giữ objective “shortest”, 
   định nghĩa là số km ít nhất cho phần còn lại của bài viết. Qua ví dụ này, mình muốn nhấn mạnh 
   rằng chúng ta nên luôn cẩn thận và chính xác khi quyết định objective function.</p>
 
 <p class="alignment">Vậy nên, objective của chúng ta là quảng đường di chuyển ngắn nhất (số km). Nếu chỉ chạy tối ưu hóa dựa trên mục tiêu này, kết quả sẽ là một đường thẳng từ nhà đến văn 
-  phòng, điều này hoàn toàn vô dụng vì không thể lái xe xuyên qua cây cối hay tòa nhà. Các constraints
-  được thiết lập chính xác (mình sẽ giải thích ở phần sau) sẽ đảm bảo rằng kết quả tối ưu của chúng ta vừa khả thi vừa hữu dụng.</p>
+  phòng. Điều này hoàn toàn vô dụng vì không thể lái xe xuyên qua cây cối hay tòa nhà. Các constraints
+  được thiết lập chính xác (mình sẽ giải thích ở phần sau) sẽ đảm bảo rằng kết quả tối ưu của chúng ta vừa khả thi vừa hợp lý.</p>
 
 <h2>Constraints (Ràng buộc)</h2>
 
@@ -124,9 +128,7 @@ bảo rằng hàm này phản ánh đúng bản chất của bài toán thực t
 <p class="alignment">Quay trở lại vấn đề chính, các <em>constraints</em> đóng vai trò đảm bảo 
   rằng nghiệm tối ưu không chỉ tốt về mặt toán học mà còn hợp lý và khả thi trong thực tế. Nếu 
   không có ràng buộc, nghiệm tối ưu tìm được có thể trở nên vô nghĩa hoặc không thể triển khai trong 
-  các ứng dụng thực tế.</p>
-
-<p class="alignment">Một số constraints cần thiết để có nghiệm khả thi, một số được thêm vào để có giải
+ thực tế. Một số constraints cần thiết để có nghiệm khả thi, một số được thêm vào để có giải
    pháp tốt hơn. Ví dụ:</p>
 <ul class="alignment">
     <li>Ràng buộc tuyến đường phải đi qua mốt số địa điểm nhất định giúp kết quả khả thi</li>
@@ -208,14 +210,19 @@ cho sẵn của bài toán. Chúng mô tả tình huống thực tế mà chúng
   cụ thể để đi làm. Dưới đây là bảng minh họa các thuật ngữ liên quan đến  <em>solution</em> mà chúng ta đã đề cập. 
   Tùy vào bài toán mục tiêu và số biến quyết định, thì ta có số lượng nghiệm tương ứng</p>
 <table class="scenario-table">
-  <caption>Bảng: Nghiệm cụ thể của các bài toán tối ưu hóa</caption>
+  <caption>Bảng 2: Ví dụ về nghiệm cụ thể của một số bài toán tối ưu hóa</caption>
   <thead>
     <tr>
-      <th>Problem</th>
+      <th>Bài toán (problem)</th>
       <th>Nghiệm cụ thể (Solution)</th>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>Tìm quãng đường đi làm ngắn nhất</td>
+      <td>
+        Số km của tuyến đường đi làm (ví dụ: 10 km)      </td>
+    </tr>
     <tr>
       <td>Lên kế hoạch sản xuất</td>
       <td>
@@ -265,17 +272,60 @@ Tất nhiên, không phải tất cả các <em>solutions</em> đều giống nh
   <figcaption>Mối liên hệ giữa Solution Space, Feasible Region, Solutions và Optimal Solution (nguồn ảnh: Jarom Hulet) </figcaption>
 </figure>
 
-   <h2>Kết lại</h2>
-<p class="alignment">Quá trình xây dựng một mô hình tối ưu hóa được gọi chung là Mathematical modelling hoặc modelling.
-  Bao gồm các hoạt đồng xây dựng các biến, hàm và ràng buộc từ một đề bài thô. 
-  Đây là bước quan trọng để chuyển vấn đề thực tế thành dạng có thể giải bằng toán học.</p>
+   <h2>Mô hình tổng quát</h2>
+<p class="alignment">Quá trình xây dựng một mô hình tối ưu hóa được gọi chung là Mathematical modelling 
+  (mô hình hóa toán học). Nó bao gồm các hoạt động xây dựng biến, hàm và ràng buộc từ một đề bài thô ban đầu. 
+  Đây là bước quan trọng để chuyển một vấn đề thực tế thành dạng có thể giải được bằng mô hình toán. Để khép lại 
+  bài viết, mình tổng quát hóa những khái niệm đã nói ở trên bằng các ký hiệu toán học để giúp bạn dễ nhận diện hơn khi đọc các tài liệu hay
+   paper về tối ưu hóa sau này.</p>
 
-<p class="alignment">Một mô hình tối ưu hóa gồm ba thành phần chính:</p>
+<p class="alignment">Một bài toán tối ưu hóa dạng minimization tổng quát thường được viết như sau:</p>
+
+$$
+\begin{aligned}
+\min_{x} \quad & f(x) \\
+\text{s.t.} \quad & g_i(x) \le b_i, \ i \in [m], \\
+& x \in \mathbb{R}^d
+\end{aligned}
+$$
+
+<p class="alignment">Trong đó:</p>
 
 <ul class="alignment">
-  <li><strong>Decision Variables (Biến quyết định)</strong>: Những thứ chúng ta có thể kiểm soát và chọn.</li>
-  <li><strong>Objective Function (Hàm mục tiêu)</strong>: Thước đo mà chúng ta muốn tối ưu hóa (tối đa hóa hoặc tối thiểu hóa).</li>
-  <li><strong>Constraints (Ràng buộc)</strong>: Các giới hạn hoặc điều kiện mà các biến phải thỏa mãn.</li>
+  <li><strong>$f(x)$</strong> chính là <em>objective function</em> (hàm mục tiêu).</li>
+  <li><strong>$g_1(x), \dots, g_m(x)$</strong> là các <em>constraint functions</em> (hàm ràng buộc), 
+    còn <strong>$b_1, \dots, b_m$</strong> được gọi là <em>right-hand sides</em> (hệ số vế phải),
+    nó là các giới hạn cụ thể của từng <em>constraint</em>.</li>
+  <li>Bất kỳ vector <strong>$x \in \mathbb{R}^d$</strong> nào cũng được gọi là một <em>solution</em> 
+    (nghiệm), bất kể nó có thỏa constraint hay không.</li>
+</ul>
+
+<p class="alignment">Từ đây, ta có thể định nghĩa lại chính xác hơn các khái niệm về nghiệm mà trước đó:</p>
+
+<ul class="alignment">
+  <li>Một <em>solution</em> $x$ thỏa mãn tất cả các constraint (tức $g_i(x) \le b_i$ với mọi $i \in [m]$) 
+    được gọi là feasible solution (nghiệm khả thi).</li>
+  <li>Ngược lại, nếu $x$ vi phạm ít nhất một constraint (tồn tại $i$ sao cho $g_i(x) > b_i$), ta gọi 
+    $x$ là infeasible solution (nghiệm không khả thi).</li>
+  <li>Giá trị $f(x)$ tại một solution $x$ cụ thể được gọi là objective value của $x$.</li>
+  <li>Giá trị $p^* = \min_x \{f(x) : g_i(x) \le b_i, i \in [m]\}$, tức giá trị nhỏ nhất mà $f(x)$ có thể 
+    đạt được trong số tất cả các nghiệm khả thi, được gọi là optimal value (giá trị tối ưu), 
+    hay ngắn gọn là <em>optimum</em>.</li>
+  <li>Một feasible solution $x^*$ có objective value bằng đúng optimal value 
+    ($f(x^*) = p^*$) được gọi là <em>optimal solution</em> (nghiệm tối ưu). Lưu ý là một bài toán 
+    có thể có nhiều hơn một optimal solution.</li>
+</ul>
+
+<p class="alignment">Bên cạnh các khái niệm về từng nghiệm riêng lẻ, còn có hai khái niệm mô tả tình 
+  trạng chung của cả bài toán:</p>
+
+<ul class="alignment">
+  <li>Bài toán được gọi là feasible nếu tồn tại ít nhất một feasible solution. Ngược lại, 
+    nếu không có nghiệm nào thỏa mãn hết các constraint, bài toán được gọi là infeasible.
+    Trong trường hợp này, theo quy ước, ta đặt $p^* = \infty$.</li>
+  <li>Bài toán được gọi là unbounded (không bị chặn) nếu với bất kỳ số $r$ nào, ta luôn 
+    tìm được một feasible solution $x_r$ sao cho $f(x_r) < r$ — nói cách khác, objective value có thể 
+    giảm mãi không có điểm dừng. Khi đó, ta đặt $p^* = -\infty$.</li>
 </ul>
 
 <p class= "alignment">Sau khi giải bài toán tối ưu hóa, ta tìm được các optimal solutions liên quan.</p>

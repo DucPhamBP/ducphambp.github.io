@@ -66,8 +66,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
   </p>
 
   <p class="alignment">
-    Một ví dụ thường thấy của continuous optimization là bài toán hồi quy tuyến tính (linear regression), 
-    trong đó ta cần tìm vector tham số w ∈ ℝ<sup>n</sup> sao cho MSE (Mean Squared Error) giữa giá trị dự đoán và giá trị
+    Một ví dụ thường thấy của continuous optimization là bài toán hồi quy tuyến tính (linear regression). Trong đó ta cần tìm vector tham số w ∈ ℝ<sup>n</sup> sao cho MSE (Mean Squared Error) giữa giá trị dự đoán và giá trị
     thực tế là nhỏ nhất. Do hàm mục tiêu này liên tục và khả vi (differentiable), ta có thể áp dụng các thuật toán dựa trên gradient 
     như Gradient Descent hay Stochastic Gradient Descent (SGD). Trong một số trường hợp, nghiệm tối ưu còn có thể tìm được trực tiếp 
     dưới dạng closed-form (phương trình chuẩn - Normal Equation) thông qua đại số tuyến tính. Tương tự, 
@@ -77,7 +76,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
 
   <p class="alignment">
     Ngược lại, <strong>discrete optimization</strong> (tối ưu rời rạc) xét các bài toán mà biến quyết định chỉ có thể nhận giá trị 
-    trong một tập rời rạc, ví dụ số nguyên, nhị phân (0/1), hoặc các cấu hình tổ hợp. Giữa hai giá trị hợp lệ 
+    trong một tập rời rạc. Ví dụ số nguyên (integer), nhị phân (0/1), hoặc các cấu hình tổ hợp. Giữa hai giá trị hợp lệ 
     của biến không tồn tại giá trị trung gian. Điều này dẫn đến một không gian nghiệm (solution space) có cấu trúc rời rạc, 
     thường là hữu hạn (finite) hoặc đếm được (countable), nhưng có thể rất lớn về mặt kích thước.
   </p>
@@ -98,15 +97,15 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
    Interior Point Methods. Các thuật toán này khai thác cấu trúc trơn (smoothness) của hàm mục tiêu để nhanh 
    chóng hội tụ (convergence) đến nghiệm tối ưu (optimal solution). Trong khi đó, discrete optimization thường phải 
    dựa vào các phương pháp tìm kiếm trên không gian nghiệm và các kỹ thuật tổ hợp, như Branch and Bound, Dynamic Programming.
-   Các phương pháp này thường đảm bảo tìm được nghiệm chính xác (exact solution), nhưng có thể gặp vấn đề về tốc độ tính toán (computational cost)
-   khi kích thước bài toán tăng lên. Trong thực tế, đối với các bài toán lớn, người ta thường sử dụng các phương pháp 
+   Các phương pháp này thường đảm bảo tìm được nghiệm chính xác (exact solution). Nhưng có thể gặp vấn đề về tốc độ tính toán (computational cost)
+   khi kích thước bài toán tăng lên. Trong thực tế, đối với các bài toán lớn. Người ta thường sử dụng các phương pháp 
    heuristic để tìm nghiệm đủ tốt trong thời gian hợp lý.
   </p>
 
   <p class="alignment">
     Một điểm đáng chú ý là ranh giới giữa discrete và continuous không phải lúc nào cũng tuyệt đối. 
     Trong nhiều trường hợp, người ta sử dụng kỹ thuật <strong>relaxation</strong> để chuyển một bài 
-    toán rời rạc sang dạng liên tục, nhằm tận dụng các thuật toán hiệu quả hơn. Ví dụ, trong integer 
+    toán rời rạc sang dạng liên tục. Nhằm tận dụng các thuật toán hiệu quả hơn. Ví dụ, trong integer 
     programming, các ràng buộc nguyên có thể được nới lỏng (relaxation) để tạo thành một bài toán linear programming. 
     Nghiệm của bài toán relaxed sau đó có thể được sử dụng để xây dựng hoặc ước lượng nghiệm nguyên cho bài toán ban đầu.
   </p>
@@ -117,7 +116,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
   Trong continuous optimization, một tiêu chí quan trọng khác là tính convex của bài toán. Một bài toán được gọi là 
   <strong>convex optimization</strong> khi cả hàm mục tiêu f(x) và tập nghiệm khả thi (feasible set) X đều là lồi (convex). 
   Về trực quan, đồ thị hàm mục tiêu không có “vùng lõm”: nếu nối hai điểm bất kỳ trong tập nghiệm bằng một đoạn thẳng, 
-  toàn bộ đoạn thẳng nằm trong feasible set. Điểm đặc biệt quan trọng của convex optimization là mọi nghiệm cục bộ (local optimum) đều là nghiệm toàn cục
+  toàn bộ đoạn thẳng nằm trong feasible set. Điểm quan trọng của convex optimization là mọi nghiệm cục bộ (local optimum) đều là nghiệm toàn cục
   (global optimum). Điều này có nghĩa là nếu thuật toán tìm ra một điểm mà tại đó giá trị hàm mục tiêu không thể 
   giảm thêm, thì đó chắc chắn là optimal solution trên toàn bộ solution space.
   </p>
@@ -173,7 +172,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
     Tóm lại, sự khác biệt giữa convex và non-convex optimization không chỉ là đặc điểm hình học của 
     hàm mục tiêu, mà còn ảnh hưởng trực tiếp đến độ khó của bài toán, lựa chọn thuật toán và 
     mức độ đảm bảo về nghiệm tìm được. Convex optimization mang lại tính ổn định và các đảm 
-    bảo lý thuyết mạnh, trong khi non-convex optimization phản ánh sự phức tạp của các bài toán 
+    bảo lý thuyết mạnh. Trong khi non-convex optimization phản ánh sự phức tạp của các bài toán 
     thực tế, đòi hỏi các phương pháp linh hoạt và đôi khi phải chấp nhận approximate solution.
   </p>
 <h2 class="alignment">3. Phân loại theo ràng buộc: Unconstrained vs Constrained Optimization</h2>
@@ -194,7 +193,7 @@ cách áp dụng chúng vào bài toán thực tế của mình.</p>
 
   <p class="alignment">
     <strong>Constrained Optimization</strong> là những bài toán mà biến quyết định phải thỏa mãn 
-    một tập hợp các ràng buộc nhất định, có thể là <em>linear constraints</em> hoặc <em>non-linear constraints</em>, 
+    một tập hợp các ràng buộc nhất định. Có thể là <em>linear constraints</em> hoặc <em>non-linear constraints</em>, 
     và đôi khi là ràng buộc nguyên (<em>integer constraints</em>). Các ràng buộc có thể được phân loại như sau:
   </p>
 
@@ -449,7 +448,7 @@ tìm đọc để hiểu rõ thêm. Ở đây, mình sẽ tóm tắt lại một
   (job shop scheduling, portfolio optimization).</li>
   <li><strong>Approximation/Heuristic algorithms:</strong> Được sử dụng khi bài toán quá phức tạp hoặc có không gian nghiệm quá lớn, khiến việc tìm ra nghiệm 
     tối ưu chính xác trở nên không khả thi trong thời gian hợp lý. Trong đó, thuật toán xấp xỉ (approximation algorithm) có chứng minh toán học về khoảng 
-cách tới nghiệm tối ưu (optimality gap), nó đảm bảo nghiệm thu được không tệ hơn một tỷ lệ nhất định so với nghiệm tối ưu. Ngược lại, Heuristics 
+cách tới nghiệm tối ưu (optimality gap). Nó đảm bảo nghiệm thu được không tệ hơn một tỷ lệ nhất định so với nghiệm tối ưu. Ngược lại, Heuristics 
 không đảm bảo nghiệm tìm được là tối ưu tuyệt đối. Thay vào đó, mục tiêu của chúng là
 tìm lời giải đủ tốt trong thời gian hợp lý. Heurisitc không có chứng minh toán học về khoảng cách tới nghiệm tối ưu (optimality gap). 
 Một thuật toán Heuristic có thể tìm ra nghiệm rất gần tối ưu cho bộ dữ liệu này, nhưng lại cho kết quả rất tệ với bộ dữ liệu khác.

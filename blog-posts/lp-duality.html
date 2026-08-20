@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Linear Programming Duality</title>
+  <!-- Include MathJax -->
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script>
+  hljs.highlightAll();
+</script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Linear Programming: lý thuyết đối ngẫu (duality) và ứng dụng</h1>
+    <p class="date">Posted: 14/07/2026</p>
+
+    <p class="alignment">Ở bài viết trước, khi tìm hiểu về barrier method (Interior Point), mình có
+      dùng Newton's method để giải một bài toán trên biến primal $x$ đã được "làm mượt" bằng hàm
+      logarit. Nhưng nếu để ý kỹ điều kiện dừng (stationarity) của Lagrangian tại mỗi bước, ta sẽ thấy
+      một Lagrange multiplier $\lambda$ tự nhiên xuất hiện cho ràng buộc $Ax=b$, dù ta chưa hề chủ động
+      "thêm" biến này vào bài toán ban đầu. Multiplier đó chính là dual
+      variable (biến đối ngẫu) của mô hình tuyến tính (LP) gốc. Bài viết này sẽ giải thích rõ dual LP là gì và vì sao nó lại xuất
+      hiện một cách tự nhiên như vậy: cách xây dựng dual LP từ một LP tổng quát, rồi đến hai định lý
+      quan trọng nhất của lý thuyết đối ngẫu (weak duality và strong duality), một hệ quả rất đẹp gọi
+      là complementary slackness (chính là phiên bản "chưa làm mượt" của điều kiện $x_j s_j = \mu$ mà
+      barrier method dùng), và cuối cùng là một ứng dụng rất thực tế: dùng duality để giải các bài toán
+      LP có số lượng biến hoặc constraint khổng lồ, thông qua bài toán cutting stock.</p>
+
+    <h2>1. Xây dựng dual LP từ một LP tổng quát</h2>
+
+    <p class="alignment">Giả sử ta có một mô hình tuyến tính ở dạng tổng quát, có thể lẫn cả bất
+      phương trình ($\le$, $\ge$), và cả phương trình ($=$), cùng với các biến có thể không âm, không dương,
+      hoặc tự do (không ràng buộc dấu):</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & c^\top x \\
+    \text{s.t.} \quad & a_i^\top x \le b_i, \quad i \in M_L \\
+    & a_i^\top x = b_i, \quad i \in M_E \\
+    & a_i^\top x \ge b_i, \quad i \in M_G \\
+    & x_j \le 0, \quad j \in D_L \\
+    & x_j \text{ tự do}, \quad j \in D_F \\
+    & x_j \ge 0, \quad j \in D_G
+    \end{aligned}
+    $$
+
+    <p class="alignment">trong đó $M_L, M_E, M_G$ là một phép chia của tập chỉ số $[m]$ (các constraint),
+      còn $D_L, D_F, D_G$ là một phép chia của tập chỉ số $[d]$ (các biến). Nhìn phức tạp vậy, nhưng
+      mục tiêu của ta rất đơn giản: tìm một cách để có được một <strong>cận dưới tốt nhất</strong> cho
+      giá trị tối ưu của bài toán này, chỉ bằng cách "cộng gộp" các constraint lại một cách khéo léo.
+      Đây chính xác là ý tưởng mà mình đã dùng (một cách trực giác, không gọi tên) ở bài toán tồn kho
+      trước đó. Giờ ta sẽ làm điều này một cách bài bản.</p>
+
+
+    <p class="alignment"><b>Bước 1:</b> ta gán một biến dual (multiplier) cho mỗi constraint (trừ các ràng buộc về dấu của biến),
+       gọi là dual variable:</p>
+
+    $$
+    a_i^\top x \le b_i \ (\lambda_i \le 0), \quad i \in M_L
+    $$
+    $$
+    a_i^\top x = b_i \ (\lambda_i \text{ tự do}), \quad i \in M_E
+    $$
+    $$
+    a_i^\top x \ge b_i \ (\lambda_i \ge 0), \quad i \in M_G
+    $$
+
+    <p class="alignment">Để ý dấu của $\lambda_i$ được chọn khớp với chiều của constraint tương ứng.
+      Đây không phải là sự tùy tiện: mục đích của việc chọn dấu này là để khi ta "cộng gộp" các
+      constraint lại (bước tiếp theo), mọi bất phương trình đều quay về cùng một chiều, giúp ta có được
+      một cận dưới hợp lý cho objective function.</p>
+
+    <p class="alignment"><b>Bước 2:</b> ta nhân mỗi constraint với dual variable tương ứng:</p>
+
+    $$
+    \lambda_i a_i^\top x \ge b_i \lambda_i, \quad i \in M_L
+    $$
+    $$
+    \lambda_i a_i^\top x = b_i \lambda_i, \quad i \in M_E
+    $$
+    $$
+    \lambda_i a_i^\top x \ge b_i \lambda_i, \quad i \in M_G
+    $$
+
+    <p class="alignment">Nhờ chọn đúng dấu của $\lambda_i$ ở bước 1, cả 3 nhóm bất phương trình trên sau
+      khi nhân xong đều cùng chiều $\ge$ (hoặc $=$, coi như $\ge$ theo cả 2 hướng). Cộng tất cả lại:</p>
+
+    $$
+    \sum_{i \in M_L} b_i \lambda_i + \sum_{i \in M_E} b_i \lambda_i + \sum_{i \in M_G} b_i \lambda_i
+    \ \le\ \sum_{i \in M_L} \lambda_i a_i^\top x + \sum_{i \in M_E} \lambda_i a_i^\top x + \sum_{i \in M_G} \lambda_i a_i^\top x
+    $$
+
+    <p class="alignment">Gọi $b$ là vector gồm các $b_i$ với $i \in M_L \cup M_E \cup M_G$, $\lambda$ là
+      vector các dual variable tương ứng, và $A$ là ma trận có các hàng $a_i^\top$. Khi đó, vế trái
+      chính là $b^\top \lambda$, còn vế phải chính là $(A^\top \lambda)^\top x$. Ta thu được:</p>
+
+    $$
+    b^\top \lambda \le (A^\top \lambda)^\top x
+    $$
+
+    <p class="alignment"><b>Bước 3:</b> ta xét vế phải $(A^\top \lambda)^\top x$ là một hàm tuyến tính theo $x$, và ta muốn
+      dùng nó để chặn trên bởi chính $c^\top x$, tức objective function gốc. Viết $(A^\top \lambda)^\top x$
+      theo từng thành phần:</p>
+
+    $$
+    (A^\top \lambda)^\top x = \sum_{j \in D_L} (\tilde{a}_j^\top \lambda) x_j + \sum_{j \in D_F} (\tilde{a}_j^\top \lambda) x_j + \sum_{j \in D_G} (\tilde{a}_j^\top \lambda) x_j
+    $$
+
+    <p class="alignment">trong đó $\tilde{a}_j$ là cột thứ $j$ của $A$. Nhớ lại rằng $x_j \le 0$ với
+      $j \in D_L$, $x_j$ tự do với $j \in D_F$, và $x_j \ge 0$ với $j \in D_G$. Vậy, nếu ta áp đặt thêm
+      điều kiện:</p>
+
+    $$
+    \tilde{a}_j^\top \lambda \ge c_j, \quad j \in D_L
+    $$
+    $$
+    \tilde{a}_j^\top \lambda = c_j, \quad j \in D_F
+    $$
+    $$
+    \tilde{a}_j^\top \lambda \le c_j, \quad j \in D_G
+    $$
+
+    <p class="alignment">thì (kết hợp với dấu của $x_j$ tương ứng ở mỗi nhóm) ta luôn có
+      $(A^\top \lambda)^\top x \le c^\top x$. Ghép hai bước lại, ta có được chuỗi bất đẳng thức:</p>
+
+    $$
+    b^\top \lambda \ \le\ (A^\top \lambda)^\top x \ \le\ c^\top x
+    $$
+
+    <p class="alignment">Nói cách khác, với những $\lambda$ thỏa các điều kiện trên, $b^\top \lambda$
+      luôn là một cận dưới hợp lệ cho $c^\top x$, bất kể $x$ là nghiệm nào (miễn feasible). Đây chính là
+      "công thức" tổng quát của trick mà ta đã làm một cách trực giác ở bài toán tồn kho: định giá
+      $\lambda_i$ sao cho nó luôn là cận dưới an toàn cho giá trị thật sự.</p>
+
+    <p class="alignment"><b>Bước 4:</b> vì $b^\top \lambda$ là một cận dưới hợp lệ với mọi $\lambda$ thỏa các điều
+      kiện trên, câu hỏi tự nhiên là: trong số tất cả các $\lambda$ đó, cận dưới nào là tốt
+      nhất(tức lớn nhất)? Điều này dẫn ta đến việc tối đa hóa $b^\top \lambda$,
+      và ta thu được chính là dual linear program:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & \sum_{i \in M_L} b_i \lambda_i + \sum_{i \in M_E} b_i \lambda_i + \sum_{i \in M_G} b_i \lambda_i \\
+    \text{s.t.} \quad & \lambda_i \le 0, \quad i \in M_L \\
+    & \lambda_i \text{ tự do}, \quad i \in M_E \\
+    & \lambda_i \ge 0, \quad i \in M_G \\
+    & \tilde{a}_j^\top \lambda \ge c_j, \quad j \in D_L \\
+    & \tilde{a}_j^\top \lambda = c_j, \quad j \in D_F \\
+    & \tilde{a}_j^\top \lambda \le c_j, \quad j \in D_G
+    \end{aligned}
+    $$
+
+    <p class="alignment">Có một quy tắc rất dễ nhớ khi so sánh primal và dual: mỗi constraint
+      của primal ứng với một biến của dual, và mỗi biến của primal ứng với một constraint của
+      dual. Đây chính là lý do bài toán tồn kho (với biến $\lambda_i$ cho từng nguyên liệu) lại có 
+      liên hệ chặt chẽ với bài toán production planning (với biến $x_j$ cho từng sản phẩm): mỗi
+      nguyên liệu $i$ trong production planning là một constraint (giới hạn tồn kho), nên nó trở thành
+      một biến $\lambda_i$ ở bài toán dual (định giá tồn kho); còn mỗi sản phẩm $j$ là một biến quyết
+      định, nên nó trở thành một constraint ở bài toán dual (điều kiện định giá $\sum_i a_{ij}\lambda_i \ge p_j$).
+      Đây không phải là sự trùng hợp: bài toán tồn kho chính là dual của production
+      planning.</p>
+
+
+    <p class="alignment">Để quen tay hơn với việc chuyển đổi, xét bài toán:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & 2x_1 + 3x_2 \\
+    \text{s.t.} \quad & 7x_1 + 4x_2 \le 1 \\
+    & 5x_1 + 9x_2 = 3 \\
+    & x_1 \ge 0, \ x_2 \le 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">Áp dụng đúng quy tắc ở trên (constraint $\le$ dạng min ứng với $\lambda_1 \le 0$;
+      constraint $=$ ứng với $\lambda_2$ tự do; biến $x_1 \ge 0$ ứng với constraint dual dạng $\le$;
+      biến $x_2 \le 0$ ứng với constraint dual dạng $\ge$), ta có dual LP:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & \lambda_1 + 3\lambda_2 \\
+    \text{s.t.} \quad & 7\lambda_1 + 5\lambda_2 \le 2 \\
+    & 4\lambda_1 + 9\lambda_2 \ge 3 \\
+    & \lambda_1 \le 0, \ \lambda_2 \text{ tự do}
+    \end{aligned}
+    $$
+
+    <p class="alignment">Còn nếu bài toán gốc là bài toán maximization, ta có 2 cách xử
+      lý. Cách đơn giản nhất: đổi bài toán maximization thành minimization tương đương (đổi dấu
+      objective, tức $\max c^\top x = -\min(-c^\top x)$), áp dụng đúng quy tắc trên cho bài toán
+      minimization, rồi đổi dấu kết quả lại một lần nữa. Ví dụ, dual của:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & 2x_1 + 3x_2 \\
+    \text{s.t.} \quad & 7x_1 + 4x_2 \le 1 \\
+    & 5x_1 + 9x_2 \le 3 \\
+    & x_1, x_2 \ge 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">sau khi thực hiện đúng 2 bước đổi dấu, sẽ là:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & \lambda_1 + 3\lambda_2 \\
+    \text{s.t.} \quad & 7\lambda_1 + 5\lambda_2 \ge 2 \\
+    & 4\lambda_1 + 7\lambda_2 \ge 3 \\
+    & \lambda_1, \lambda_2 \ge 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">Hai dạng bài toán LP dưới đây xuất hiện rất thường xuyên trong thực tế. 
+      Việc ghi nhớ công thức đối ngẫu tương ứng sẽ giúp xây dựng bài toán đối ngẫu nhanh hơn và 
+      tránh phải suy luận lại từ đầu.</p>
+
+    <p class="alignment"><strong>Dạng bất đẳng thức</strong>: với $p^* = \min\{c^\top x : Ax \ge b\}$
+      (không ràng buộc dấu của $x$), ta lấy $\lambda \ge 0$, và vì $x$ tự do, ta cần $c = A^\top \lambda$
+      để đảm bảo $(A^\top\lambda)^\top x = c^\top x$ với mọi $x$. Dual là:</p>
+
+    $$
+    d^* = \max\left\{ b^\top \lambda : A^\top \lambda = c,\ \lambda \ge 0 \right\}
+    $$
+
+    <p class="alignment"><strong>Dạng chuẩn (standard form)</strong>: với $p^* = \min\{c^\top x : Ax = b,\ x \ge 0\}$,
+      ta lấy $\lambda$ tự do (vì constraint là đẳng thức), và vì $x \ge 0$, ta cần $c \ge A^\top \lambda$.
+      Dual là:</p>
+
+    $$
+    d^* = \max\left\{ b^\top \lambda : A^\top \lambda \le c \right\}
+    $$
+
+    <p class="alignment">Hai dạng này rất hay gặp trong thực tế (dạng chuẩn đặc biệt phổ biến, vì đây
+      chính là dạng mà Simplex method làm việc trực tiếp trên nó), nên đáng để nhớ luôn công thức dual
+      thay vì suy luận lại mỗi lần.</p>
+
+    <h2>2. Hai định lý nền tảng: Weak Duality và Strong Duality</h2>
+
+    <p class="alignment">Gọi $p^*$ là giá trị tối ưu của primal LP (bài toán minimization gốc), và
+      $d^*$ là giá trị tối ưu của dual LP (bài toán maximization). Toàn bộ quá trình xây dựng ở phần 1
+      thực chất đã chứng minh sẵn định lý sau, chỉ là ta chưa gọi tên nó:</p>
+
+    <p class="alignment">
+  <strong>Định lý (Weak Duality).</strong>
+</p>
+<blockquote class="alignment">
+  <p>
+    Gọi $p^*$ và $d^*$ lần lượt là giá trị tối ưu của primal và dual. Khi đó $p^* \ge d^*$.
+    Từ đó, các mệnh đề sau đây đúng:
+  </p>
+  <ul>
+    <li>Nếu primal LP unbounded, thì $p^* = d^* = -\infty$, và do đó dual LP infeasible.</li>
+    <li>Nếu dual LP unbounded, thì $p^* = d^* = \infty$, và do đó primal LP infeasible.</li>
+  </ul>
+  <p>
+    Hơn nữa, với bất kỳ $x$ feasible của primal LP và bất kỳ $\lambda$ feasible của dual LP, ta
+    luôn có $c^\top x \ge b^\top \lambda$.
+  </p>
+</blockquote>
+
+    <p class="alignment">Nói cách khác: dù ta chọn nghiệm khả thi nào của primal, và dual variable khả
+      thi nào của dual, giá trị objective của primal luôn "cao hơn hoặc bằng" giá trị objective của
+      dual. Điều này kéo theo 2 hệ quả là: Nếu primal LP unbounded (tức $p^* = -\infty$), thì dual LP phải infeasible (vì nếu dual có
+        một nghiệm khả thi $\lambda$, nó sẽ là cận dưới hữu hạn cho $p^*$, mâu thuẫn với việc $p^*$ có
+        thể xuống $-\infty$). Tương tự, nếu dual LP unbounded ($d^* = \infty$), thì primal LP phải infeasible.
+
+    <p class="alignment">Điều thú vị là: cả 2 bài toán primal và dual đều có thể
+      cùng lúc infeasible. Ví dụ, bài toán:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & x_1 + 2x_2 \\
+    \text{s.t.} \quad & x_1 + x_2 = 1 \\
+    & x_1 + x_2 = 2
+    \end{aligned}
+    $$
+
+    <p class="alignment">rõ ràng infeasible (không thể có $x_1+x_2$ vừa bằng 1 vừa bằng 2). Dual của nó
+      là:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & \lambda_1 + 2\lambda_2 \\
+    \text{s.t.} \quad & \lambda_1 + \lambda_2 = 1 \\
+    & \lambda_1 + \lambda_2 = 2
+    \end{aligned}
+    $$
+
+    <p class="alignment">cũng infeasible với đúng lý do tương tự. Vậy weak duality chỉ đảm bảo
+      $p^* \ge d^*$, nhưng không đảm bảo 2 giá trị này bằng nhau, hay thậm chí đảm bảo cả 2 đều hữu hạn.
+      Câu hỏi tự nhiên là: khi nào thì $p^* = d^*$ thực sự xảy ra? Câu trả lời chính là định lý quan
+      trọng nhất của lý thuyết đối ngẫu:</p>
+
+    <p class="alignment"><strong>Định lý (Strong Duality).</strong></p>
+
+<blockquote class="alignment">
+  <p class="alignment">Nếu một trong các điều kiện sau xảy ra:</p>
+
+  <ul class="alignment">
+    <li>cả bài toán primal và dual đều khả thi (feasible),</li>
+    <li>bài toán primal đạt giá trị tối ưu hữu hạn,</li>
+    <li>bài toán dual đạt giá trị tối ưu hữu hạn,</li>
+  </ul>
+
+  <p class="alignment">thì hai bài toán có cùng giá trị tối ưu:</p>
+
+  <p class="alignment">
+    \[
+    p^* = d^*.
+    \]
+  </p>
+</blockquote>
+
+<p class="alignment">
+Định lý Strong Duality chỉ ra rằng, dưới những điều kiện tương đối tổng quát, bài toán dual không chỉ cung cấp 
+một cận dưới cho bài toán primal mà thực sự đạt đến đúng giá trị tối ưu của bài toán gốc. 
+Nói cách khác, khoảng cách đối ngẫu (duality gap) bằng không và hai cách tiếp cận tưởng như 
+khác biệt hoàn toàn lại dẫn đến cùng một kết quả tối ưu.
+</p>
+
+<p class="alignment">
+Trong bài toán tồn kho, điều này có ý nghĩa đặc biệt quan trọng: giá trị 
+\(\sum_i b_i \lambda_i^*\) không chỉ đơn thuần là một cận dưới của lợi nhuận tối ưu. 
+Nhờ tính chất strong duality, nó chính là giá trị tối ưu thực sự của bài toán production planning. 
+Do đó, nghiệm dual cung cấp một cách nhìn khác về cùng một giá trị kinh tế của bài toán, 
+đồng thời cho phép diễn giải các biến dual như những giá trị biên (marginal values) của tài nguyên.
+</p>
+
+    <h2>3. Complementary Slackness</h2>
+
+<p class="alignment">
+Strong duality nói rằng: nếu cả primal và dual đều feasible, giá trị tối ưu của chúng trùng nhau.
+Giả sử $x$ và $\lambda$ lần lượt là nghiệm feasible của primal LP và dual LP, sao cho
+$c^\top x = b^\top \lambda$ (tức cả hai đều đạt giá trị tối ưu theo strong duality).
+Ta sẽ quay lại chuỗi suy luận đã được sử dụng để xây dựng dual LP ở phần 1, nhưng lần này
+viết rõ từng bước biến đổi để hiểu điều gì xảy ra khi hai giá trị tối ưu này bằng nhau.
+</p>
+
+<p class="alignment">Nhớ lại rằng:</p>
+
+\begin{align}
+b^\top \lambda
+&= \sum_{i \in M_L} b_i \lambda_i 
+ + \sum_{i \in M_E} b_i \lambda_i 
+ + \sum_{i \in M_G} b_i \lambda_i \\
+&\le \sum_{i \in M_L} \lambda_i a_i^\top x
+ + \sum_{i \in M_E} \lambda_i a_i^\top x
+ + \sum_{i \in M_G} \lambda_i a_i^\top x
+\tag{1}\\
+&= \sum_{j \in D_L} (\tilde{a}_j^\top \lambda)x_j
+ + \sum_{j \in D_F}(\tilde{a}_j^\top \lambda)x_j
+ + \sum_{j \in D_G}(\tilde{a}_j^\top \lambda)x_j\\
+&\le \sum_{j \in D_L} c_jx_j
+ + \sum_{j \in D_F}c_jx_j
+ + \sum_{j \in D_G}c_jx_j
+\tag{2}\\
+&= c^\top x.
+\end{align}
+
+<p class="alignment">
+Vì $b^\top \lambda = c^\top x$, hai đầu của chuỗi trên bằng nhau. Do đó, mọi dấu bất đẳng thức
+xuất hiện trong chuỗi đều phải thực sự là dấu bằng. Nói cách khác, không thể có bất kỳ bước nào
+làm giảm giá trị, vì khi đó vế trái sẽ nhỏ hơn vế phải.
+</p>
+
+<p class="alignment">
+Xét điều kiện xảy ra trong (1). Ta thu được:
+</p>
+
+$$
+0 =
+\sum_{i \in M_L} \lambda_i(a_i^\top x-b_i)
++
+\sum_{i \in M_E} \lambda_i(a_i^\top x-b_i)
++
+\sum_{i \in M_G} \lambda_i(a_i^\top x-b_i)
+$$
+
+<p class="alignment">
+Nhớ lại rằng với cách lựa chọn dấu của các biến dual $\lambda_i$, ta luôn có:
+$(a_i^\top x-b_i)\lambda_i \ge 0$ với mọi $i$.
+Vì tổng của các số hạng không âm bằng 0, nên từng số hạng riêng lẻ cũng phải bằng 0. Do đó:
+</p>
+
+$$
+(a_i^\top x-b_i)\lambda_i=0,
+\quad
+\forall i\in M_L\cup M_E\cup M_G.
+$$
+
+
+<p class="alignment">
+Xét điều kiện để dấu bằng xảy ra trong (2). Tương tự, ta có:
+</p>
+
+$$
+0 =
+\sum_{j\in D_L}(\tilde{a}_j^\top\lambda-c_j)x_j
++
+\sum_{j\in D_F}(\tilde{a}_j^\top\lambda-c_j)x_j
++
+\sum_{j\in D_G}(\tilde{a}_j^\top\lambda-c_j)x_j
+$$
+
+<p class="alignment">
+Một lần nữa, mỗi số hạng
+$(\tilde{a}_j^\top\lambda-c_j)x_j \ge 0$.
+Vì tổng các số hạng không âm bằng 0, ta suy ra:
+</p>
+
+$$
+(\tilde{a}_j^\top\lambda-c_j)x_j=0,
+\quad
+\forall j\in D_L\cup D_F\cup D_G.
+$$
+
+<p class="alignment">
+Hai kết quả trên chính là điều kiện complementary slackness.
+</p>
+
+    <p class="alignment"><strong>Định lý (Complementary Slackness).</strong></p>
+
+<blockquote class="alignment">
+  <p class="alignment">
+    Cho $x$ là nghiệm tối ưu của bài toán primal LP và $\lambda$ là nghiệm tối ưu
+    của bài toán dual LP. Khi đó, các điều kiện bù trừ sau đây được thỏa mãn:
+  </p>
+
+  <ul class="alignment">
+    <li>
+      Nếu $a_i^\top x \ne b_i$, thì $\lambda_i = 0$.
+    </li>
+    <li>
+      Nếu $\lambda_i \ne 0$, thì $a_i^\top x = b_i$.
+    </li>
+  </ul>
+
+  <p class="alignment">
+    Tương tự, đối với các biến quyết định:
+  </p>
+
+  <ul class="alignment">
+    <li>
+      Nếu $\tilde{a}_j^\top \lambda \ne c_j$, thì $x_j = 0$.
+    </li>
+    <li>
+      Nếu $x_j \ne 0$, thì $\tilde{a}_j^\top \lambda = c_j$.
+    </li>
+  </ul>
+</blockquote>
+
+    <p class="alignment">Nói bằng lời: tại nghiệm tối ưu,</p>
+
+    <ul class="alignment">
+      <li>constraint $i$ của primal và biến $i$ của dual không thể cùng "lỏng" (slack) đồng thời,</li>
+      <li>biến $j$ của primal và constraint $j$ của dual cũng không thể cùng "lỏng" đồng thời.</li>
+    </ul>
+
+    <p class="alignment">Ý nghĩa kinh tế của điều này rất trực quan trong ví dụ tồn kho: nếu một nguyên
+      liệu $i$ không dùng hết (tồn kho còn dư, tức $a_i^\top x \ne b_i$), thì giá trị "bóng" (shadow
+      price) $\lambda_i$ của nó phải bằng 0, vì nguyên liệu dư thừa không tạo thêm giá trị biên nào cả.
+      Ngược lại, nếu $\lambda_i \ne 0$ (nguyên liệu này thực sự có giá trị), thì nó chắc chắn phải được
+      dùng hết.</p>
+
+    <h3>3.1. Chiều ngược lại: complementary slackness có đủ để đảm bảo tối ưu không?</h3>
+
+    <p class="alignment">Ở trên, ta mới chỉ chứng minh một chiều: nếu $x$ và $\lambda$
+      đều tối ưu,thì complementary slackness phải xảy ra (đây là chiều cần,
+      necessary). Nhưng để complementary slackness thực sự hữu dụng như một công cụ kiểm chứng, ta cần
+      chiều ngược lại: liệu $x$ feasible, $\lambda$ feasible, và complementary slackness xảy ra, có
+      chắc chắn kéo theo cả hai đều tối ưu hay không? Câu trả lời là có,
+      và chứng minh khá ngắn gọn.</p>
+
+    <p class="alignment">Giả sử $x$ feasible với primal, $\lambda$ feasible với dual, và cả hai điều
+      kiện complementary slackness đều thỏa mãn:</p>
+
+    $$
+    \lambda_i (a_i^\top x - b_i) = 0 \ \forall i, \qquad (\tilde{a}_j^\top \lambda - c_j) x_j = 0 \ \forall j
+    $$
+
+    <p class="alignment">Khai triển ngược lại đúng các bước ở phần 1 (bước 2 và bước 3), hai điều kiện
+      này chính là nói rằng cả 2 bất đẳng thức trong chuỗi:</p>
+
+    $$
+    b^\top \lambda \le (A^\top \lambda)^\top x \le c^\top x
+    $$
+
+    <p class="alignment">đều xảy ra dấu bằng. Do đó, $b^\top \lambda = c^\top x$. Nhưng
+      theo weak duality (đã chứng minh ở phần 2), ta luôn có $c^\top x \ge d^* \ge b^\top \lambda$
+      với mọi $x, \lambda$ feasible. Kết hợp với $b^\top \lambda = c^\top x$, ta suy ra:</p>
+
+    $$
+    c^\top x = b^\top \lambda \le d^* \le p^* \le c^\top x
+    $$
+
+    <p class="alignment">Toàn bộ chuỗi này phải bằng nhau, tức $c^\top x = p^*$ và $b^\top \lambda = d^*$.
+      Nói cách khác, $x$ chính là nghiệm tối ưu của primal, và $\lambda$ chính là nghiệm tối ưu của
+      dual. Vậy ta có được một định lý hoàn chỉnh hơn nhiều so với những gì ta phát biểu ban đầu:</p>
+      
+
+    <p class="alignment"><strong>Định lý (Complementary Slackness, dạng đầy đủ).</strong></p>
+
+<blockquote class="alignment">
+<p class="alignment">
+Với $x$ và $\lambda$ là các nghiệm feasible của primal và dual, ta có:
+</p>
+
+$$
+(x,\lambda)\text{ tối ưu}
+\quad \iff \quad
+\text{Complementary Slackness holds}.
+$$
+</blockquote>
+<p class="alignment">
+Đây chính là lý do complementary slackness có ý nghĩa quan trọng trong thực hành:
+nó cung cấp một tiêu chí kiểm tra tính tối ưu mà không cần biết
+quá trình tìm ra nghiệm. Cụ thể, với một cặp $(x,\lambda)$, chỉ cần kiểm tra:
+(1) $x$ feasible với primal, (2) $\lambda$ feasible với dual, và (3) các điều kiện
+complementary slackness được thỏa mãn. Khi đó, theo định lý complementary slackness,
+ta có thể kết luận chắc chắn rằng $x$ và $\lambda$ là các nghiệm tối ưu tương ứng.
+Đây cũng là nguyên lý đằng sau tiêu chí dừng của thuật toán Simplex. Simplex duy trì
+một nghiệm primal feasible và các điều kiện complementary slackness liên quan đến biến
+non-basic được thỏa mãn tự động. Vì vậy, chỉ cần kiểm tra thêm dual feasibility
+(tương đương với điều kiện trên reduced cost) là có thể xác nhận nghiệm hiện tại là tối ưu.
+</p>
+
+    <h2>4. Ứng dụng: giải các mô hình LP quy mô lớn</h2>
+
+    <p class="alignment">Toàn bộ lý thuyết ở trên không chỉ đẹp về mặt toán học, mà còn có một ứng dụng
+      nhiều trong thực tế: giải các bài toán LP có số lượng biến hoặc constraint rất lớn (large scale),
+      đến mức không thể liệt kê hết ngay từ đầu. Xét lại cặp primal-dual dạng bất đẳng thức:</p>
+
+    $$
+    p^* = \min\left\{c^\top x : Ax \ge b,\ x \ge 0\right\}, \qquad d^* = \max\left\{b^\top \lambda : A^\top \lambda \le c,\ \lambda \ge 0\right\}
+    $$
+
+    <p class="alignment">với $A$ là ma trận $m \times d$. Tùy vào ứng dụng, ta có thể gặp trường hợp $m$
+      (số constraint của primal, cũng là số biến của dual) rất lớn, hoặc $d$ (số biến của primal, cũng
+      là số constraint của dual) rất lớn. Ta sẽ xét từng trường hợp.</p>
+
+    <h3>4.1. Khi $m$ lớn: Row Generation</h3>
+
+    <p class="alignment">Khi số constraint $m$ quá lớn, thay vì giải với toàn bộ $m$ constraint ngay từ
+      đầu, ta có thể bắt đầu với một tập con constraint $M \subseteq [m]$, giải bài toán con (gọi là
+      master problem) chỉ với các constraint trong $M$:</p>
+
+    $$
+    p_M = \min\left\{c^\top x : a_i^\top x \ge b_i,\ i \in M,\ x \ge 0\right\}
+    $$
+
+    <p class="alignment">rồi kiểm tra: nghiệm $x_M$ tìm được có vi phạm constraint nào ngoài $M$ không?
+      Nếu có, ta thêm constraint đó vào $M$ và giải lại. Lặp lại quá trình này cho đến khi không còn
+      constraint nào bị vi phạm. Đây gọi là row generation (hay còn gọi là <em>cutting
+      plane method</em>). Ý tưởng cốt lõi rất trực quan: ta không cần biết trước toàn bộ $m$ constraint
+      ngay từ đầu, mà chỉ cần "phát sinh" thêm constraint khi thực sự cần đến, dựa trên nghiệm hiện tại.</p>
+
+    <p class="alignment">Về mặt thuật toán, mỗi vòng lặp ta cần kiểm tra xem có constraint nào bị vi
+      phạm hay không, việc này tương đương với việc giải bài toán con:</p>
+
+    $$
+    S = \min_{i \in [m]} \left\{ a_i^\top x_M - b_i \right\}
+    $$
+
+    <p class="alignment">Nếu $S < 0$, tức tồn tại constraint bị vi phạm (constraint ứng với chỉ số đạt
+      giá trị nhỏ nhất), ta thêm constraint đó vào $M$ và giải lại master problem. Nếu $S \ge 0$, tức
+      không còn constraint nào bị vi phạm, ta đã tìm được nghiệm tối ưu của bài toán gốc.</p>
+
+    <h3>4.2. Khi $d$ lớn: Column Generation (Row Generation trên Dual)</h3>
+
+    <p class="alignment">Khi số biến $d$ của primal quá lớn, dual LP của nó sẽ có số constraint
+      $\tilde{a}_j^\top \lambda \le c_j$ (với $j \in [d]$) rất lớn. Ý tưởng rất tự nhiên: áp dụng đúng
+      row generation ở trên, nhưng lần này trên dual LP thay vì primal. Ta bắt đầu với
+      một tập con $D \subseteq [d]$, giải dual master problem:</p>
+
+    $$
+    d_D = \max\left\{b^\top \lambda : \tilde{a}_j^\top \lambda \le c_j,\ j \in D,\ \lambda \ge 0\right\}
+    $$
+
+    <p class="alignment">Điều thú vị là: nếu ta lấy dual của chính dual master problem này, ta thu được
+      đúng bài toán primal gốc, nhưng chỉ giữ lại các biến $x_j$ với $j \in D$ (tương đương với việc đặt
+      $x_j = 0$ cho mọi $j \notin D$). Vậy, việc "thêm một constraint vào dual master problem" hoàn toàn
+      tương đương với việc "thêm một biến (cột) vào primal problem". Chính vì lý do này, thủ tục row
+      generation trên dual được gọi là column generation.</p>
+
+    <p class="alignment">Bài toán con cần giải ở mỗi vòng lặp lúc này trở thành:</p>
+
+    $$
+    S = \max_{j \in [d]} \left\{\tilde{a}_j^\top \lambda^D - c_j\right\}
+    $$
+
+    <p class="alignment">Nếu $S > 0$, tồn tại cột $j^*$ (biến $x_{j^*}$) nên được thêm vào; nếu
+      $S \le 0$, ta đã đạt được $d_D = d^*$, và theo strong duality, $p_D = d_D = d^* = p^*$, nghĩa là
+      giải primal chỉ với các cột trong $D$ cũng cho ra chính xác nghiệm tối ưu của bài toán gốc với
+      đầy đủ $d$ biến.</p>
+
+    <h2>5. Ví dụ minh họa: Bài toán Cutting Stock</h2>
+
+    <p class="alignment">Để thấy column generation hoạt động trong thực tế thế nào, hãy xét một bài
+      toán kinh điển trong ngành sản xuất: bài toán cutting stock (cắt vật liệu).</p>
+
+    <p class="alignment">Một nhà máy thép có các dây chuyền sản xuất, mỗi dây chuyền cho ra một tấm thép
+      lớn có độ rộng $W$ cố định. Nhà máy nhận được các đơn hàng với $m$ độ rộng khác nhau
+      $w_1, \dots, w_m$, với số lượng đơn hàng cho độ rộng $w_i$ là $b_i$. Từ một tấm thép rộng $W$, nhà
+      máy có thể cắt ra thành nhiều tấm nhỏ với các độ rộng khác nhau. Mục tiêu: dùng ít dây
+      chuyền nhất có thể để đáp ứng đủ mọi đơn hàng.</p>
+
+    <p class="alignment">Ý tưởng mô hình hóa là dùng khái niệm <strong>cutting pattern</strong> (cách
+      cắt). Một cutting pattern là một cách cụ thể để cắt một tấm rộng $W$ thành các tấm nhỏ, được biểu
+      diễn bởi một vector $s \in \mathbb{Z}_+^m$, trong đó $s_i$ là số tấm rộng $w_i$ được cắt ra từ
+      pattern đó. Để pattern này khả thi (không cắt vượt quá độ rộng tấm gốc), ta cần:</p>
+
+    $$
+    \sum_{i=1}^{m} w_i s_i \le W
+    $$
+
+    <p class="alignment">Đây thực chất là một ràng buộc knapsack. 
+      Gọi $S$ là tập tất cả các vector $s$ nguyên không âm thỏa ràng buộc trên, tức tập tất cả các
+      cutting pattern khả thi. Sử dụng một pattern nào đó tương đương với việc vận hành một dây chuyền
+      theo pattern đó. Gọi $x_s$ là số dây chuyền dùng pattern $s$. Bài toán trở thành:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & \sum_{s \in S} x_s \\
+    \text{s.t.} \quad & \sum_{s \in S} s_i x_s \ge b_i, \quad \forall i \in [m], \\
+    & x_s \in \mathbb{Z}_+, \quad \forall s \in S
+    \end{aligned}
+    $$
+
+    <p class="alignment">Vấn đề lớn nhất của công thức này: số lượng biến $x_s$ bằng đúng số lượng
+      cutting pattern khả thi, tức số điểm trong $S$, và con số này có thể rất lớn tùy
+      vào $W$ và các $w_i$. Đây chính xác là tình huống "$d$ lớn" mà ta vừa nói ở phần 4.2, và column
+      generation là công cụ hoàn hảo cho bài toán này.</p>
+
+    <p class="alignment">Trước tiên, ta bỏ ràng buộc nguyên (nới về LP relaxation, một khái niệm mình đã
+      giới thiệu ở bài Integer Programming trước đó), thu được một LP:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & \sum_{s \in S} x_s \\
+    \text{s.t.} \quad & \sum_{s \in S} s_i x_s \ge b_i, \quad \forall i \in [m], \\
+    & x_s \ge 0, \quad \forall s \in S
+    \end{aligned}
+    $$
+
+    <p class="alignment">Dual của LP này là:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & \sum_{i \in [m]} \lambda_i \\
+    \text{s.t.} \quad & \sum_{i \in [m]} s_i \lambda_i \le 1, \quad \forall s \in S, \\
+    & \lambda_i \ge 0, \quad \forall i \in [m]
+    \end{aligned}
+    $$
+
+    <p class="alignment">Ta bắt đầu column generation với một tập con nhỏ $F \subseteq S$ các cutting
+      pattern (ví dụ, các pattern đơn giản nhất: mỗi tấm gốc chỉ cắt ra tối đa các tấm cùng một độ rộng).
+      Giải bài toán integer program chỉ với các pattern trong $F$:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & \sum_{s \in F} x_s \\
+    \text{s.t.} \quad & \sum_{s \in F} s_i x_s \ge b_i, \quad \forall i \in [m], \\
+    & x_s \in \mathbb{Z}_+, \quad \forall s \in F
+    \end{aligned}
+    $$
+
+    <p class="alignment">Từ nghiệm của bài toán này, ta thu được các dual multiplier $\lambda$. Để kiểm
+      tra xem có nên thêm pattern mới vào $F$ hay không, ta giải bài toán con (subproblem):</p>
+
+    $$
+    \max\left\{ -1 + \sum_{i \in [m]} \lambda_i s_i : s \in S \right\}
+    $$
+
+    <p class="alignment">Thay định nghĩa của $S$ vào, bài toán con này trở thành:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & -1 + \sum_{i \in [m]} \lambda_i s_i \\
+    \text{s.t.} \quad & \sum_{i \in [m]} w_i s_i \le W \\
+    & s \in \mathbb{Z}_+^m
+    \end{aligned}
+    $$
+
+    <p class="alignment">Đây chính xác là một bài toán knapsack (không giới hạn số
+      lượng mỗi loại vật phẩm, unbounded knapsack): mỗi vật phẩm $i$ có khối lượng $w_i$ và giá trị $\lambda_i$, túi có sức chứa $W$, và ta muốn tìm cách chọn (với số lượng lặp lại tùy ý) sao
+      cho tổng giá trị lớn nhất. Nếu giá trị tối ưu của bài toán con này dương, ta tìm được một pattern
+      mới đáng để thêm vào $F$ (đây chính là pattern tối ưu $s^*$ của knapsack); nếu không, ta đã tìm
+      được nghiệm tối ưu cho bài toán cutting stock gốc.</p>
+
+    <p class="alignment">
+    Điểm đáng chú ý ở đây là một bài toán tưởng như khó giải trực tiếp do số lượng
+    pattern khả thi rất lớn lại có thể được phân rã thành một chuỗi các bài toán
+    knapsack có quy mô nhỏ hơn đáng kể. Mỗi bài toán con này lại có các thuật toán giải riêng cho nó. 
+    Đây là một ví dụ điển hình cho thấy duality
+    không chỉ là một công cụ phân tích lý thuyết, mà còn đóng vai trò quan trọng trong
+    việc xây dựng các thuật toán tốt hơn.
+    </p>
+
+    <h2>Kết lại</h2>
+
+    <p class="alignment">
+      Qua bài viết này, chúng ta đã lần lượt khám phá các khía cạnh quan trọng của lý thuyết
+      đối ngẫu trong quy hoạch tuyến tính: từ việc xây dựng dual LP một cách bài bản
+      (thay vì chỉ suy đoán như trong bài toán tồn kho ban đầu), đến weak duality
+      (một kết quả luôn đúng nhưng chỉ cung cấp cận dưới), strong duality (điều kiện
+      để cận dưới này đạt đúng giá trị tối ưu), complementary slackness ở dạng đầy đủ
+      (không chỉ là điều kiện cần mà còn là điều kiện cần và đủ cho tính tối ưu), và
+      cuối cùng là ứng dụng của duality trong việc giải các mô hình LP quy mô lớn
+      thông qua row/column generation, được minh họa bằng bài toán cutting stock.
+</p>
+    <p class="alignment">
+      Nhìn lại câu nói còn bỏ ngỏ ở bài trước ("bài toán tồn kho là dual của production planning")
+      giờ đã trở nên rõ ràng hơn: mỗi ràng buộc về tài nguyên trong bài toán gốc được chuyển hóa
+      thành một biến dual biểu diễn giá trị kinh tế của tài nguyên đó. Nhờ strong duality,
+      giá trị tối ưu của các biến dual này không chỉ là một cận dưới, mà chính xác bằng giá trị
+      tối ưu của bài toán production planning. Đây không đơn thuần là một phép biến đổi đại số,
+      mà phản ánh một ý nghĩa kinh tế sâu sắc: giá trị của một nguồn lực được đo bằng giá trị
+      biên (marginal value) mà nó tạo ra đối với lợi nhuận tối ưu.
+</p>
+
+    <p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>

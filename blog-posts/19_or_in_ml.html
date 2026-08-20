@@ -45,23 +45,23 @@
     <h1>Tổng quan về Operation Research trong thời đại AI</h1>
     <p class="date">Posted: 21/03/2026</p>
     <p class="alignment">Dù đã có lịch sử phát triển hơn 80 năm và dần phổ biến trên thế giới, Operations Research (OR - Vận trù học) 
-vẫn là một cái tên khá mới mẻ tại Việt Nam. Với nhiều người, khái niệm này còn xa lạ, thậm chí dễ gây khó hiểu khi lần đầu nghe đến.
+vẫn là một cái tên khá mới mẻ tại Việt Nam. Với nhiều người, khái niệm này còn xa lạ.
 Một phần lý do là trước đây OR chủ yếu xuất hiện trong các chương trình đào tạo về Cử nhân toán, ít được phổ biến trong các 
-nhóm ngành khác. Tuy nhiên, trong những năm gần đây, khi các doanh nghiệp lớn như XanhSM, Viettel hay các sàn thương mại điện tử bắt đầu đối mặt với những bài toán tối ưu hóa chi phí 
-và logistics ngày càng phức tạp, nhu cầu về nhân sự OR mới thực sự bùng nổ. </p>
+nhóm ngành khác. Tuy nhiên, trong những năm gần đây. Khi các doanh nghiệp lớn như XanhSM, Viettel hay các sàn thương mại điện tử bắt đầu đối mặt với những bài toán tối ưu hóa chi phí 
+và logistics ngày càng phức tạp. Nhu cầu về nhân sự OR mới thực sự được chú trọng. </p>
 <p class="alignment">Trong bài viết này, chúng ta sẽ cùng tìm hiểu 
 Operation Research (OR) là gì, khám phá những ý tưởng cốt lõi của nó, và cùng làm quen với một số công cụ và kỹ thuật mà nó cung cấp. 
-Tiếp đó, chúng ta sẽ cùng tìm hiểu vai trò và sự kết nói của OR trong thế giới của Machine Learning (ML) và AI, 
-qua đó thấy được cách các phương pháp tối ưu hóa đang vận hành phía sau nhiều thuật toán ML ngày nay.</p>
+Tiếp đó, chúng ta sẽ cùng tìm hiểu vai trò và sự kết nói của OR trong thế giới của Machine Learning (ML) và AI. 
+Qua đó thấy được cách các phương pháp tối ưu hóa đang vận hành phía sau nhiều thuật toán ML ngày nay.</p>
 
 <h2>Operation Research là gì?</h2>
 <p class="alignment">Về cơ bản, Operation Research là một lĩnh vực của toán ứng dụng sử dụng “<em>các mô hình toán học</em>” (mathematical modelling) để giúp con người và tổ chức đưa ra 
   “<em>những quyết định tốt hơn</em>” (making decision). Lĩnh vực này thường được gọi là optimization. Tuy nhiên, thuật ngữ này có thể gây 
-  hiểu nhầm, vì “optimization” được sử dụng trong nhiều ngữ cảnh khác nhau, từ code optimization đến 
+  hiểu nhầm. Vì “optimization” được sử dụng trong nhiều ngữ cảnh khác nhau, từ code optimization đến 
   hyperparameter optimization đến pipeline optimization, mà không nhất thiết tương ứng với mathematical modelling trong OR.</p>
 
-<p class="alignment">Trong tiếng Việt, Operations Research thường được gọi là “<em>Vận trù học</em>”. Thuật ngữ này được Giáo sư Toán học Hoàng Tụy sử dụng lần đầu, là sự kết hợp giữa “<em>vận hành</em>” 
-(operations) và “<em>trù liệu</em>” (research). Nghe thì có vẻ hơi “<em>học thuật</em>”, nhưng thực chất lại gắn rất gần với những quyết định mà chúng ta phải đưa ra mỗi ngày.</p>
+<p class="alignment">Trong tiếng Việt, Operations Research thường được gọi là “<em>Vận trù học</em>”. Thuật ngữ này được Giáo sư Toán học Hoàng Tụy sử dụng lần đầu. Là sự kết hợp giữa “<em>vận hành</em>” 
+(operations) và “<em>trù liệu</em>” (research). Nghe thì có vẻ hơi học thuật, nhưng thực chất lại gắn rất gần với những quyết định mà chúng ta phải đưa ra mỗi ngày.</p>
 <p class="alignment">Từ những việc quen thuộc như sắp xếp lịch làm việc, lên kế hoạch di chuyển, cho đến các 
 bài toán phức tạp hơn trong doanh nghiệp như Hoạch định Sản xuất (Production Planning), Phân bổ Nguồn lực (Resource Allocation) 
 hay Tối ưu Lợi nhuận (Profit Optimization), tất cả đều xoay quanh một câu hỏi chung: làm thế nào để đạt được kết quả tốt nhất trong điều kiện có hạn?
@@ -100,7 +100,7 @@ hoặc đơn giản là Operations Researchers), công việc thường xoay qua
 
 <p class="alignment">
 Đằng sau các thành phần này là một kho công cụ rất lớn. Cơ bản nhất, ta có các phương pháp chính xác như Simplex, 
-Branch & Bound, và Dynamic Programming, dành cho những bài toán có cấu trúc rõ ràng và có thể giải ở quy mô lớn. Sau đó là các phương pháp lặp (iteration), dựa trên 
+Branch & Bound, và Dynamic Programming, dành cho những bài toán có cấu trúc rõ ràng và có thể giải ở quy mô vừa và nhỏ. Sau đó là các phương pháp lặp (iteration), dựa trên 
 gradient cho các bài toán tối ưu liên tục. Khi bài toán trở nên quá phức tạp đối với các phương pháp chính xác, Heuristics và Metaheuristics (Genetic Algorithms, Tabu Search) 
 cung cấp các lời giải tốt trong thời gian hợp lý mà không đảm bảo tối ưu tuyệt đối. Constraint Programming là một cách tiếp cận khác, hoạt động bằng cách 
 thu hẹp không gian tìm kiếm, mà không nhất thiết cần một hàm mục tiêu rõ ràng. 
@@ -146,7 +146,7 @@ nhằm tối ưu hóa hiệu suất trong những điều kiện không chắc c
 <h2>Học OR ở đâu?</h2>
 <h3>Tài liệu</h3>
 <p class="alignment">
-  Về tài liệu, có rất nhiều giáo trình hiện nay trên thị trường, nhưng có 2 bộ sách phổ biến nhất được đưa làm tài liệu tham khảo
+  Về tài liệu, có rất nhiều giáo trình hiện nay trên thị trường. Có 2 bộ sách phổ biến nhất được đưa làm tài liệu tham khảo
   cho rất nhiều chương trình đào tạo và các giáo sư khuyến nghị sử dụng là <em><strong>Convex Optimization</strong></em> của <em>Stephen Boyd</em> và <em>Vandenberghe</em>
   và <em><strong>Nummerical Optimziation</strong></em> của <em> Jorge Nocedal và Wright</em>. Đây là những giáo trình cơ bản, giúp bạn nắm vững các khái niệm cốt lõi mà 
   hầu hết các thuật toán OR, ML hay DL đều dựa vào. Đối với bản thân mình thì 2 sách này viết quá chi tiết, minh họa đầy đủ, giải thích kỹ càng,
@@ -158,18 +158,17 @@ nhằm tối ưu hóa hiệu suất trong những điều kiện không chắc c
 Giáo trình kinh điển mà mình hay thấy mọi người sử dụng bao gồm <em><strong>Optimization in Operations Research</strong></em> của <em>Ronald Rardin</em>, 
 <em><strong>Operations Research: An Introduction</strong></em> của <em>Hamdy Taha</em>, và <em><strong>Introduction to Operations Research</strong></em> của <em>Hillier & Lieberman</em>. 
 Mỗi cuốn sách mang một thế mạnh riêng, và khi kết hợp lại, chúng tạo thành một nền tảng vững chắc cho người học OR. Cuốn của Taha 
-thường được dùng khi bạn chưa biết gì về OR cả, nó được trình bày trực quan, nhiều ví dụ thực tế và dễ tiếp cận với người mới. 
+thường được dùng khi bạn chưa biết gì về OR cả. Nó được trình bày trực quan, nhiều ví dụ thực tế và dễ tiếp cận với người mới. 
 Sách của Hillier & Lieberman đi sâu vào cả lý thuyết lẫn mô hình hơn, cung cấp một cái nhìn toàn diện về các mô hình LP, IP, NLP,...
-Ở mức nâng cao hơn, sách của Rardin lại nổi bật ở cách tiếp cận mang tính khái quát và có hệ thống, giúp bạn hiểu rõ cấu trúc của các bài toán tối ưu
+Ở mức nâng cao hơn, sách của Rardin lại nổi bật ở cách tiếp cận mang tính khái quát và có hệ thống. Giúp bạn hiểu rõ cấu trúc của các bài toán tối ưu
 và cách mà các methods liên kết với nhau để giải nó. Cuốn sách này sẽ hữu ích nếu như bạn bắt đầu quan tâm đến việc thiết kế thuật toán, hoặc muốn nhìn
-OR dưới góc độ "<em>framework</em>" thay vì chỉ là các bài toán rời rạc. Điểm chung của các tài liệu này không chỉ dừng lại ở việc trình bày mô hình, mà còn giúp bạn 
-hiểu tư duy tối ưu hóa đằng sau mỗi bài toán, từ cách xây dựng mô hình, lựa chọn phương pháp giải, cho đến việc diễn giải và áp dụng kết quả vào thực tế. Vì vậy, 
+OR dưới góc độ "<em>framework</em>" thay vì chỉ là các bài toán rời rạc. Điểm chung của các tài liệu này không chỉ dừng lại ở việc trình bày mô hình. Mà còn giúp bạn 
+hiểu tư duy tối ưu hóa đằng sau mỗi bài toán. Từ cách xây dựng mô hình, lựa chọn phương pháp giải, cho đến việc diễn giải và áp dụng kết quả vào thực tế. Vì vậy, 
 nếu bạn nghiêm túc theo đuổi OR, đây là những cuốn sách rất đáng để đầu tư thời gian.
   </p>
   <h3>Online course</h3>
   <p class="alignment">
-Hiện nay có rất nhiều khóa học trên internet mà bạn có thể tự tìm hiểu và theo học. Tùy vào nền tảng và mục tiêu của mình, 
-bạn có thể chọn các khóa introduction, đi sâu về thuật toán, hoặc tập trung vào từng bài toán cụ thể trong OR.
+Hiện nay có rất nhiều khóa học trên internet mà bạn có thể tự tìm hiểu và theo học. Tùy vào nền tảng và mục tiêu của mình. Bạn có thể chọn các khóa introduction, đi sâu về thuật toán, hoặc tập trung vào từng bài toán cụ thể trong OR.
 Dưới đây là một số khóa học mình tổng hợp lại tham khảo từ TS Vũ Đức Minh, trường Đại học Kinh tế Quốc dân:
 </p>
 
@@ -191,10 +190,9 @@ Dưới đây là một số khóa học mình tổng hợp lại tham khảo t�
 Ngoài ra, nếu bạn muốn học OR một cách bài bản hơn, có thể tìm đến các chương trình đào tạo chính quy tại các trường đại học. 
 Nếu bạn muốn học ở Mỹ, bạn có thể tham khảo các top school về OR như MIT, Arizona State, UT Austin, UT Dallas, Indiana University, 
 Georgia Tech. Ở châu Âu, đặc biệt là Pháp, bạn có thể tham khảo chương trình <strong>M2 Optimization</strong> của Paris-Saclay và Institut Polytechnique de Paris, 
-khóa này khá nặng về toán và thuật toán, tuy nhiên trường có hệ thống lab với nhiều đề tài nghiên cứu để bạn phát triển sâu hơn. 
-Một khóa khác cũng nổi tiếng là <strong>M2 Modeling, Optimization, Decision-Making, and Organization (MODO)</strong> của Paris-Dauphine, 
-nếu tốt nghiệp thì bạn có thể tận dụng độ uy tín từ hệ thống Université PSL ở Paris. Ngoài ra, còn có <strong>Master of Operations Research, 
-Combinatorics and Optimization (ORCO)</strong> của Grenoble INP, trường có nhiều giáo lớn và network rộng với các tập đoàn như Schneider Electric, 
+khóa này khá nặng về toán và thuật toán. Tuy nhiên trường có hệ thống lab với nhiều đề tài nghiên cứu để bạn phát triển sâu hơn. 
+Một khóa khác cũng nổi tiếng là <strong>M2 Modeling, Optimization, Decision-Making, and Organization (MODO)</strong> của Paris-Dauphine. Nếu tốt nghiệp thì bạn có thể tận dụng độ uy tín từ hệ thống Université PSL ở Paris. Ngoài ra, còn có <strong>Master of Operations Research, 
+Combinatorics and Optimization (ORCO)</strong> của Grenoble INP. Trường có nhiều giáo lớn và network rộng với các tập đoàn như Schneider Electric, 
 Artélys, Hexaly,... vốn sử dụng rất nhiều nhân lực mảng OR.
 </p>
 <p class="alignment">
@@ -212,7 +210,7 @@ nghiên cứu và ứng dụng OR, với nhiều đề tài liên quan đến lo
 toán và tính toán hiệu năng cao (high-performance computing). Và còn rất nhiều nhóm/lab nghiên cứu khác nữa mà có thể mình chưa biết tới.
 
 <p class="alignment">
-Về mặt học thuật, khi nhắc đến OR tại Việt Nam, không thể không nhắc tới Giáo sư Hoàng Tụy, người đặt nền móng cho lĩnh vực này, với đóng góp nổi bật là phương pháp lát cắt Tụy (Tuy’s cut) trong tối ưu toàn cục. 
+Về mặt học thuật, khi nhắc đến OR tại Việt Nam, không thể không nhắc tới Giáo sư Hoàng Tụy. Người đặt nền móng cho lĩnh vực này, với đóng góp nổi bật là phương pháp lát cắt Tụy (Tuy’s cut) trong tối ưu toàn cục. 
 Bên cạnh đó, Giáo sư Nguyễn Đông Yên tại Viện Toán học cũng là một trong những nhà nghiên cứu tiêu biểu trong lĩnh vực tối ưu.
 </p>
 

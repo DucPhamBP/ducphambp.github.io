@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Integer Programming</title>
+  <!-- Include MathJax -->
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script>
+  hljs.highlightAll();
+</script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Integer Programming: Khi nghiệm bắt buộc phải là số nguyên</h1>
+    <p class="date">Posted: 14/07/2026</p>
+
+    <p class="alignment">Ở bài viết trước, mình đã giới thiệu về Linear Programming (LP), kèm theo
+      cách giải bằng phương pháp đồ thị và thuật toán Simplex. Nếu bạn chưa đọc qua, mình khuyến khích
+      xem lại trước khi tiếp tục, vì bài này sẽ dùng lại khá nhiều khái niệm và ký hiệu đã giới thiệu
+      ở đó (decision variables, objective function, constraints, feasible region...). Trong bài viết
+      này, chúng ta sẽ đi tiếp một bước: điều gì xảy ra khi nghiệm của bài toán tối ưu <em>bắt buộc</em>
+      phải là số nguyên, chứ không được phép là số thực bất kỳ.</p>
+
+    <h2>1. Integer Programming là gì?</h2>
+
+    <p class="alignment">Integer Programming (IP), tiếng Việt thường gọi là Quy hoạch nguyên, là một
+      kỹ thuật tối ưu hóa dùng để giải các bài toán ra quyết định mà trong đó, một phần hoặc toàn bộ
+      các decision variables bắt buộc phải nhận giá trị nguyên. Nói cách khác, IP mở rộng Linear
+      Programming bằng cách cho phép các biến chỉ được nhận các giá trị rời rạc (discrete), thay vì
+      bất kỳ số thực nào trong một khoảng liên tục.</p>
+
+    <p class="alignment">Một bài toán IP vẫn giữ nguyên 3 thành phần chính giống LP mà mình đã nói ở
+      bài trước:</p>
+
+    <ul class="alignment">
+      <li><strong>Objective function</strong>: một biểu thức tuyến tính thể hiện điều ta muốn tối đa
+        hóa hoặc tối thiểu hóa (ví dụ: lợi nhuận, chi phí).</li>
+      <li><strong>Decision variables</strong>: các biến đại diện cho lượng cần xác định, và điểm khác
+        biệt cốt lõi so với LP nằm ở đây: một phần hoặc toàn bộ các biến này phải là số nguyên.</li>
+      <li><strong>Constraints</strong>: các bất phương trình hoặc phương trình mô tả giới hạn của
+        decision variables.</li>
+    </ul>
+
+    <p class="alignment">Về mặt toán học, một bài toán IP tổng quát (dạng minimization) được viết như sau:</p>
+
+    $$
+    \begin{aligned}
+    \min_{x} \quad & c^\top x \\
+    \text{s.t.} \quad & Ax \le b, \\
+    & x_j \in \mathbb{Z}, \ j \in D
+    \end{aligned}
+    $$
+
+    <p class="alignment">Trong đó $D \subseteq [d]$ là tập chỉ số của các biến bắt buộc phải là số
+      nguyên. Dựa vào $D$, ta có 3 loại bài toán IP thường gặp:</p>
+
+    <ul class="alignment">
+      <li><strong>Pure Integer Programming</strong>: khi tất cả các biến đều là số nguyên, tức $D = [d]$.</li>
+      <li><strong>Mixed Integer Programming (MIP)</strong>: khi chỉ một phần biến là số nguyên, phần
+        còn lại là số thực liên tục (continuous). Đây là dạng phổ biến nhất trong thực tế, vì nhiều
+        bài toán vừa có quyết định rời rạc (chọn hay không chọn) vừa có đại lượng liên tục (chi phí,
+        thời gian vận chuyển).</li>
+      <li><strong>0-1 Integer Programming</strong> (hay còn gọi là <em>binary program</em>): một
+        trường hợp đặc biệt của pure IP, khi tất cả các biến nguyên chỉ được nhận giá trị 0 hoặc 1.
+        Dạng này cực kỳ hữu dụng để mô hình hóa các quyết định kiểu "có/không" (ví dụ: có chọn dự án
+        này hay không, có mở nhà kho tại vị trí này hay không).</li>
+    </ul>
+
+    <p class="alignment">Một khái niệm quan trọng khác là <strong>LP relaxation</strong>. Đây là mô
+      hình tối ưu thu được khi ta bỏ hẳn ràng buộc nguyên $x_j \in \mathbb{Z}$ ra khỏi bài toán IP,
+      chỉ giữ lại các ràng buộc tuyến tính còn lại:</p>
+
+    $$
+    \begin{aligned}
+    \min_{x} \quad & c^\top x \\
+    \text{s.t.} \quad & Ax \le b
+    \end{aligned}
+    $$
+
+    <p class="alignment">Nói đơn giản, LP relaxation chính là bài toán IP gốc nhưng "nới lỏng" yêu cầu
+      về tính nguyên. Đây là bước đầu tiên gần như bắt buộc khi giải IP trong thực tế, vì LP relaxation
+      giải nhanh hơn rất nhiều so với IP, và nghiệm của nó thường được dùng làm điểm khởi đầu hoặc cận
+      (bound) để giải bài toán IP thật sự. Mình sẽ quay lại điểm này kỹ hơn ở phần 5.</p>
+
+    <h2>2. Integer Programming được dùng khi nào?</h2>
+
+    <p class="alignment">Trong rất nhiều bài toán thực tế, nghiệm dạng số thực đơn giản là không có ý
+      nghĩa. Bạn không thể thuê nửa nhân viên, không thể xây 2,5 cây cầu, hay không thể quyết định
+      "nửa có, nửa không" cho việc có mở một nhà máy hay không. Vì vậy, IP xuất hiện trong rất nhiều
+      lĩnh vực, ví dụ:</p>
+
+    <ul class="alignment">
+      <li><strong>Resource allocation (phân bổ nguồn lực)</strong>: phân bổ máy móc, nhân công cho các
+        công việc sao cho hiệu quả nhất, khi mỗi đơn vị tài nguyên không thể chia nhỏ.</li>
+      <li><strong>Production planning (lên kế hoạch sản xuất)</strong>: xác định số lượng sản xuất tối
+        ưu, có tính đến chi phí cố định khi khởi động dây chuyền (setup cost) và số lượng sản phẩm
+        phải là số nguyên.</li>
+      <li><strong>Network design (thiết kế mạng lưới)</strong>: chọn vị trí đặt nhà kho, nhà máy sao
+        cho tối thiểu hóa chi phí vận chuyển, đây là quyết định dạng "có/không" cho từng vị trí.</li>
+      <li><strong>Portfolio optimization (tối ưu hóa danh mục đầu tư)</strong>: cân đối danh mục với số
+        lượng cổ phiếu hoặc trái phiếu là số nguyên, thay vì cho phép mua "0,3 cổ phiếu".</li>
+      <li><strong>Combinatorial optimization (tối ưu tổ hợp)</strong>: các bài toán kinh điển như
+        Traveling Salesman Problem (TSP) hay Knapsack Problem, vốn dĩ đã mang bản chất rời rạc ngay từ
+        cách đặt vấn đề.</li>
+    </ul>
+
+    <h2>3. Một ví dụ cụ thể: vì sao không thể "làm tròn" nghiệm LP</h2>
+
+    <p class="alignment">Để thấy rõ IP khác LP như thế nào, hãy xét một bài toán rất nhỏ, chỉ gồm 2
+      biến quyết định:</p>
+
+    $$
+    \begin{aligned}
+    \max_{x,y} \quad & 4x + 5y \\
+    \text{s.t.} \quad & x + 3y \le 10, \\
+    & 3x + y \le 10, \\
+    & x, y \ge 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">Nếu ta giải bài toán này như một LP thông thường (tức bỏ qua yêu cầu về tính
+      nguyên), nghiệm tối ưu tìm được là tại giao điểm của hai đường thẳng $x + 3y = 10$ và
+      $3x + y = 10$, tức là $(x, y) = \left(\frac{5}{2}, \frac{5}{2}\right)$.</p>
+
+    <p class="alignment">Bây giờ, giả sử ta thêm điều kiện $x, y \in \mathbb{Z}$, tức đây trở thành một
+      bài toán IP. Phản xạ đầu tiên của nhiều người là: cứ lấy nghiệm LP rồi làm tròn từng biến. Tuy
+      nhiên, cách này gặp phải ba vấn đề:</p>
+
+    <ul class="alignment">
+      <li><strong>Có nhiều cách làm tròn</strong>: $\frac{5}{2}$ có thể làm tròn thành 2 hoặc 3, nên ta
+        có tới 4 cặp nghiệm ứng viên là $(2,2)$, $(2,3)$, $(3,2)$, và $(3,3)$. Với $d$ biến, số lượng
+        ứng viên từ việc làm tròn có thể lên tới $2^d$, tăng rất nhanh.</li>
+      <li><strong>Không đảm bảo tính khả thi</strong>: trong 4 ứng viên trên, chỉ có $(2,2)$ là feasible
+        (thỏa cả 2 constraint), còn $(2,3)$, $(3,2)$, $(3,3)$ đều infeasible (vi phạm ít nhất một
+        constraint).</li>
+      <li><strong>Quan trọng nhất: nghiệm tối ưu thật sự có thể không nằm trong danh sách làm tròn</strong>.
+        Với bài toán này, nghiệm tối ưu thật sự của IP là $(x, y) = (1, 3)$, cho giá trị mục tiêu
+        $4(1) + 5(3) = 19$, cao hơn cả giá trị $18$ mà ứng viên làm tròn khả thi duy nhất $(2,2)$ mang lại.</li>
+    </ul>
+
+    <p class="alignment">Điều này cho thấy: <strong>Linear Programming kết hợp với làm tròn không đảm
+      bảo giải đúng Integer Programming</strong>. Đây không phải là một mẹo có thể sửa được bằng cách
+      làm tròn khéo hơn, mà là một giới hạn mang tính bản chất, và nó dẫn chúng ta đến phần tiếp theo:
+      vì sao IP lại khó hơn LP đến vậy.</p>
+
+    <h2>4. Vì sao Integer Programming khó hơn Linear Programming?</h2>
+
+    <p class="alignment">Linear Programming là một bài toán "dễ" theo nghĩa toán học chặt chẽ: tồn tại
+      các thuật toán chạy trong thời gian đa thức (polynomial time) để giải nó, ví dụ như phương pháp
+      Simplex (trong hầu hết trường hợp thực tế), ellipsoid method, hay interior point method. Feasible
+      region của LP luôn là một tập lồi (convex), cụ thể là một đa diện lồi (polyhedron).</p>
+
+    <p class="alignment">Integer Programming thì khác hẳn. Tập nghiệm khả thi của IP là một tập các
+      điểm rời rạc, không lồi (non-convex). Trên thực tế, Integer Programming đã được chứng minh là
+      <strong>NP-hard</strong>, nghĩa là (trừ khi $P = NP$, điều mà hầu hết các nhà khoa học máy tính
+      tin là không đúng) sẽ không tồn tại thuật toán nào giải được mọi bài toán IP trong thời gian đa
+      thức. IP bao gồm cả những bài toán rất khó trong khoa học máy tính như Satisfiability (SAT) hay
+      Traveling Salesman Problem (TSP).</p>
+
+    <p class="alignment">Để hình dung độ khó tăng nhanh như thế nào, hãy xét TSP: với $n$ điểm, tổng số
+      hành trình khả thi là $(n-1)!/2$. Với $n = 10$, con số này đã là khoảng 1,8 triệu. Với $n = 100$,
+      $100! \approx 9.9 \times 10^{157}$, một con số vượt xa cả tổng số nguyên tử ước tính trong vũ trụ
+      (khoảng $10^{80}$). Rõ ràng, việc liệt kê toàn bộ (brute-force enumeration) là bất khả thi, và đây
+      chính là động lực cho sự ra đời của các phương pháp giải chuyên biệt mà mình trình bày ở phần
+      tiếp theo.</p>
+
+    <h2>5. Các phương pháp giải chính</h2>
+
+    <p class="alignment">Có hai kỹ thuật chủ đạo để giải Integer Programming, thường được dùng kết hợp
+      với nhau trong các solver hiện đại như Gurobi, CPLEX, hay OR-Tools.</p>
+
+    <h3>5.1. Branch and Bound (Nhánh cận)</h3>
+
+    <p class="alignment">Ý tưởng cốt lõi của Branch and Bound là <em>chia để trị</em>. Đầu tiên, ta giải
+      LP relaxation của bài toán. Nếu nghiệm tìm được đã là số nguyên, ta xong. Nếu chưa, ta chọn một
+      biến còn đang là số thực (ví dụ $x = 2.5$) và tách bài toán thành hai bài toán con: một với ràng
+      buộc $x \le 2$, một với ràng buộc $x \ge 3$. Mỗi bài toán con lại được giải bằng LP relaxation của
+      chính nó, và quá trình lặp lại cho đến khi tìm được nghiệm nguyên. Trong lúc đó, ta dùng các
+      nghiệm nguyên đã tìm được để loại bỏ (cắt tỉa) những nhánh không thể tốt hơn nghiệm hiện tại, giúp
+      tránh phải duyệt toàn bộ cây tìm kiếm.</p>
+
+    <h3>5.2. Cutting Plane (Mặt cắt)</h3>
+
+    <p class="alignment">Thay vì chia nhỏ bài toán, Cutting Plane đi theo hướng khác: liên tục thêm vào
+      các constraint mới (gọi là <em>cutting plane</em>) để "cắt bỏ" đúng phần nghiệm không nguyên khỏi
+      feasible region của LP relaxation, nhưng không loại bỏ bất kỳ nghiệm nguyên khả thi nào. Sau mỗi
+      lần thêm mặt cắt, ta giải lại LP relaxation đã được thu hẹp, và lặp lại cho đến khi nghiệm tìm
+      được là số nguyên.</p>
+
+    <p class="alignment">Trong thực tế, các solver hiện đại thường kết hợp cả hai kỹ thuật này (gọi là
+      <em>branch-and-cut</em>): dùng cutting plane để thu hẹp bài toán trước, sau đó mới branch and
+      bound trên phần còn lại, giúp giảm đáng kể số nhánh cần khám phá.</p>
+
+    <h2>6. Giải bằng Python (OR-Tools)</h2>
+
+    <p class="alignment">Tương tự bài viết trước, thay vì giải tay từng bước, ta có thể dùng thư viện để
+      máy tính tự xử lý phần thuật toán phức tạp. Lần này, mình dùng
+      <a href="https://developers.google.com/optimization" target="_blank">OR-Tools</a> của Google,
+      một thư viện rất phổ biến cho cả LP lẫn IP, để giải lại đúng ví dụ ở phần 3.</p>
+
+    <pre><code class="language-python">
+from ortools.linear_solver import pywraplp
+
+# tạo solver hỗ trợ Integer Programming (CBC_MIXED_INTEGER_PROGRAMMING)
+solver = pywraplp.Solver.CreateSolver("CBC")
+
+# khai báo biến quyết định, bắt buộc là số nguyên (IntVar)
+x = solver.IntVar(0, solver.infinity(), "x")
+y = solver.IntVar(0, solver.infinity(), "y")
+
+# khai báo constraints
+solver.Add(x + 3 * y <= 10)
+solver.Add(3 * x + y <= 10)
+
+# khai báo objective: maximize 4x + 5y
+solver.Maximize(4 * x + 5 * y)
+
+# giải bài toán
+status = solver.Solve()
+
+if status == pywraplp.Solver.OPTIMAL:
+    print(f"x = {x.solution_value():.0f}")
+    print(f"y = {y.solution_value():.0f}")
+    print(f"Z_max = {solver.Objective().Value():.0f}")
+</code></pre>
+
+    <p><strong>Kết quả chạy:</strong></p>
+    <pre><code>
+x = 1
+y = 3
+Z_max = 19
+</code></pre>
+
+    <p class="alignment">Kết quả khớp chính xác với nghiệm $(1, 3)$ mà mình đã phân tích thủ công ở
+      phần 3, giá trị mục tiêu $Z_{\max} = 19$, cao hơn hẳn nghiệm $18$ thu được từ việc làm tròn nghiệm
+      LP. Đây chính là minh chứng rõ ràng nhất cho việc: giải đúng bài toán IP bằng thuật toán chuyên
+      biệt (branch-and-bound đứng sau CBC solver) luôn đáng tin cậy hơn việc "đoán" bằng cách làm tròn.</p>
+
+    <h2>Kết lại</h2>
+
+    <p class="alignment">Qua bài viết này, chúng ta đã đi qua những khái niệm nền tảng của Integer
+      Programming: từ định nghĩa, phân loại (pure, mixed, 0-1 integer program), khái niệm LP relaxation,
+      cho đến lý do vì sao việc làm tròn nghiệm LP không thể thay thế cho việc giải đúng bài toán IP.
+      Chúng ta cũng đã thấy vì sao IP là một bài toán khó về mặt lý thuyết (NP-hard), và điểm qua hai kỹ
+      thuật giải chủ đạo là Branch and Bound và Cutting Plane.</p>
+
+    <p class="alignment">Trong các bài viết sau, mình dự định sẽ đi sâu hơn vào từng kỹ thuật mô hình
+      hóa cụ thể trong Integer Programming, ví dụ như cách biểu diễn các ràng buộc logic (if-then, OR,
+      AND) bằng biến nhị phân, cách mô hình hóa chi phí cố định (fixed cost), hay bài toán facility
+      location. Đây đều là những "mẹo" mô hình hóa rất thú vị giúp ta chuyển các ràng buộc tưởng chừng
+      phi tuyến hoặc mang tính điều kiện thành dạng tuyến tính mà solver có thể giải được.</p>
+
+    <p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>

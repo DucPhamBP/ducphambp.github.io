@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="jLINftPc2usot5IQ6UOX2KdpAL8ECz7nBPBUvhk3ibQ" />
+
+  <title>Integer Programming: Định nghĩa hình thức và độ phức tạp</title>
+  <!-- Include MathJax -->
+  <script>
+    window.MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}}
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link rel="stylesheet" href="../assets/css/blog-style_19092025.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script>
+  hljs.highlightAll();
+</script>
+  <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FG7W87X5LZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FG7W87X5LZ');
+    </script>
+</head>
+<body>
+
+</script>
+  <!-- Navbar -->
+  <header class="main-navbar">
+    <div class="navbar-container">
+      <div class="navbar-left"><a href="../index.html">Homepage</a></div>
+      <nav class="navbar-right">
+        <a href="../index.html#about">About</a>
+        <a href="../project.html">Project</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- Main content -->
+  <main class="content">
+    <h1>Integer Programming: Định nghĩa hình thức, các mô hình tiêu biểu và độ phức tạp tính toán</h1>
+    <p class="date">Posted: 14/07/2026</p>
+
+    <p class="alignment">Ở bài viết trước, mình đã giới thiệu Integer Programming (IP) ở mức trực quan:
+      IP là gì, khi nào ta cần dùng nó, và một ví dụ nhỏ cho thấy vì sao không thể "làm tròn" nghiệm
+      Linear Programming (LP) để có được nghiệm nguyên tối ưu. Trong bài viết này, mình muốn đi sâu hơn
+      nhiều theo hướng chặt chẽ về mặt toán học: định nghĩa hình thức của IP, một vài mô hình IP kinh
+      điển trong tổ hợp và trong machine learning, và cuối cùng là lý do vì sao IP lại khó đến mức được
+      xếp vào lớp bài toán NP-hard. Bài viết này sẽ nặng về mặt toán học hơn các bài trước, nên mình
+      khuyến khích bạn đọc chậm và ngẫm kỹ từng định nghĩa, vì các khái niệm ở đây sẽ là nền tảng cho
+      rất nhiều nội dung nâng cao hơn về sau (branch-and-bound, cutting plane, độ chặt của các
+      formulation...).</p>
+
+    <h2>1. Bài toán mở đầu: vì sao ta cần Integer Programming?</h2>
+
+    <p class="alignment">Trong rất nhiều bài toán ra quyết định thực tế, ta cần lựa chọn giữa một tập
+      hữu hạn các phương án rời rạc (discrete), chứ không phải một khoảng giá trị liên tục. Integer
+      Programming cung cấp một khung mô hình hóa (framework) tổng quát và toàn diện để giải quyết các
+      bài toán dạng này. Nhờ sự thành công của các phần mềm giải IP hiện đại như Gurobi, CPLEX, hay
+      Xpress, có thể nói IP là framework tối ưu hóa phổ biến nhất trong operations research và business
+      analytics hiện nay.</p>
+
+    <p class="alignment">Hãy bắt đầu với một ví dụ nhỏ. Xét bài toán Linear Programming (LP) với 2 biến
+      sau:</p>
+
+    $$
+    \begin{aligned}
+    \max_{x,y} \quad & 4x + 5y \\
+    \text{s.t.} \quad & x + 3y \le 10, \\
+    & 3x + y \le 10, \\
+    & x, y \ge 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">Ta biết rằng Linear Programming là một bài toán "dễ" theo nghĩa: tồn tại thuật
+      toán chạy trong thời gian đa thức (polynomial time) để giải nó, chẳng hạn như ellipsoid method
+      hay interior point method. Giải bài toán trên, ta được nghiệm tối ưu tại giao điểm của hai đường
+      thẳng $x + 3y = 10$ và $3x + y = 10$, tức $(x, y) = \left(\frac{5}{2}, \frac{5}{2}\right)$.</p>
+
+    <p class="alignment">Bây giờ, giả sử ta muốn một nghiệm mà mọi thành phần đều là số nguyên. Ta thêm
+      vào bài toán trên điều kiện $(x, y) \in \mathbb{Z}^2$:</p>
+
+    $$
+    \begin{aligned}
+    \max_{x,y} \quad & 4x + 5y \\
+    \text{s.t.} \quad & x + 3y \le 10, \\
+    & 3x + y \le 10, \\
+    & x, y \ge 0, \\
+    & (x, y) \in \mathbb{Z}^2
+    \end{aligned}
+    $$
+
+    <p class="alignment">Về cơ bản, ta chỉ thêm một điều kiện $(x, y) \in \mathbb{Z}^2$ (với $\mathbb{Z}$
+      là tập số nguyên) vào bài toán LP ở trên. Nếu vẽ feasible region của LP ra mặt phẳng $xy$, các
+      điểm nguyên thỏa mãn đồng thời cả hai bất phương trình tuyến tính và điều kiện nguyên chính là
+      tập nghiệm khả thi của bài toán mới này. Bài toán tối ưu thứ hai được gọi là một <strong>integer
+      program</strong>. Vì cả objective function lẫn các constraints đều là hàm tuyến tính, ta còn gọi
+      nó cụ thể hơn là một <strong>integer linear program</strong>.</p>
+
+    <p class="alignment">Vậy đâu là nghiệm tối ưu của integer program này? Phản xạ tự nhiên đầu tiên là:
+      lấy nghiệm tối ưu của LP, tức $\left(\frac{5}{2}, \frac{5}{2}\right)$, rồi làm tròn từng thành
+      phần về số nguyên gần nhất. Tuy nhiên, cách làm này gặp phải một vài vấn đề đáng lưu ý:</p>
+
+    <ol class="alignment">
+      <li>Có thể có rất nhiều nghiệm nguyên thu được từ việc làm tròn nghiệm LP tối ưu. Ta có thể làm
+        tròn $\frac{5}{2}$ thành 2 hoặc 3, nên $(2,2)$, $(2,3)$, $(3,2)$, và $(3,3)$ đều có thể là kết
+        quả của việc làm tròn $\left(\frac{5}{2}, \frac{5}{2}\right)$. Khi số biến là $d$, số lượng
+        nghiệm thu được từ làm tròn có thể lên tới $2^d$.</li>
+      <li>Ta không thể đảm bảo tính khả thi (feasibility) của các nghiệm thu được từ làm tròn. $(2,2)$
+        là feasible, nhưng $(2,3)$, $(3,2)$, và $(3,3)$ đều infeasible.</li>
+      <li>Quan trọng hơn cả, không phải lúc nào cũng có một nghiệm tối ưu nằm trong danh sách các
+        nghiệm thu được từ làm tròn. Trên thực tế, nghiệm tối ưu của integer program này là $(1, 3)$.</li>
+    </ol>
+
+    <p class="alignment">Do đó, Linear Programming kết hợp với làm tròn không nhất thiết giải được
+      Integer Programming. Trên thực tế, Integer Programming là bài toán <strong>NP-hard</strong>, điều
+      này kéo theo rằng sẽ không tồn tại thuật toán chạy trong thời gian đa thức để giải nó, trừ khi
+      $P = NP$. Integer Programming bao hàm cả những bài toán khó trong khoa học máy tính như
+      Satisfiability (SAT) và Traveling Salesman Problem (TSP). Hơn nữa, Linear Programming là một lớp
+      của convex optimization, trong khi tập nghiệm của một integer program là rời rạc và do đó
+      non-convex. Những thách thức về mặt tính toán này đòi hỏi các phương pháp luận riêng để xử lý bản
+      chất rời rạc của Integer Programming, và đây chính là động lực cho một mảng nghiên cứu rất lớn về
+      IP cả trên phương diện lý thuyết lẫn thực hành.</p>
+
+    <h2>2. Lược sử ngắn gọn về Integer Programming</h2>
+
+    <p class="alignment">Integer Programming có một lịch sử khá dài, bắt đầu không lâu sau khi George
+      B. Dantzig phát triển thuật toán Simplex cho Linear Programming. Từ đó, các mô hình IP cho tối ưu
+      tổ hợp (combinatorial optimization) được nghiên cứu rộng rãi cả về lý thuyết lẫn ứng dụng. Chẳng
+      hạn, vào thập niên 1950, Dantzig, Fulkerson, và Johnson đã phát triển một formulation bằng IP cho
+      Traveling Salesman Problem (TSP), đây chính là tiền thân của thuật toán mà ngày nay ta gọi là
+      branch-and-cut. Năm 1965, Jack Edmonds phát triển blossom algorithm cho bài toán matching, cũng
+      dựa trên nền tảng Integer Programming. Thập niên 1970 và 1980 chứng kiến rất nhiều hoạt động
+      nghiên cứu để phát triển các formulation IP cho các bài toán tối ưu rời rạc phát sinh trong vận
+      hành doanh nghiệp.</p>
+
+    <p class="alignment">Sang thập niên 1990 và 2000, cộng đồng nghiên cứu đã phát triển công nghệ
+      cutting-plane tổng quát (general purpose), có thể tích hợp trực tiếp vào các thuật toán
+      branch-and-bound. Ở đây, "tổng quát" nghĩa là các cutting plane này hoạt động được cho bất kỳ
+      integer program nào, chứ không chỉ dành riêng cho một số formulation cụ thể. Sự phát triển này đã
+      dẫn đến thành công của các phần mềm giải IP hiện đại. Trên thực tế, lịch sử của các cutting plane
+      tổng quát bắt đầu từ năm 1958, khi Ralph Gomory phát triển Gomory's fractional cuts, thuật toán
+      cutting plane hội tụ đầu tiên cho pure integer program. Sau đó, vào năm 1963, ông tiếp tục phát
+      triển Gomory's mixed integer cuts cho mixed integer program. Tuy nhiên, cho đến giữa thập niên
+      1990, người ta vẫn tin rằng Gomory's cuts không có giá trị thực tiễn, và rằng cần phải khai thác
+      cấu trúc tổ hợp riêng của từng bài toán cụ thể. Vào mùa hè năm 1993, Sebastian Ceria và Gérard
+      Cornuéjols đã đạt được triển khai thành công đầu tiên của Gomory's mixed integer cuts, chứng minh
+      rằng các cuts này thực sự mạnh mẽ. Từ đó, nhiều loại cutting plane tổng quát khác đã được đề xuất
+      và nghiên cứu, ví dụ như split cuts, disjunctive cuts, và mixed-integer rounding cuts.</p>
+
+    <p class="alignment">Trong thời đại hiện nay, Integer Programming còn được sử dụng rộng rãi trong
+      machine learning và các bài toán ra quyết định dựa trên dữ liệu (data-driven decision making),
+      chẳng hạn:</p>
+
+    <ul class="alignment">
+      <li>Sparse regression (hồi quy thưa).</li>
+      <li>Neural network verification (kiểm chứng mạng neural).</li>
+      <li>Learning Bayesian networks (học mạng Bayes).</li>
+      <li>Sample average approximation cho chance-constrained programming.</li>
+      <li>Distributionally robust chance-constrained programming.</li>
+    </ul>
+
+    <h2>3. Một vài mô hình Integer Programming tiêu biểu</h2>
+
+    <p class="alignment">Trước khi đi vào định nghĩa hình thức, hãy cùng xem qua hai mô hình IP khá thú
+      vị: một từ tối ưu tổ hợp (bipartite matching), và một từ machine learning (sparse regression).
+      Hai ví dụ này sẽ cho thấy IP linh hoạt đến mức nào trong việc mô hình hóa các bài toán tưởng chừng
+      rất khác nhau.</p>
+
+    <h3>3.1. Bipartite matching</h3>
+
+    <p class="alignment">Một đồ thị hai phía (bipartite graph) là một đồ thị $G = (V, E)$ trong đó:</p>
+
+    <ul class="alignment">
+      <li>tập đỉnh $V$ được chia thành hai tập $V_1$ và $V_2$,</li>
+      <li>mỗi cạnh $e \in E$ đều nối giữa hai phần này, tức $e$ có một đầu thuộc $V_1$ và đầu còn lại
+        thuộc $V_2$.</li>
+    </ul>
+
+    <p class="alignment">Một <strong>matching</strong> là một tập các cạnh không có chung đỉnh nào với
+      nhau. Giả sử mỗi cạnh $e \in E$ có một trọng số $w_e$. Với một tập cạnh $F$ bất kỳ, trọng số của
+      $F$ được định nghĩa là tổng trọng số các cạnh trong $F$, tức $\sum_{e \in F} w_e$. Bài toán
+      matching (matching problem) là tìm một matching có tổng trọng số lớn nhất.</p>
+
+    <p class="alignment">Bài toán matching có rất nhiều ứng dụng, ví dụ như trong đấu giá (auctions) và
+      lập lịch (scheduling). Bài toán matching có thể được biểu diễn dưới dạng integer program như sau:</p>
+
+    $$
+    \begin{aligned}
+    \min_{x} \quad & \sum_{e \in E} w_e x_e \\
+    \text{s.t.} \quad & \sum_{e \in \delta(v)} x_e \le 1, \quad \forall v \in V, \\
+    & x_e \in \{0, 1\}, \quad \forall e \in E
+    \end{aligned}
+    $$
+
+    <p class="alignment">trong đó, với mỗi $v \in V$, ta định nghĩa</p>
+
+    $$
+    \delta(v) = \{e \in E : \text{một đầu của } e \text{ là } v\}.
+    $$
+
+    <p class="alignment">Trên thực tế, integer program này vẫn là một formulation hợp lệ cho bài toán
+      matching ngay cả khi $G$ không phải là đồ thị hai phía. Tuy nhiên, khi $G$ là bipartite, ta có thể
+      thay ràng buộc nguyên $x_e \in \{0, 1\}$ bằng ràng buộc lỏng hơn:</p>
+
+    $$
+    0 \le x_e \le 1 \quad \text{hay} \quad x_e \in [0, 1], \quad \forall e \in E.
+    $$
+
+    <p class="alignment">Nói cách khác, bài toán linear program sau đây</p>
+
+    $$
+    \begin{aligned}
+    \min_{x} \quad & \sum_{e \in E} w_e x_e \\
+    \text{s.t.} \quad & \sum_{e \in \delta(v)} x_e \le 1, \quad \forall v \in V, \\
+    & 0 \le x_e \le 1, \quad \forall e \in E
+    \end{aligned}
+    $$
+
+    <p class="alignment">chính là nghiệm cho bài toán bipartite matching. Bài toán linear program này
+      được gọi là <strong>LP relaxation</strong> của integer program ban đầu. Đây là một hiện tượng khá
+      đặc biệt: với bipartite matching, việc "nới lỏng" ràng buộc nguyên thành ràng buộc liên tục
+      $[0,1]$ vẫn cho ra đúng nghiệm nguyên tối ưu. Một câu hỏi tự nhiên được đặt ra: khi nào thì LP
+      relaxation tính ra đúng một nghiệm nguyên tối ưu? Điều này không phải lúc nào cũng đúng, và có
+      những điều kiện đủ (sufficient conditions) để LP relaxation tương đương với integer program gốc
+      — đây là một chủ đề đáng để tìm hiểu sâu hơn ở các bài viết sau.</p>
+
+    <h3>3.2. Sparse regression</h3>
+
+    <p class="alignment">Cho $(x^1, y_1), \dots, (x^n, y_n)$ là $n$ điểm dữ liệu, trong đó $x$ là vector
+      đặc trưng (feature) và $y$ là biến phản hồi (response variable). Ta muốn suy luận một mô hình
+      tuyến tính</p>
+
+    $$
+    y = \beta^\top x
+    $$
+
+    <p class="alignment">từ tập dữ liệu này. Sai số bình phương trung bình (mean squared error, MSE)
+      được cho bởi:</p>
+
+    $$
+    \frac{1}{n} \sum_{i=1}^{n} \left(y^i - \beta^\top x^i\right)^2.
+    $$
+
+    <p class="alignment">Để tìm $\beta$ hợp lý, ta thường tối thiểu hóa:</p>
+
+    $$
+    \text{MSE} + \text{Regularization (số hạng điều chỉnh)}.
+    $$
+
+    <p class="alignment">Ở đây, sparse regression (hồi quy thưa) tương ứng với việc áp dụng số hạng điều
+      chỉnh $\ell_0$, trong đó</p>
+
+    $$
+    \|\beta\|_0 = \left| \{\beta_i : \beta_i \ne 0\} \right|,
+    $$
+
+    <p class="alignment">tức số lượng thành phần khác 0 trong $\beta$. Ta cần giải:</p>
+
+    $$
+    \min_{\beta} \ \frac{1}{n} \sum_{i=1}^{n} \left(y^i - \beta^\top x^i\right)^2 + \lambda \|\beta\|_0
+    $$
+
+    <p class="alignment">trong đó $\lambda$ là một tham số phạt (penalty parameter). Số hạng điều chỉnh
+      $\ell_0$ là non-convex, và trên thực tế mang tính tổ hợp (combinatorial). Sau đây là một cách biến
+      đổi tương đương của bài toán. Với một số $M > 0$ đủ lớn, ta xét:</p>
+
+    $$
+    \begin{aligned}
+    \min \quad & \frac{1}{n} \sum_{i=1}^{n} \left(y^i - \beta^\top x^i\right)^2 + \lambda \sum_{j \in [d]} z_j \\
+    \text{s.t.} \quad & -M z_j \le \beta_j \le M z_j, \quad \forall j \in [d], \\
+    & z_j \in \{0, 1\}, \quad \forall j \in [d]
+    \end{aligned}
+    $$
+
+    <p class="alignment">Ở đây, hệ số $M$ thường được gọi là <strong>big-M</strong>. Tính khả thi về mặt
+      tính toán (computational tractability) của formulation này phụ thuộc rất nhiều vào giá trị của
+      $M$. Khi $M$ quá lớn, ràng buộc $-Mz_j \le \beta_j \le Mz_j$ trở nên quá lỏng lẻo, khiến bài toán
+      LP relaxation kém chặt và khó giải hơn. Ngược lại, ta cũng không thể đặt $M$ nhỏ tùy ý, vì nếu
+      không, formulation sẽ không còn hợp lệ (có thể loại bỏ nhầm nghiệm tối ưu thật sự). Đã có nhiều kỹ
+      thuật được phát triển để cải thiện formulation này, chủ yếu xoay quanh việc chọn $M$ vừa đủ chặt.</p>
+
+    <h2>4. Định nghĩa hình thức của Integer Programming</h2>
+
+    <p class="alignment">Sau khi đã xem qua trực giác và một vài mô hình cụ thể, giờ ta định nghĩa một
+      cách chính thức bài toán Integer Programming.</p>
+
+    <h3>4.1. Pure integer linear program</h3>
+
+    <p class="alignment">Một <strong>pure integer linear program</strong> là một bài toán tối ưu có
+      dạng:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & c^\top x \\
+    \text{s.t.} \quad & Ax \le b, \\
+    & x \in \mathbb{Z}^d
+    \end{aligned}
+    \tag{4.1}
+    $$
+
+    <p class="alignment">trong đó:</p>
+
+    <ul class="alignment">
+      <li>$c \in \mathbb{R}^d$,</li>
+      <li>$A$ là ma trận $m \times d$ với các hàng $a_1^\top, \dots, a_m^\top$, và $b \in \mathbb{R}^m$
+        có các thành phần $b_1, \dots, b_m$, sao cho $Ax \le b$ chính là hệ các bất phương trình tuyến
+        tính $a_1^\top x \le b_1, \dots, a_m^\top x \le b_m$, và</li>
+      <li>$\mathbb{Z}^d$ là tập các vector $d$ chiều mà mọi thành phần đều là số nguyên.</li>
+    </ul>
+
+    <p class="alignment">Ta thường giả sử toàn bộ các thành phần của $A, b, c$ đều là số hữu tỉ (rational),
+      tức $A \in \mathbb{Q}^{m \times d}$, $b \in \mathbb{Q}^m$, và $c \in \mathbb{Q}^d$. Từ đây về sau,
+      ta nói một vector $x$ là <strong>integral</strong> nếu mọi thành phần của $x$ đều là số nguyên. Ta
+      gọi $x \in \mathbb{Z}^d$ là <strong>integrality constraint</strong> (ràng buộc nguyên). Integer
+      program (4.1) được gọi là <em>pure</em> (thuần) vì tất cả các biến đều bị ràng buộc phải là số
+      nguyên.</p>
+
+    <p class="alignment">Nhiều ứng dụng có các decision variables không âm, khi đó ta cần thêm ràng buộc
+      $x \ge 0$. Ở đây, ta có thể giả sử hệ bất phương trình tuyến tính $Ax \le b$ đã bao gồm luôn
+      $x \ge 0$ (tức $-I \le $ một trong các hàng của $A$).</p>
+
+    <h3>4.2. Mixed integer linear program (MIP)</h3>
+
+    <p class="alignment">Các bài toán ra quyết định trong thực tế cũng có thể vừa có quyết định mang giá
+      trị phân số (fractional) vừa có giá trị nguyên. Để mô hình hóa loại bài toán này, ta định nghĩa
+      một <strong>mixed integer linear program</strong> (viết tắt MIP hoặc MILP) như sau:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & c^\top x + h^\top y \\
+    \text{s.t.} \quad & Ax + Gy \le b, \\
+    & x \in \mathbb{Z}^d, \ y \in \mathbb{R}^p
+    \end{aligned}
+    \tag{4.2}
+    $$
+
+    <p class="alignment">trong đó $A, b, c, G, h$ là các vector/ma trận có kích thước phù hợp với các
+      thành phần hữu tỉ. Người ta thường bỏ qua việc ghi tường minh ràng buộc $y \in \mathbb{R}^p$ trong
+      (4.2). Khi không có biến liên tục nào, tức $p = 0$, (4.2) thu gọn lại thành pure integer linear
+      program (4.1). Trong các bài viết tiếp theo, mình sẽ gọi chung mixed integer linear program là
+      integer program cho gọn.</p>
+
+    <p class="alignment"><strong>Feasible region</strong> (hay <em>solution set</em>) của (4.2) là tập
+      các nghiệm thỏa mãn đồng thời các ràng buộc tuyến tính và ràng buộc nguyên:</p>
+
+    $$
+    S = \left\{ (x, y) \in \mathbb{Z}^d \times \mathbb{R}^p : Ax + Gy \le b \right\}.
+    $$
+
+    <p class="alignment">Một tập có dạng $S$ như trên thường được gọi là một <strong>mixed integer
+      linear set</strong>.</p>
+
+    <h3>4.3. LP relaxation</h3>
+
+    <p class="alignment">Một khái niệm quan trọng khác là khái niệm <strong>relaxation</strong> (nới
+      lỏng). <strong>Linear programming relaxation</strong> (hay <strong>LP relaxation</strong>) của
+      (4.2) là chính bài toán tối ưu đó, nhưng với các ràng buộc nguyên được nới lỏng hoàn toàn:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & c^\top x + h^\top y \\
+    \text{s.t.} \quad & Ax + Gy \le b
+    \end{aligned}
+    \tag{4.3}
+    $$
+
+    <p class="alignment">Do đó, theo định nghĩa, LP relaxation chính là một linear program. Trên thực
+      tế, khái niệm relaxation còn áp dụng cho cả feasible region. Cụ thể, ta nói một tập $S'$ là một
+      relaxation của feasible region $S$ nếu $S \subseteq S'$. Do đó,</p>
+
+    $$
+    P = \left\{ (x, y) \in \mathbb{R}^d \times \mathbb{R}^p : Ax + Gy \le b \right\}
+    $$
+
+    <p class="alignment">chính là feasible region của LP relaxation (4.3), và đây là một relaxation của
+      $S$. Ta cũng có thể lấy</p>
+
+    $$
+    P' = \left\{ (x, y) \in \mathbb{R}^d \times \mathbb{R}^p : A'x + G'y \le b' \right\}
+    $$
+
+    <p class="alignment">với một hệ bất phương trình tuyến tính khác, miễn là $S \subseteq P'$. Nói cách
+      khác, LP relaxation không phải là relaxation duy nhất có thể; nó chỉ là relaxation "tự nhiên"
+      nhất, thu được bằng cách bỏ đúng ràng buộc nguyên.</p>
+
+    <p class="alignment"><strong>Ví dụ.</strong> Nhớ lại ví dụ đơn giản ở phần 1. LP relaxation của</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & 4x + 5y \\
+    \text{s.t.} \quad & x + 3y \le 10, \\
+    & 3x + y \le 10, \\
+    & x, y \ge 0, \\
+    & (x, y) \in \mathbb{Z}^2
+    \end{aligned}
+    $$
+
+    <p class="alignment">chính là:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & 4x + 5y \\
+    \text{s.t.} \quad & x + 3y \le 10, \\
+    & 3x + y \le 10, \\
+    & x, y \ge 0
+    \end{aligned}
+    $$
+
+    <p class="alignment">Hơn nữa, $\left\{(x,y) \in \mathbb{R}^2_+ : x + 3y \le 10,\ 3x+y \le 10\right\}$
+      là một relaxation của $\left\{(x,y) \in \mathbb{Z}^2_+ : x + 3y \le 10,\ 3x+y \le 10\right\}$. Ở
+      đây, $\mathbb{R}_+$ là tập số thực không âm, còn $\mathbb{Z}_+$ là tập số nguyên không âm.</p>
+
+    <h3>4.4. Mixed 0-1 linear program (binary program)</h3>
+
+    <p class="alignment">Các bài toán tối ưu tổ hợp và các bài toán khác trong operations research
+      thường liên quan đến các quyết định mang giá trị nhị phân. Với những bài toán như vậy, ta cần các
+      biến nhị phân (binary variables). Một <strong>mixed 0-1 linear program</strong> (hay <em>mixed
+      binary linear program</em>) có dạng:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & c^\top x + h^\top y \\
+    \text{s.t.} \quad & Ax + Gy \le b, \\
+    & x \in \{0,1\}^d, \ y \in \mathbb{R}^p
+    \end{aligned}
+    \tag{4.4}
+    $$
+
+    <p class="alignment">trong đó $\{0,1\}^d$ là tập tất cả các chuỗi nhị phân độ dài $d$. Feasible
+      region</p>
+
+    $$
+    S = \left\{ (x,y) \in \{0,1\}^d \times \mathbb{R}^p : Ax + Gy \le b \right\}
+    $$
+
+    <p class="alignment">thường được gọi là <strong>mixed 0-1 linear set</strong> (hay <em>mixed binary
+      linear set</em>).</p>
+
+    <h2>5. Độ phức tạp tính toán của Integer Programming</h2>
+
+    <p class="alignment">Phần này sẽ giải thích chính xác ý nghĩa của câu nói "Integer Programming là
+      NP-hard" mà mình đã nhắc ở phần 1, thông qua một vài khái niệm nền tảng của lý thuyết độ phức tạp
+      (complexity theory).</p>
+
+    <h3>5.1. Viết lại mixed 0-1 program dưới dạng bài toán trên tập nhị phân</h3>
+
+    <p class="alignment">Xét một mixed 0-1 linear program như (4.4). Ta có thể viết lại nó dưới dạng:</p>
+
+    $$
+    \begin{aligned}
+    \max \quad & f(x) \\
+    \text{s.t.} \quad & x \in \{0,1\}^d
+    \end{aligned}
+    \tag{5.1}
+    $$
+
+    <p class="alignment">trong đó</p>
+
+    $$
+    f(x) = c^\top x + \max \left\{ h^\top y : Gy \le b - Ax \right\}.
+    $$
+
+    <p class="alignment">Với một vector nhị phân $x \in \{0,1\}^d$ cho trước, việc tính $f(x)$ quy về
+      việc giải một linear program, và ta đã có các phương pháp đã biết để làm điều này. Khi (4.4) là
+      một pure 0-1 linear program (không có biến liên tục), việc tính $f(x)$ tương đương với việc kiểm
+      tra xem $0 \le b - Ax$ có đúng hay không.</p>
+
+    <p class="alignment">Một nhà toán học thuần túy có thể nói rằng bài toán này là "tầm thường"
+      (trivial), vì chỉ có một số hữu hạn các vector nhị phân, nên ta chỉ cần liệt kê (enumerate) toàn
+      bộ chúng. Tuy nhiên, điều ta thực sự quan tâm là độ phức tạp tính toán. Số lượng vector nhị phân
+      là $2^d$, tăng theo hàm mũ rất nhanh theo số chiều $d$, và việc liệt kê $2^d$ vector chính là điều
+      ta muốn tránh bằng mọi giá.</p>
+
+    <p class="alignment"><strong>Ví dụ (Traveling Salesman Problem — TSP).</strong> Cho $n$ điểm trong
+      không gian Euclid, Traveling Salesman Problem là bài toán tìm một hành trình (tour) có độ dài nhỏ
+      nhất, đi qua mỗi điểm đúng một lần. Tổng số hành trình có thể có là $(n-1)!/2$. Lưu ý rằng
+      $10!/2$ xấp xỉ 1,8 triệu. Do đó, việc liệt kê toàn bộ các hành trình khả dĩ của $n$ điểm sẽ đòi
+      hỏi phải duyệt qua 1,8 triệu hành trình chỉ với $n=10$!</p>
+
+    <p class="alignment">Trên thực tế, $100!$ xấp xỉ $9{,}9 \times 10^{157}$, và $1000!$ xấp xỉ
+      $4 \times 10^{2567}$. Lưu ý rằng tổng số nguyên tử ước tính trong toàn vũ trụ chỉ vào khoảng
+      $10^{80}$ mà thôi. Con số này cho thấy: việc brute-force liệt kê là hoàn toàn bất khả thi ngay cả
+      với $n$ chỉ vài chục hay vài trăm.</p>
+
+    <p class="alignment">Ta đã nhắc rằng Integer Programming là NP-hard. Vậy điều này thực sự có nghĩa
+      là gì? Để hiểu được độ phức tạp tính toán của Integer Programming, ta cần điểm qua một số khái
+      niệm nền tảng của lý thuyết độ phức tạp.</p>
+
+    <h3>5.2. Bài toán, thực thể, và kích thước mã hóa (encoding size)</h3>
+
+    <p class="alignment">Một <strong>bài toán</strong> (problem) là một câu hỏi cần được trả lời cho bất
+      kỳ tập dữ liệu nào. Ví dụ: linear programming, integer programming, và TSP đều là các bài toán.
+      Một <strong>thực thể</strong> (instance) của một bài toán là một tập dữ liệu cụ thể. Chẳng hạn,
+      (4.1) chính là một instance của linear programming khi ta bỏ ràng buộc nguyên, và là một instance
+      của integer programming khi giữ nguyên ràng buộc đó.</p>
+
+    <p class="alignment">Với một instance cho trước, ta xét <strong>kích thước mã hóa</strong> (encoding
+      size) của nó để đo lượng không gian cần thiết để ghi lại toàn bộ dữ liệu của instance đó. Mọi số
+      nguyên đều được viết dưới dạng mã nhị phân (binary encoding). Để mã hóa một số nguyên $n$, ta cần
+      1 bit để biểu diễn dấu (+ hoặc -), và $\lceil \log_2(|n|+1) \rceil$ bit để mã hóa $|n|$. Khi đó,
+      kích thước mã hóa của số nguyên $n$ là $1 + \lceil \log_2(|n|+1) \rceil$. Với một số hữu tỉ
+      $p/q$ mà $q$ là số nguyên dương, ta cần
+      $1 + \lceil \log_2(|p|+1) \rceil + \lceil \log_2(|q|+1) \rceil$ bit.</p>
+
+    <p class="alignment">Kích thước mã hóa của một vector hữu tỉ
+      $\left(\frac{p_1}{q_1}, \dots, \frac{p_d}{q_d}\right)$ sẽ là:</p>
+
+    $$
+    \sum_{j=1}^{d} \left(1 + \lceil \log_2(|p_j|+1) \rceil + \lceil \log_2(|q_j|+1) \rceil \right)
+    $$
+
+    <p class="alignment">cộng thêm một khoảng không gian phụ để xây dựng vector từ các số vô hướng.
+      Tương tự, kích thước mã hóa của một ma trận $m \times d$ có phần tử tại hàng $i$ cột $j$ là
+      $p_{ij}/q_{ij}$ được cho bởi:</p>
+
+    $$
+    \sum_{i=1}^{m} \sum_{j=1}^{d} \left(1 + \lceil \log_2(|p_{ij}|+1) \rceil + \lceil \log_2(|q_{ij}|+1) \rceil \right).
+    $$
+
+    <p class="alignment">Nhớ lại rằng một mixed integer linear program như (4.2) được cho bởi dữ liệu
+      $A, b, c, G, h$. Do đó, kích thước mã hóa của một MILP chính là kích thước mã hóa của
+      $A, b, c, G, h$, và về cơ bản đây cũng chính là kích thước đầu vào (input size) của MILP đó. Vì
+      vậy, nếu mọi thành phần của $A, b, c, G, h$ đều là số nguyên, kích thước mã hóa được cho bởi:</p>
+
+    $$
+    \left(1 + \lceil \log_2(M+1) \rceil \right) \cdot \left(d + p + m + (d+p)m\right)
+    $$
+
+    <p class="alignment">trong đó $M$ là giá trị tuyệt đối lớn nhất trong số các thành phần của
+      $A, b, c, G, h$.</p>
+
+    <p class="alignment"><strong>Mệnh đề 5.1.</strong> Cho $A$ là một ma trận hữu tỉ khả nghịch kích
+      thước $d \times d$, và $b$ là một vector hữu tỉ $d$ chiều. Khi đó, kích thước mã hóa của nghiệm
+      duy nhất của hệ $Ax = b$ bị chặn theo đa thức (polynomially bounded) bởi kích thước mã hóa của
+      $(A, b)$.</p>
+
+    <p class="alignment"><strong>Chứng minh.</strong> Giả sử phần tử của $A$ tại hàng $i$ cột $j$ được
+      cho bởi $p_{ij}/q_{ij}$, trong đó $p_{ij}$ là số nguyên và $q_{ij}$ là số nguyên dương. Đặt:</p>
+
+    $$
+    M = \prod_{i=1}^{d} \prod_{j=1}^{d} q_{ij}, \qquad A' = M \cdot A, \qquad b' = M \cdot b.
+    $$
+
+    <p class="alignment">Khi đó, hệ $Ax = b$ tương đương với hệ $A'x = b'$, và mọi thành phần của
+      $A', b'$ đều là số nguyên. Theo quy tắc Cramer (Cramer's rule), mỗi thành phần của nghiệm duy nhất
+      $x$ được cho bởi:</p>
+
+    $$
+    x_i = \frac{\det(A'_i)}{\det(A')}
+    $$
+
+    <p class="alignment">trong đó $A'_i$ là ma trận thu được từ $A'$ sau khi thay cột thứ $i$ bằng $b'$.
+      Gọi $\theta$ là giá trị tuyệt đối lớn nhất trong số các thành phần của $(A', b')$. Trên thực tế:</p>
+
+    $$
+    \theta \le M \cdot \max_{i \in [d], j \in [d]} |p_{ij}|,
+    $$
+
+    <p class="alignment">và do đó, kích thước mã hóa của $\theta$ nhiều nhất là:</p>
+
+    $$
+    \log M + \max_{i,j \in [d]} \left(1 + \lceil \log_2(|p_{ij}|+1) \rceil\right)
+    = \sum_{i=1}^{d}\sum_{j=1}^{d}\left(1+\log_2(|q_{ij}|+1)\right) + \max_{i,j \in [d]}\left(1+\lceil\log_2(|p_{ij}|+1)\rceil\right) \le L
+    $$
+
+    <p class="alignment">trong đó $L$ là kích thước mã hóa của $(A, b)$. Hơn nữa, theo công thức Leibniz
+      cho định thức ma trận (Leibniz formula), ta có:</p>
+
+    $$
+    \det(A') \le d! \, \theta^d.
+    $$
+
+    <p class="alignment">Tương tự, ta cũng có $\det(A'_i) \le d! \, \theta^d$ với mọi $i$. Vì
+      $\det(A')$ và $\det(A'_i)$ đều là số nguyên, kích thước mã hóa của chúng bị chặn trên bởi:</p>
+
+    $$
+    O\!\left(\log(d! \, \theta^d)\right) = O\!\left(d \log d + d \times \text{kích thước mã hóa của } \theta\right) = O(d \log d + dL).
+    $$
+
+    <p class="alignment">Vì $x$ có $d$ thành phần, ta suy ra kích thước mã hóa của $x$ là:</p>
+
+    $$
+    O(d^2 \log d + d^2 L),
+    $$
+
+    <p class="alignment">đây chính là điều cần chứng minh. $\blacksquare$</p>
+
+    <p class="alignment">Ý nghĩa trực giác của mệnh đề này: dù nghiệm của một hệ phương trình tuyến
+      tính có thể là các phân số rất phức tạp, kích thước cần thiết để viết ra nghiệm đó vẫn chỉ tăng
+      theo đa thức so với kích thước của dữ liệu đầu vào, chứ không bùng nổ theo hàm mũ. Đây là một tiền
+      đề rất quan trọng để khẳng định rằng Linear Programming thuộc lớp bài toán "dễ" mà ta sẽ nói ngay
+      sau đây.</p>
+
+    <h3>5.3. Thuật toán đa thức và lớp độ phức tạp P</h3>
+
+    <p class="alignment">Ta nói một hàm $f: S \to \mathbb{R}$ bị chặn theo đa thức (polynomially
+      bounded) bởi một hàm khác $g: S \to \mathbb{R}$ nếu tồn tại một đa thức $\varphi: \mathbb{R} \to
+      \mathbb{R}$ sao cho:</p>
+
+    $$
+    f(s) \le \varphi(g(s)) \quad \forall s \in S.
+    $$
+
+    <p class="alignment">Tiếp theo, ta nhắc lại ký hiệu Big O. Với các hàm $f: \mathbb{R} \to
+      \mathbb{R}_+$ và $g: \mathbb{R} \to \mathbb{R}_+$, ta viết $f(x) = O(g(x))$ nếu tồn tại một hằng
+      số $M$ cố định và $x_0 \in \mathbb{R}$ sao cho:</p>
+
+    $$
+    f(x) \le M g(x) \quad \forall x \ge x_0.
+    $$
+
+    <p class="alignment">Thời gian chạy (running time) của một thuật toán được đo bằng số phép toán số
+      học (arithmetic operations) mà thuật toán đó thực hiện. Một <strong>thuật toán đa thức</strong>
+      (polynomial algorithm) cho một bài toán là một thuật toán giải được bài toán đó trong thời gian đa
+      thức, tương đương với việc thời gian chạy bị chặn theo đa thức bởi kích thước mã hóa của instance
+      đầu vào.</p>
+
+    <p class="alignment">Chẳng hạn, ellipsoid method thực hiện $O(d^6 L)$ phép toán số học để giải một
+      instance của linear programming, trong đó $d$ là số biến và $L$ là kích thước mã hóa. Interior
+      point method của Karmarkar chỉ cần $O(d^{2.5} L)$ phép toán cho một instance linear programming.
+      Lưu ý rằng kích thước mã hóa $L$ ít nhất phải bằng số biến $d$, do đó ellipsoid method và interior
+      point method đều là các thuật toán đa thức cho linear programming.</p>
+
+    <p class="alignment"><strong>Lớp độ phức tạp P</strong> là lớp tất cả các bài toán mà tồn tại một
+      thuật toán đa thức để giải chúng. Như vậy, linear programming thuộc lớp độ phức tạp P. Hơn nữa,
+      nhớ lại rằng bipartite matching có thể giải được bằng một formulation linear programming (như ở
+      phần 3.1), nên bipartite matching cũng thuộc lớp P.</p>
+
+    <h3>5.4. Lớp độ phức tạp NP và tính NP-hard</h3>
+
+    <p class="alignment">Một <strong>bài toán quyết định</strong> (decision problem) là một bài toán mà
+      câu trả lời chỉ có thể là "có" hoặc "không". Lớp độ phức tạp <strong>NP</strong> là lớp các bài
+      toán quyết định mà câu trả lời "có" luôn đi kèm một chứng chỉ (certificate) có thể được kiểm tra
+      trong thời gian đa thức bởi một máy Turing tất định (deterministic Turing machine).</p>
+
+    <p class="alignment">Chẳng hạn, phiên bản quyết định của TSP là bài toán: "có tồn tại một hành trình
+      có độ dài nhỏ hơn một giá trị $k$ cho trước hay không?". Một chứng chỉ cho câu trả lời "có" chính
+      là một hành trình cụ thể có độ dài nhỏ hơn $k$, và việc tính độ dài của hành trình đã cho có thể
+      thực hiện trong thời gian đa thức (ta chỉ cần nhìn vào đồ thị và cộng các trọng số cạnh). Tương
+      tự, phiên bản quyết định của integer programming là bài toán: "có tồn tại một nghiệm nguyên mà giá
+      trị mục tiêu nhỏ hơn $k$ hay không?" (đối với bài toán minimization). Một lần nữa, chứng chỉ cho
+      câu trả lời "có" chính là một nghiệm nguyên cụ thể, và ta có thể tính giá trị mục tiêu của nó
+      trong thời gian đa thức (chỉ cần thay nghiệm đó vào objective function).</p>
+
+    <p class="alignment">Một cách định nghĩa tương đương: lớp NP là lớp các bài toán quyết định có thể
+      được giải trong thời gian đa thức bởi một máy Turing không tất định (non-deterministic Turing
+      machine).</p>
+
+    <p class="alignment">Tương tự, lớp độ phức tạp <strong>co-NP</strong> là lớp các bài toán quyết định
+      mà câu trả lời "không" có một chứng chỉ có thể kiểm tra được trong thời gian đa thức bởi một máy
+      Turing tất định.</p>
+
+    <p class="alignment">Vì mọi bài toán trong lớp P đều có thể giải được trong thời gian đa thức bởi
+      một máy Turing tất định, lớp P nằm trong giao của NP và co-NP, ký hiệu là
+      $\text{NP} \cap \text{co-NP}$. Một câu hỏi mở rất lớn của khoa học máy tính là liệu $P = NP$ hay
+      không. Đa số các nhà khoa học máy tính tin rằng câu trả lời là không.</p>
+
+    <p class="alignment">Một bài toán quyết định $Q$ thuộc NP được gọi là <strong>NP-complete</strong>
+      nếu mọi bài toán khác trong NP đều có thể được quy giản (reduce) về $Q$ trong thời gian đa thức.
+      Cook đã chứng minh rằng phiên bản quyết định của integer programming là NP-complete. Một bài toán
+      $Q$ (không nhất thiết là bài toán quyết định) được gọi là <strong>NP-hard</strong> nếu mọi bài
+      toán khác trong NP đều có thể được quy giản về $Q$ trong thời gian đa thức.</p>
+
+    <p class="alignment">Đây chính là lý do vì sao ta khẳng định Integer Programming là NP-hard ngay từ
+      phần 1: phiên bản quyết định của nó không chỉ nằm trong NP, mà còn là NP-complete, tức là một
+      trong những bài toán "khó nhất" của lớp NP theo nghĩa mọi bài toán NP khác đều quy giản được về
+      nó. Và vì tính NP-hard này, trừ khi $P = NP$ (điều mà hầu hết giới khoa học máy tính tin là không
+      xảy ra), sẽ không có thuật toán đa thức nào giải được integer programming trong trường hợp tổng
+      quát.</p>
+
+    <h2>Kết lại</h2>
+
+    <p class="alignment">Qua bài viết này, chúng ta đã đi từ một ví dụ toy đơn giản để thấy trực giác vì
+      sao làm tròn nghiệm LP không giải được Integer Programming, qua lược sử phát triển của lĩnh vực,
+      hai mô hình IP tiêu biểu (bipartite matching và sparse regression) minh họa tính linh hoạt của IP,
+      cho đến định nghĩa hình thức chặt chẽ: pure integer program, mixed integer program (MIP), LP
+      relaxation, và mixed 0-1 program. Cuối cùng, chúng ta đã đi sâu vào lý thuyết độ phức tạp để hiểu
+      chính xác ý nghĩa của câu nói "Integer Programming là NP-hard": từ khái niệm kích thước mã hóa,
+      lớp P, đến lớp NP và tính NP-completeness.</p>
+
+    <p class="alignment">Những nền tảng lý thuyết này sẽ là cơ sở rất quan trọng để chúng ta hiểu sâu hơn
+      về các thuật toán giải Integer Programming trong thực tế, như branch-and-bound và cutting plane
+      mà mình đã nhắc ở bài viết trước, cũng như các kỹ thuật cải thiện formulation (ví dụ như việc chọn
+      big-M cho hợp lý trong bài toán sparse regression) mà mình dự định sẽ trình bày ở các bài viết
+      tiếp theo.</p>
+
+    <p style="text-align: left;">
+      <a href="../blog.html">← Back to Blog List</a>
+    </p>
+
+  </main>
+</body>
+</html>
