@@ -47,13 +47,13 @@
   <!-- Main content -->
   <main class="content">
     <h1>Linear Programming: Lập mô hình một số bài toán cơ bản</h1>
-    <p class="date">Posted: 14/07/2026</p>
+    <p class="date">Posted: 10/09/2026</p>
 
     <p class="alignment">Ở các bài trước, mình đã giới thiệu Linear Programming (LP) là gì, cùng một số phương pháp giải cơ bản. Trong
       bài viết này, mình muốn tiếp cận theo hướng khác một chút. Thay vì tập trung vào phương pháp giải, ta
       sẽ tập trung vào cách lập mô hình (modeling). Tức là làm sao để chuyển một bài toán thực
       tế thành một mô hình toán học dưới dạng LP. Đây là một kỹ năng quan trọng trong tối ưu hóa.
-      Thực tế, thách thức lớn nhất không nằm ở việc giải mô
+      Thực tế, vấn đề khó nhất không nằm ở việc giải mô
       hình, mà nằm ở việc xây dựng một mô hình đúng và phản ánh chính xác bản chất của
       bài toán.</p>
 
@@ -70,12 +70,12 @@ thông tin sau:
 <ul class="alignment">
   <li>Công ty có $d$ loại sản phẩm khác nhau trong danh mục sản xuất, đánh số là sản phẩm 1, sản
     phẩm 2, và tiếp tục như vậy.</li>
-  <li>Có $m$ loại nguyên vật liệu cần thiết để sản xuất các sản phẩm này, đánh số là nguyên liệu 1,
-    nguyên liệu 2, và tiếp tục như vậy.</li>
+  <li>Có $m$ loại nguyên vật liệu cần thiết để sản xuất các sản phẩm này, đánh số là nguyên vật liệu 1,
+    nguyên vật liệu 2, và tiếp tục như vậy.</li>
   <li>Mỗi pc $j$ được bán với giá $p_j$, với $j \in [d]$.</li>
-  <li>Lượng tồn kho hiện tại của nguyên liệu $i$ là $b_i$, với $i \in [m]$. Ta giả sử $b_i > 0$
-    với mọi $i$ (nếu $b_i=0$, mọi sản phẩm cần nguyên liệu $i$ đều không thể được sản xuất).</li>
-  <li>Để sản xuất một pc $j$, cần $a_{ij}$ đơn vị nguyên liệu $i$, với mọi cặp
+  <li>Lượng tồn kho hiện tại của nguyên vật liệu $i$ là $b_i$, với $i \in [m]$. Ta giả sử $b_i > 0$
+    với mọi $i$ (nếu $b_i=0$, mọi sản phẩm cần nguyên vật liệu $i$ đều không thể được sản xuất).</li>
+  <li>Để sản xuất một pc $j$, cần $a_{ij}$ đơn vị nguyên vật liệu $i$, với mọi cặp
     $(i,j) \in [m] \times [d]$. Ở đây, $[m] \times [d]$ ký hiệu cho tập hợp
     $\{(i,j) : i \in [m], j \in [d]\}$.</li>
   <li>Ta giả sử toàn bộ dữ liệu đều không âm, tức $p_j \ge 0$, $b_i \ge 0$, và $a_{ij} \ge 0$ với
@@ -85,7 +85,7 @@ thông tin sau:
 </ul>
 
 <p class="alignment">Với các thông tin trên, mục tiêu là xác định lượng sản xuất của mỗi sản phẩm.
-  Dựa trên tồn kho nguyên liệu hiện có, sao cho tổng doanh thu (revenue) là lớn nhất. Ở đây, doanh
+  Dựa trên tồn kho nguyên vật liệu hiện có, sao cho tổng doanh thu (revenue) là lớn nhất. Ở đây, doanh
   thu là tổng thu nhập gộp thu được từ việc bán sản phẩm. Ta có thể giải quyết
   câu hỏi này bằng cách viết một mô hình LP. Hãy nhớ lại 3 thành phần của một bài toán ra
   quyết định: decisions, constraints, và objective.</p>
@@ -94,9 +94,9 @@ thông tin sau:
   <li><strong>Decisions</strong>: gọi $x_j$ là lượng sản phẩm $j$ mà ta sản xuất, với $j \in [d]$.</li>
   <li><strong>Objective</strong>: mục tiêu là tối đa hóa tổng doanh thu. Ở đây, tổng doanh thu được
     cho bởi $\sum_{j \in [d]} p_j x_j$.</li>
-  <li><strong>Constraints</strong>: tổng lượng tiêu thụ của nguyên liệu $i$ không được vượt quá tồn
+  <li><strong>Constraints</strong>: tổng lượng tiêu thụ của nguyên vật liệu $i$ không được vượt quá tồn
     kho hiện có. Tổng lượng tiêu thụ là $\sum_{j \in [d]} a_{ij} x_j$. Vì tồn kho hiện tại của
-    nguyên liệu $i$ là $b_i$, ta có thể viết constraint dưới dạng
+    nguyên vật liệu $i$ là $b_i$, ta có thể viết constraint dưới dạng
     $\sum_{j \in [d]} a_{ij} x_j \le b_i$. Hơn nữa, ta biết rằng lượng sản xuất của mỗi sản phẩm
     không thể nhỏ hơn 0. Do đó, $x \ge 0$. Ở đây, $x \ge 0$ đơn giản có nghĩa là mọi thành phần của
     $x$ đều không âm.</li>
@@ -112,7 +112,7 @@ $$
 \end{aligned}
 $$
 
-<p class="alignment">Tiếp theo, hãy xét một mục tiêu khác. Giả sử mỗi đơn vị nguyên liệu $i$ tốn
+<p class="alignment">Tiếp theo, hãy xét một mục tiêu khác. Giả sử mỗi đơn vị nguyên vật liệu $i$ tốn
   một chi phí là $s_i$, với $i \in [m]$. Lợi nhuận (profit) được định nghĩa là thu nhập ròng sau khi
   đã trừ chi phí khỏi doanh thu. Công ty có thể muốn tối đa hóa lợi nhuận, thay vì doanh thu. Vậy
   làm sao ta có thể mô hình hóa mục tiêu mới này?</p>
@@ -144,27 +144,27 @@ $$
 <h3>1.2. Bài toán định giá tồn kho nguyên vật liệu (Inventory valuation problem)</h3>
 
 <p class="alignment">
-Bây giờ, hãy xét một góc nhìn khác: thay vì sử dụng nguyên liệu để sản xuất, công ty
-có thể bán trực tiếp lượng nguyên liệu tồn kho ra ngoài thị trường. Giả sử giá thị trường
-của nguyên liệu $i$ là $r_i$ trên mỗi đơn vị. Khi đó, câu hỏi đặt ra là: giá trị hợp
-lý của mỗi đơn vị nguyên liệu nên được xác định như thế nào?
+Bây giờ, hãy xét một góc nhìn khác: thay vì sử dụng nguyên vật liệu để sản xuất, công ty
+có thể bán trực tiếp lượng nguyên vật liệu tồn kho ra ngoài thị trường. Giả sử giá thị trường
+của nguyên vật liệu $i$ là $r_i$ trên mỗi đơn vị. Khi đó, câu hỏi đặt ra là: giá trị hợp
+lý của mỗi đơn vị nguyên vật liệu nên được xác định như thế nào?
 </p>
 
 <p class="alignment">
 Câu hỏi này không đơn giản như việc lấy giá thị trường hiện tại. Bởi giá trị của nguyên
 liệu không chỉ nằm ở khả năng bán trực tiếp, mà còn nằm ở giá trị của các sản phẩm mà
-nó có thể tạo ra. Do đó, ta cần một cách định giá vừa nhất quán với thị trường, vừa phản
-ánh đúng tiềm năng sản xuất của nguồn nguyên liệu.
+nó có thể tạo ra. Do đó, ta cần phải định giá vừa nhất quán với thị trường, vừa phản
+ánh đúng tiềm năng sản xuất của nguồn nguyên vật liệu.
 </p>
 
 <p class="alignment">
-Gọi $\lambda_i$ là giá trị trên mỗi đơn vị nguyên liệu $i$ cần xác định. Đây chính là
+Gọi $\lambda_i$ là giá trị trên mỗi đơn vị nguyên vật liệu $i$ cần xác định. Đây chính là
 biến quyết định của bài toán. Để cách định giá này hợp lý, ta cần đảm bảo hai điều kiện.
 </p>
 
 <p class="alignment">
-<strong>Điều kiện thứ nhất:</strong> giá trị của nguyên liệu không thể thấp hơn giá bán
-trực tiếp trên thị trường. Vì công ty có thể lựa chọn bán nguyên liệu thay vì sử dụng
+<strong>Điều kiện thứ nhất:</strong> giá trị của nguyên vật liệu không thể thấp hơn giá bán
+trực tiếp trên thị trường. Vì công ty có thể lựa chọn bán nguyên vật liệu thay vì sử dụng
 nó cho sản xuất:
 </p>
 
@@ -173,10 +173,10 @@ $$
 $$
 
 <p class="alignment">
-<strong>Điều kiện thứ hai:</strong> với mỗi sản phẩm $j$, tổng giá trị của các nguyên liệu
+<strong>Điều kiện thứ hai:</strong> với mỗi sản phẩm $j$, tổng giá trị của các nguyên vật liệu
 cần thiết để sản xuất một pc $j$ phải không nhỏ hơn giá bán của sản phẩm đó.
 Nếu không, công ty có thể tạo ra sản phẩm để thu được giá trị cao hơn so với việc giữ
-nguyên liệu:
+nguyên vật liệu:
 </p>
 
 $$
@@ -187,7 +187,7 @@ $$
 <p class="alignment">
 Hai điều kiện trên đảm bảo rằng cách định giá không mâu thuẫn với bất kỳ lựa chọn kinh
 tế nào của công ty. Trong số tất cả các cách định giá thỏa mãn hai điều kiện này, ta chọn
-cách có tổng giá trị kho nguyên liệu nhỏ nhất để thu được một mức định giá thận trọng nhất:
+cách có tổng giá trị kho nguyên vật liệu nhỏ nhất để thu được một mức định giá thận trọng nhất:
 </p>
 
 $$
@@ -204,7 +204,7 @@ $$
 <p class="alignment">
 Nghiệm tối ưu $\lambda^*$ của bài toán này chính là cách định giá thấp nhất nhưng vẫn
 đảm bảo tính nhất quán với cả giá thị trường và giá trị sản xuất. Do đó,
-$\sum_i b_i\lambda_i^*$ biểu diễn một mức giá trị hợp lý cho toàn bộ kho nguyên liệu.
+$\sum_i b_i\lambda_i^*$ biểu diễn một mức giá trị hợp lý cho toàn bộ kho nguyên vật liệu.
 Một điểm thú vị là mô hình này thực chất chính là bài toán <em>dual</em> (đối ngẫu)
 của bài toán production planning ban đầu. Khái niệm duality sẽ được trình bày chi tiết
 hơn trong bài viết tiếp theo.
@@ -212,9 +212,9 @@ hơn trong bài viết tiếp theo.
     <h2>2. Vậy bài toán nào có thể lập mô hình thành LP?</h2>
 
     <p class="alignment">Câu hỏi tiếp theo là: có phải những bài toán có objective function và
-      constraints hoàn toàn tuyến tính mới đưa được về LP hay không? Câu trả lời khá bất ngờ: <strong>không
+      constraints hoàn toàn tuyến tính mới đưa được về LP hay không? Câu trả lời là <strong>không
       hẳn</strong>. Có nhiều bài toán nhìn qua tưởng phi tuyến, nhưng thực chất vẫn có thể viết lại thành
-      một LP. Để thấy rõ điều này, hãy xét một ví dụ khác: bài toán tìm tâm của một cụm điểm.</p>
+      một LP. Để thấy rõ điều này, hãy xét một ví dụ khác: bài toán tìm tâm (centroid) của một cụm điểm.</p>
 
     <p class="alignment">Giả sử ta có một tập $n$ điểm dữ liệu $v^1, \dots, v^n \in \mathbb{R}^d$, tạo
       thành một cụm (cluster). Ta muốn tìm ra "tâm" của cụm này, tức một điểm $x$ sao cho khoảng cách từ
@@ -275,11 +275,11 @@ hơn trong bài viết tiếp theo.
     $$
 
     <p class="alignment">Để dễ hình dung: nếu bạn vẽ đồ thị hàm $f$ lên mặt phẳng, thì
-      epigraph chính là toàn bộ "vùng trời" phía trên đường cong đó (bao gồm cả chính đường cong). Khái
-      niệm này nghe có vẻ trừu tượng, nhưng nó sẽ giúp ta có một cách rất gọn để nói "hàm này có phức
-      tạp hay không", bằng cách nhìn vào hình dạng của vùng phía trên nó.</p>
+      epigraph chính là toàn bộ "vùng trời" phía trên đường cong đó (bao gồm cả chính đường cong). Bằng cách này,
+      nó sẽ giúp ta trả lời câu hỏi rằng "hàm này có phức
+      tạp hay không", khi ta nhìn vào hình dạng của vùng phía trên nó.</p>
 
-    <p class="alignment">Ta nói một hàm $f$ là <strong>linearly representable</strong> nếu epigraph của
+    <p class="alignment">Ta nói một hàm $f$ là linearly representable nếu epigraph của
       nó có thể được biểu diễn hoàn toàn bằng một hệ hữu hạn các bất phương trình tuyến tính, tức là:</p>
 
     $$
@@ -287,7 +287,7 @@ hơn trong bài viết tiếp theo.
     $$
 
     <p class="alignment">với một số ma trận $A, D$ và vector $h, r$ phù hợp. Ở đây, các biến $y$ được
-      gọi là <strong>biến phụ trợ</strong> (auxiliary variables). Ý tưởng cốt lõi là: dù bản thân hàm
+      gọi là biến phụ trợ(auxiliary variables). Ý tưởng cốt lõi là: dù bản thân hàm
       $f$ không tuyến tính, ta vẫn có thể "vẽ" đúng hình dạng vùng phía trên nó chỉ bằng các đường thẳng,
       miễn là ta cho phép mượn thêm vài biến phụ để hỗ trợ.</p>
 
@@ -327,7 +327,7 @@ hơn trong bài viết tiếp theo.
 
     <p class="alignment">Đây là một hệ hữu hạn các bất phương trình tuyến tính, không cần đến bất kỳ
       biến phụ trợ nào cả. Vậy $f$ là linearly representable, dù bản thân nó không phải là hàm tuyến
-      tính. Đây chính xác là "mẹo" đứng sau việc 4 bài toán tìm tâm cụm điểm ở trên đều có thể viết lại
+      tính. Đây chính là mẹo đứng sau việc 4 bài toán tìm tâm cụm điểm ở trên đều có thể viết lại
       thành LP: phép lấy max và dấu giá trị tuyệt đối, tuy trông có vẻ phi tuyến, nhưng đều có thể "tháo
       rời" thành một tập hợp các bất phương trình tuyến tính đơn giản hơn.</p>
 
@@ -363,9 +363,9 @@ hơn trong bài viết tiếp theo.
 
     <p class="alignment">thì $\text{epi}(f)$ chính xác là phép chiếu của $P$ xuống không gian $(x, t)$.
       Nói cách khác, ý nghĩa thật sự của biến phụ trợ $y$ là: dù $\text{epi}(f)$ tự nó có hình dạng phức
-      tạp, cong queo, không thể mô tả chỉ bằng các bất phương trình tuyến tính trên $(x,t)$, ta vẫn có
+      tạp, cong queo, không thể mô tả chỉ bằng các bất phương trình tuyến tính trên $(x,t)$. Ta vẫn có
       thể "nhét" nó vào một không gian nhiều chiều hơn (thêm chiều $y$), sao cho trong không gian lớn
-      hơn đó, hình dạng của nó lại trở nên đơn giản, chỉ là một tập được tạo bởi các mặt phẳng. Sau đó,
+      hơn đó. Hình dạng của nó lại trở nên đơn giản, chỉ là một tập được tạo bởi các mặt phẳng. Sau đó,
       ta chỉ cần chiếu ngược nó về lại không gian $(x,t)$ ban đầu để lấy đúng epigraph mình cần. Đây là
       một mẹo rất hay gặp trong tối ưu hóa: đôi khi, một bài toán trông phức tạp ở không gian ít chiều
       lại trở nên đơn giản hơn hẳn nếu ta chịu khó "nới" thêm vài chiều phụ.</p>
@@ -427,7 +427,7 @@ hơn trong bài viết tiếp theo.
     <h3>2.5. Kết hợp các hàm linearly representable với nhau</h3>
 
     <p class="alignment">Một tin vui nữa: tính linearly representable không chỉ dừng lại ở từng hàm
-      riêng lẻ, mà còn được <strong>bảo toàn</strong> qua một số phép toán. Cụ thể, nếu $f_1(x), \dots, f_n(x)$ đều là linearly
+      riêng lẻ, mà còn được bảo toàn qua một số phép toán. Cụ thể, nếu $f_1(x), \dots, f_n(x)$ đều là linearly
       representable, thì:</p>
 
     <ol class="alignment">
@@ -456,10 +456,10 @@ hơn trong bài viết tiếp theo.
     <p class="alignment">Quay lại bài toán production planning ban đầu, nhưng lần này thêm một
       chi tiết thực tế hơn: chi phí lưu kho (holding cost). Giả sử công ty vẫn có $d$ loại sản phẩm và
       $m$ loại nguyên vật liệu như trước, với các thông tin quen thuộc: giá bán $p_j$, tồn kho nguyên
-      liệu $b_i$, và định mức nguyên liệu $a_{ij}$. Nhưng lần này, mỗi sản phẩm $j$ còn có thêm:</p>
+      vật liệu $b_i$, và định mức nguyên vật liệu $a_{ij}$. Nhưng lần này, mỗi sản phẩm $j$ còn có thêm:</p>
 
     <ul class="alignment">
-      <li>Một mức nhu cầu (demand) xác định trước là $d_j$, tức công ty chỉ có thể <strong>bán</strong>
+      <li>Một mức nhu cầu (demand) xác định trước là $d_j$, tức công ty chỉ có thể bán
         tối đa $d_j$ pcs $j$, dù có sản xuất nhiều hơn.</li>
       <li>Nếu công ty sản xuất <strong>nhiều hơn</strong> $d_j$ đơn vị, phần dư ra phải tốn chi phí lưu
         kho $c_j$ trên mỗi đơn vị dư.</li>
@@ -468,7 +468,7 @@ hơn trong bài viết tiếp theo.
     </ul>
 
     <p class="alignment">Ta vẫn dùng $x_j$ là lượng sản phẩm $j$ cần sản xuất, và các ràng buộc về
-      nguyên liệu vẫn giữ nguyên như bài toán gốc:</p>
+      nguyên vật liệu vẫn giữ nguyên như bài toán gốc:</p>
 
     $$
     \sum_{j \in [d]} a_{ij} x_j \le b_i, \quad \forall i \in [m], \qquad x_j \ge 0, \ \forall j \in [d]
@@ -597,18 +597,17 @@ hơn trong bài viết tiếp theo.
     <h2>Kết lại</h2>
 
     <p class="alignment">
-Nhìn lại, cả ba phần trong bài viết này thực chất đều xoay quanh một chủ đề chung:
-làm thế nào để xây dựng mô hình cho một bài toán thực tế, kể cả khi bài toán ban
-đầu không phải là tuyến tính. Ở bài toán định giá tồn kho, ta thấy cách chuyển một 
-câu hỏi khá trừu tượng ("nguyên liệu này đáng giá bao nhiêu?") thành một mô hình 
-LP rất cụ thể, chỉ bằng cách suy luận từ những lựa chọn hợp lý mà công ty có thể đưa ra.
+Cả ba phần trong bài viết này thực chất đều xoay quanh một chủ đề chung:
+làm thế nào để xây dựng mô hình cho một bài toán thực tế. Ở bài toán định giá tồn kho, ta thấy cách chuyển một 
+câu hỏi khá trừu tượng ("nguyên vật liệu này đáng giá bao nhiêu?") thành một mô hình 
+LP rất cụ thể. Chỉ bằng cách suy luận từ những lựa chọn hợp lý mà công ty có thể đưa ra.
 </p>
 
 <p class="alignment">
 Ở phần thứ hai, ta nhận ra rằng ranh giới giữa "tuyến tính" và "phi tuyến" không
-phải lúc nào cũng rõ ràng. hiều hàm nhìn có vẻ phi tuyến, ẫn có thể được biểu diễn dưới dạng LP thông qua việc đưa vào các 
+phải lúc nào cũng rõ ràng. Nhiều hàm nhìn có vẻ phi tuyến mà vẫn có thể được biểu diễn dưới dạng LP thông qua việc đưa vào các 
 biến phụ trợ phù hợp. Khái niệm epigraph và phép chiếu (projection) cho 
-ta một cách nhìn khá thú vị: một hàm trông phức tạp ở không gian ít chiều đôi 
+ta thấy: một hàm trông phức tạp ở không gian ít chiều đôi 
 khi lại trở nên đơn giản hơn hẳn nếu ta chịu "nới" thêm vài chiều phụ. Nhờ hai phép toán cơ bản là cộng có trọng 
 số và lấy giá trị lớn nhất, ta có thể
 kết hợp các hàm đơn giản này để xây dựng những hàm phức tạp hơn, trong khi vẫn
