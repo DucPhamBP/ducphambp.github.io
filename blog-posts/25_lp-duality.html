@@ -46,20 +46,18 @@
 
   <!-- Main content -->
   <main class="content">
-    <h1>Linear Programming: lý thuyết đối ngẫu (duality) và ứng dụng</h1>
-    <p class="date">Posted: 14/07/2026</p>
+    <h1>Linear Programming: lý thuyết Đối ngẫu (duality) và ứng dụng</h1>
+    <p class="date">Posted: 15/09/2026</p>
 
-    <p class="alignment">Ở bài viết trước, khi tìm hiểu về barrier method (Interior Point), mình có
-      dùng Newton's method để giải một bài toán trên biến primal $x$ đã được "làm mượt" bằng hàm
-      logarit. Nhưng nếu để ý kỹ điều kiện dừng (stationarity) của Lagrangian tại mỗi bước, ta sẽ thấy
-      một Lagrange multiplier $\lambda$ tự nhiên xuất hiện cho ràng buộc $Ax=b$, dù ta chưa hề chủ động
-      "thêm" biến này vào bài toán ban đầu. Multiplier đó chính là dual
-      variable (biến đối ngẫu) của mô hình tuyến tính (LP) gốc. Bài viết này sẽ giải thích rõ dual LP là gì và vì sao nó lại xuất
-      hiện một cách tự nhiên như vậy: cách xây dựng dual LP từ một LP tổng quát, rồi đến hai định lý
-      quan trọng nhất của lý thuyết đối ngẫu (weak duality và strong duality), một hệ quả rất đẹp gọi
-      là complementary slackness (chính là phiên bản "chưa làm mượt" của điều kiện $x_j s_j = \mu$ mà
-      barrier method dùng), và cuối cùng là một ứng dụng rất thực tế: dùng duality để giải các bài toán
-      LP có số lượng biến hoặc constraint khổng lồ, thông qua bài toán cutting stock.</p>
+    <p class="alignment">Ở bài viết trước, khi tìm hiểu về barrier method (Interior Point). Mình có
+      dùng Newton's method để giải một bài toán trên biến primal $x$ đã được làm "mượt" (smoothness) bằng hàm
+      logarit. Nhưng nếu để ý kỹ điều kiện dừng (stationarity) của Lagrangian tại mỗi bước. Ta sẽ thấy
+      một Lagrange multiplier $\lambda$ tự nhiên xuất hiện cho ràng buộc $Ax=b$, dù ta chưa hề
+      thêm biến này vào bài toán ban đầu. Multiplier đó chính là dual
+      variable (biến đối ngẫu) của mô hình tuyến tính (Linear Programming - LP) gốc. Bài viết này sẽ giải thích rõ lý thuyết đối ngẫu là gì và vì sao nó lại xuất
+      hiện. Ngoài ra, mình cũng giới thiệu cách xây dựng dual LP từ một LP tổng quát, rồi đến hai khái niệm
+      quan trọng là weak duality và strong duality, và cuối cùng là một ứng dụng của nó trong việc
+      dùng duality để giải các bài toán có số lượng biến hoặc constraint rất lớn.</p>
 
     <h2>1. Xây dựng dual LP từ một LP tổng quát</h2>
 
@@ -101,7 +99,7 @@
     $$
 
     <p class="alignment">Để ý dấu của $\lambda_i$ được chọn khớp với chiều của constraint tương ứng.
-      Đây không phải là sự tùy tiện: mục đích của việc chọn dấu này là để khi ta "cộng gộp" các
+      Mục đích của việc chọn dấu này là để khi ta "cộng gộp" các
       constraint lại (bước tiếp theo), mọi bất phương trình đều quay về cùng một chiều, giúp ta có được
       một cận dưới hợp lý cho objective function.</p>
 
@@ -630,7 +628,7 @@ non-basic được thỏa mãn tự động. Vì vậy, chỉ cần kiểm tra t
     <h2>5. Ví dụ minh họa: Bài toán Cutting Stock</h2>
 
     <p class="alignment">Để thấy column generation hoạt động trong thực tế thế nào, hãy xét một bài
-      toán kinh điển trong ngành sản xuất: bài toán cutting stock (cắt vật liệu).</p>
+      toán trong ngành sản xuất: bài toán cutting stock (cắt vật liệu).</p>
 
     <p class="alignment">Một nhà máy thép có các dây chuyền sản xuất, mỗi dây chuyền cho ra một tấm thép
       lớn có độ rộng $W$ cố định. Nhà máy nhận được các đơn hàng với $m$ độ rộng khác nhau
@@ -638,7 +636,7 @@ non-basic được thỏa mãn tự động. Vì vậy, chỉ cần kiểm tra t
       máy có thể cắt ra thành nhiều tấm nhỏ với các độ rộng khác nhau. Mục tiêu: dùng ít dây
       chuyền nhất có thể để đáp ứng đủ mọi đơn hàng.</p>
 
-    <p class="alignment">Ý tưởng mô hình hóa là dùng khái niệm <strong>cutting pattern</strong> (cách
+    <p class="alignment">Ý tưởng mô hình hóa là dùng khái niệm cutting pattern (cách
       cắt). Một cutting pattern là một cách cụ thể để cắt một tấm rộng $W$ thành các tấm nhỏ, được biểu
       diễn bởi một vector $s \in \mathbb{Z}_+^m$, trong đó $s_i$ là số tấm rộng $w_i$ được cắt ra từ
       pattern đó. Để pattern này khả thi (không cắt vượt quá độ rộng tấm gốc), ta cần:</p>
@@ -740,7 +738,7 @@ non-basic được thỏa mãn tự động. Vì vậy, chỉ cần kiểm tra t
       để cận dưới này đạt đúng giá trị tối ưu), complementary slackness ở dạng đầy đủ
       (không chỉ là điều kiện cần mà còn là điều kiện cần và đủ cho tính tối ưu), và
       cuối cùng là ứng dụng của duality trong việc giải các mô hình LP quy mô lớn
-      thông qua row/column generation, được minh họa bằng bài toán cutting stock.
+      thông qua row/column generation.
 </p>
     <p class="alignment">
       Nhìn lại câu nói còn bỏ ngỏ ở bài trước ("bài toán tồn kho là dual của production planning")
@@ -748,7 +746,7 @@ non-basic được thỏa mãn tự động. Vì vậy, chỉ cần kiểm tra t
       thành một biến dual biểu diễn giá trị kinh tế của tài nguyên đó. Nhờ strong duality,
       giá trị tối ưu của các biến dual này không chỉ là một cận dưới, mà chính xác bằng giá trị
       tối ưu của bài toán production planning. Đây không đơn thuần là một phép biến đổi đại số,
-      mà phản ánh một ý nghĩa kinh tế sâu sắc: giá trị của một nguồn lực được đo bằng giá trị
+      mà phản ánh một ý nghĩa kinh tế: giá trị của một nguồn lực được đo bằng giá trị
       biên (marginal value) mà nó tạo ra đối với lợi nhuận tối ưu.
 </p>
 
